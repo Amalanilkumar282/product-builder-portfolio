@@ -6,6 +6,7 @@ import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { AdminModule } from '../admin/admin.module';
 import { jwtConfig } from './jwt.config';
+import { TokenService } from './token.service';
 
 @Global()
 @Module({
@@ -14,7 +15,7 @@ import { jwtConfig } from './jwt.config';
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register(jwtConfig),
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, TokenService],
   controllers: [AuthController],
   exports: [PassportModule],
 })

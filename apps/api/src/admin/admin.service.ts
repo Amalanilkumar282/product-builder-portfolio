@@ -10,4 +10,17 @@ export class AdminService {
       where: { email },
     });
   }
+
+  async findById(id: string) {
+    return this.prisma.admin.findUnique({
+      where: { id },
+    });
+  }
+
+  async updateRefreshToken(adminId: string, refreshToken: string | null) {
+    return this.prisma.admin.update({
+      where: { id: adminId },
+      data: { refreshToken },
+    });
+  }
 }
