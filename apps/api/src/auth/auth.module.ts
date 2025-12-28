@@ -5,18 +5,17 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { AdminModule } from '../admin/admin.module';
+import { jwtConfig } from './jwt.config';
+import { TokenService } from './token.service';
 
 @Global()
 @Module({
   imports: [
     AdminModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET || 'dev_secret_change_later',
-      signOptions: { expiresIn: '1d' },
-    }),
+    JwtModule.register(jwtConfig),
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, TokenService],
   controllers: [AuthController],
   exports: [PassportModule],
 })
