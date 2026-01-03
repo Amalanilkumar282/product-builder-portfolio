@@ -15,3 +15,40 @@ model Admin {
   refreshToken  String?
   createdAt DateTime @default(now())
 }
+
+model Service {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  description String
+  content     String
+
+  isPublished Boolean  @default(false)
+
+  seoTitle       String?
+  seoDescription String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  summary     String
+  content     String
+
+  coverImageUrl String?
+  demoUrl       String?
+  githubUrl     String?
+
+  isPublished Boolean @default(false)
+
+  seoTitle       String?
+  seoDescription String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
