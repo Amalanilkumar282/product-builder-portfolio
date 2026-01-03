@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -11,7 +11,7 @@ export class ServiceService {
     });
 
     if (existing) {
-      throw new Error('Service with this slug already exists');
+      throw new BadRequestException('Service with this slug already exists');
     }
 
     return this.prisma.service.create({ data });
@@ -36,7 +36,7 @@ export class ServiceService {
       });
 
       if (existing && existing.id !== id) {
-        throw new Error('Service with this slug already exists');
+        throw new BadRequestException('Service with this slug already exists');
       }
     }
 
