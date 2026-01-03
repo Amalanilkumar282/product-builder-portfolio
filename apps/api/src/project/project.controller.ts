@@ -10,6 +10,8 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ProjectService } from './project.service';
+import { CreateProjectDto } from './dto/create-project.dto';
+import { UpdateProjectDto } from './dto/update-project.dto';
 
 @Controller('admin/projects')
 @UseGuards(JwtAuthGuard)
@@ -17,7 +19,7 @@ export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
   @Post()
-  create(@Body() dto: any) {
+  create(@Body() dto: CreateProjectDto) {
     return this.projectService.create(dto);
   }
 
@@ -32,7 +34,7 @@ export class ProjectController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() dto: any) {
+  update(@Param('id') id: string, @Body() dto: UpdateProjectDto) {
     return this.projectService.update(id, dto);
   }
 
