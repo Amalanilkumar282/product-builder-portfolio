@@ -33,4 +33,20 @@ export class ServiceService {
       where: { id },
     });
   }
+
+  findPublished() {
+    return this.prisma.service.findMany({
+      where: { isPublished: true },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  findPublishedBySlug(slug: string) {
+    return this.prisma.service.findFirst({
+      where: {
+        slug,
+        isPublished: true,
+      },
+    });
+  }
 }
