@@ -5,7 +5,15 @@ import { PrismaService } from '../prisma/prisma.service';
 export class ServiceService {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(data: any) {
+  async create(data: any) {
+    const existing = await this.prisma.service.findUnique({
+      where: { slug: data.slug },
+    });
+
+    if (existing) {
+      throw new Error('Service with this slug already exists');
+    }
+
     return this.prisma.service.create({ data });
   }
 
@@ -21,7 +29,17 @@ export class ServiceService {
     });
   }
 
-  update(id: string, data: any) {
+  async update(id: string, data: any) {
+    if (data.slug) {
+      const existing = await this.prisma.service.findUnique({
+        where: { slug: data.slug },
+      });
+
+      if (existing && existing.id !== id) {
+        throw new Error('Service with this slug already exists');
+      }
+    }
+
     return this.prisma.service.update({
       where: { id },
       data,
