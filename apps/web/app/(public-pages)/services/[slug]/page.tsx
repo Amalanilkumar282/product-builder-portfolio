@@ -1,10 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft, MessageSquare } from 'lucide-react';
+import { ArrowLeft, MessageSquare, HelpCircle } from 'lucide-react';
 import { fetchService, fetchServices } from '@/lib/api';
 import AnimatedSection from '@/components/ui/AnimatedSection';
 import Badge from '@/components/ui/Badge';
+import SectionHeader from '@/components/ui/SectionHeader';
+import FaqAccordion from '@/components/ui/FaqAccordion';
+import { JsonLd, buildServiceSchema, buildBreadcrumbSchema, buildFaqSchema } from '@/lib/jsonld';
 
 export async function generateStaticParams() {
   const services = await fetchServices();
@@ -19,10 +22,49 @@ export async function generateMetadata({
   const { slug } = await params;
   const service = await fetchService(slug);
   if (!service) return {};
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3001';
+  const ogImage = `${SITE_URL}/og?title=${encodeURIComponent(service.title)}&subtitle=${encodeURIComponent(service.description ?? '')}&type=service`;
   return {
     title: service.seoTitle ?? service.title,
     description: service.seoDescription ?? service.description,
+    alternates: { canonical: `${SITE_URL}/services/${slug}` },
+    openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },
+    twitter: { card: 'summary_large_image', images: [ogImage] },
   };
+}
+
+/** Generate service-specific FAQs from service data */
+function buildServiceFaqs(service: {
+  title: string;
+  description: string;
+  tags: { name: string }[];
+}) {
+  const techList = service.tags.map((t) => t.name).join(', ') || 'modern web technologies';
+  return [
+    {
+      question: `What is included in your ${service.title} service?`,
+      answer: `${service.description} I handle everything from initial scoping through to deployment, including code review, documentation, and a handover session.`,
+    },
+    {
+      question: 'How long does a typical project take?',
+      answer:
+        'Timelines depend on scope. A focused feature or landing page typically takes 1–2 weeks; a full product build ranges from 4–12 weeks. I provide a detailed timeline estimate after the initial scoping call.',
+    },
+    {
+      question: `What technologies do you use for ${service.title}?`,
+      answer: `I primarily work with ${techList}. I choose the right stack for your project's requirements — prioritising maintainability, performance, and your team's ability to take ownership after handover.`,
+    },
+    {
+      question: 'Do you offer ongoing support after launch?',
+      answer:
+        'Yes. I offer monthly retainer agreements for continued development, bug fixes, and feature enhancements. One month of post-launch support is included in every project.',
+    },
+    {
+      question: 'How do we get started?',
+      answer:
+        'The best first step is to use the contact form at amalanilkumar.dev/contact. I respond within 24 hours to schedule a free 30-minute scoping call where we align on goals, timeline, and budget.',
+    },
+  ];
 }
 
 export default async function ServiceDetailPage({
@@ -34,8 +76,20 @@ export default async function ServiceDetailPage({
   const service = await fetchService(slug);
   if (!service) notFound();
 
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3001';
+  const faqs = buildServiceFaqs(service);
+
   return (
     <div className="min-h-screen pt-24 pb-20">
+      <JsonLd data={[
+        buildServiceSchema(service),
+        buildFaqSchema(faqs),
+        buildBreadcrumbSchema([
+          { name: 'Home', url: SITE_URL },
+          { name: 'Services', url: `${SITE_URL}/services` },
+          { name: service.title, url: `${SITE_URL}/services/${service.slug}` },
+        ]),
+      ]} />
       <div className="max-w-4xl mx-auto px-6">
         <AnimatedSection className="mb-8">
           <Link
@@ -74,9 +128,24 @@ export default async function ServiceDetailPage({
           </div>
         </AnimatedSection>
 
+        {/* FAQ */}
+        <AnimatedSection delay={0.15}>
+          <div className="mb-10">
+            <SectionHeader
+              label="FAQ"
+              title="Frequently Asked Questions"
+              className="mb-6"
+            />
+            <FaqAccordion items={faqs} />
+          </div>
+        </AnimatedSection>
+
         {/* CTA */}
         <AnimatedSection delay={0.2}>
           <div className="glass rounded-2xl p-8 text-center border border-purple-500/20">
+            <div className="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center mx-auto mb-4">
+              <MessageSquare size={20} className="text-white" />
+            </div>
             <h3 className="text-xl font-bold text-slate-100 mb-2">
               Interested in this service?
             </h3>
@@ -87,7 +156,7 @@ export default async function ServiceDetailPage({
               href="/#contact"
               className="inline-flex items-center gap-2 gradient-bg px-6 py-3 rounded-xl text-white font-semibold text-sm hover:opacity-90 transition-opacity shadow-lg shadow-purple-500/20"
             >
-              <MessageSquare size={16} /> Get in touch
+              Get in touch
             </Link>
           </div>
         </AnimatedSection>

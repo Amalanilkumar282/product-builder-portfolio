@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { fetchProfile } from '@/lib/api';
 import ContactSection from '@/components/sections/ContactSection';
+import { JsonLd, buildContactPageSchema } from '@/lib/jsonld';
 
 export const metadata: Metadata = {
   title: 'Contact',
@@ -12,6 +13,7 @@ export default async function ContactPage() {
 
   return (
     <div className="min-h-screen pt-16">
+      <JsonLd data={buildContactPageSchema()} />
       <ContactSection profile={profile} />
     </div>
   );

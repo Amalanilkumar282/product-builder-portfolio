@@ -5,6 +5,7 @@ import ThemeProvider from '@/components/layout/ThemeProvider';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { fetchProfile } from '@/lib/api';
+import { JsonLd, buildPersonSchema, buildWebSiteSchema } from '@/lib/jsonld';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -54,12 +55,18 @@ export const metadata: Metadata = {
     description:
       'Passionate full-stack software engineer building scalable web products and systems.',
     siteName: ownerName,
+    images: [{ url: `${siteUrl}/og?title=${encodeURIComponent(ownerName + ' — Software Engineer')}&subtitle=${encodeURIComponent('Full-stack engineer passionate about scalable web products')}&type=page`, width: 1200, height: 630 }],
   },
   twitter: {
     card: 'summary_large_image',
     title: `${ownerName} — Software Engineer`,
     description:
       'Passionate full-stack software engineer building scalable web products and systems.',
+    images: [`${siteUrl}/og?title=${encodeURIComponent(ownerName + ' — Software Engineer')}&type=page`],
+  },
+  alternates: {
+    canonical: '/',
+    types: { 'application/rss+xml': `${siteUrl}/feed.xml` },
   },
   robots: {
     index: true,
@@ -73,9 +80,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://res.cloudinary.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
       <body
         className={`${inter.variable} ${plusJakarta.variable} ${geistMono.variable} antialiased`}
       >
+        <JsonLd data={[buildWebSiteSchema(), buildPersonSchema({ name: profile?.name, bio: profile?.bio, email: profile?.email, avatarUrl: profile?.avatarUrl })]} />
         <ThemeProvider>
           <Navbar ownerName={profile?.name ?? ownerName} />
           <main>{children}</main>

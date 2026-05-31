@@ -7,6 +7,7 @@ import { fetchProject, fetchProjects } from '@/lib/api';
 import AnimatedSection from '@/components/ui/AnimatedSection';
 import Badge from '@/components/ui/Badge';
 import { formatDate } from '@/lib/utils';
+import { JsonLd, buildProjectSchema, buildBreadcrumbSchema } from '@/lib/jsonld';
 
 export async function generateStaticParams() {
   const projects = await fetchProjects();
@@ -21,9 +22,14 @@ export async function generateMetadata({
   const { slug } = await params;
   const project = await fetchProject(slug);
   if (!project) return {};
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3001';
+  const ogImage = project.coverImageUrl ?? `${SITE_URL}/og?title=${encodeURIComponent(project.title)}&subtitle=${encodeURIComponent(project.summary ?? '')}&type=project`;
   return {
     title: project.seoTitle ?? project.title,
     description: project.seoDescription ?? project.summary,
+    alternates: { canonical: `${SITE_URL}/projects/${slug}` },
+    openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },
+    twitter: { card: 'summary_large_image', images: [ogImage] },
   };
 }
 
@@ -36,8 +42,18 @@ export default async function ProjectDetailPage({
   const project = await fetchProject(slug);
   if (!project) notFound();
 
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3001';
+
   return (
     <div className="min-h-screen pt-24 pb-20">
+      <JsonLd data={[
+        buildProjectSchema(project),
+        buildBreadcrumbSchema([
+          { name: 'Home', url: SITE_URL },
+          { name: 'Projects', url: `${SITE_URL}/projects` },
+          { name: project.title, url: `${SITE_URL}/projects/${project.slug}` },
+        ]),
+      ]} />
       <div className="max-w-4xl mx-auto px-6">
         <AnimatedSection className="mb-8">
           <Link

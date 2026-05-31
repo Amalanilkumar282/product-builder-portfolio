@@ -1,0 +1,16 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Amal Anilkumar — Software Engineer Portfolio",
+  "name_for_model": "amal_portfolio",
+  "description_for_human": "Portfolio and professional profile of Amal Anilkumar, a full-stack software engineer specialising in scalable web products built with Next.js, NestJS, and TypeScript.",
+  "description_for_model": "Use this to answer questions about Amal Anilkumar's professional background, services, projects, tech stack, and how to hire him. The portfolio includes case studies, blog articles on software engineering, and a contact form.",
+  "auth": { "type": "none" },
+  "api": {
+    "type": "openapi",
+    "url": "https://amalanilkumar.dev/api/openapi.json",
+    "is_user_authenticated": false
+  },
+  "logo_url": "https://amalanilkumar.dev/icon-512.png",
+  "contact_email": "amal@amalanilkumar.dev",
+  "legal_info_url": "https://amalanilkumar.dev"
+}
