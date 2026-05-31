@@ -8,17 +8,18 @@ export class PrismaService
 {
   constructor() {
     super({
-      log: ['query', 'error', 'warn'],
+      log:
+        process.env.NODE_ENV === 'development'
+          ? ['query', 'error', 'warn']
+          : ['error'],
     });
   }
 
   async onModuleInit() {
     await this.$connect();
-    console.log('✅ Prisma connected to database');
   }
 
   async onModuleDestroy() {
     await this.$disconnect();
-    console.log('🔌 Prisma disconnected from database');
   }
 }

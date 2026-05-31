@@ -1,5 +1,7 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { CreateProjectDto } from './dto/create-project.dto';
+import { UpdateProjectDto } from './dto/update-project.dto';
 
 @Injectable()
 export class ProjectService {
@@ -7,36 +9,43 @@ export class ProjectService {
 
   // ---------- ADMIN METHODS ----------
 
-  async create(data: any) {
-    const existing = await this.prisma.project.findUnique({
-      where: { slug: data.slug },
+  async create(dto: CreateProjectDto) {
+    const { tagIds, ...rest } = dto;
+
+    const existing = await this.prisma.project.findUnique({ where: { slug: rest.slug } });
+    if (existing) throw new BadRequestException('Project with this slug already exists');
+
+    return this.prisma.project.create({
+      data: {
+        ...rest,
+        tags: tagIds?.length ? { connect: tagIds.map((id) => ({ id })) } : undefined,
+      },
+      include: { tags: true },
     });
-
-    if (existing) {
-      throw new BadRequestException('Project with this slug already exists');
-    }
-
-    return this.prisma.project.create({ data });
   }
 
   findAll() {
     return this.prisma.project.findMany({
       orderBy: { createdAt: 'desc' },
+      include: { tags: true },
     });
   }
 
-  findOne(id: string) {
-    return this.prisma.project.findUnique({
+  async findOne(id: string) {
+    const project = await this.prisma.project.findUnique({
       where: { id },
+      include: { tags: true },
     });
+    if (!project) throw new NotFoundException('Project not found');
+    return project;
   }
 
-  async update(id: string, data: any) {
-    if (data.slug) {
-      const existing = await this.prisma.project.findUnique({
-        where: { slug: data.slug },
-      });
+  async update(id: string, dto: UpdateProjectDto) {
+    const { tagIds, ...rest } = dto;
+    await this.findOne(id);
 
+    if (rest.slug) {
+      const existing = await this.prisma.project.findUnique({ where: { slug: rest.slug } });
       if (existing && existing.id !== id) {
         throw new BadRequestException('Project with this slug already exists');
       }
@@ -44,14 +53,17 @@ export class ProjectService {
 
     return this.prisma.project.update({
       where: { id },
-      data,
+      data: {
+        ...rest,
+        tags: tagIds !== undefined ? { set: tagIds.map((tagId) => ({ id: tagId })) } : undefined,
+      },
+      include: { tags: true },
     });
   }
 
-  remove(id: string) {
-    return this.prisma.project.delete({
-      where: { id },
-    });
+  async remove(id: string) {
+    await this.findOne(id);
+    return this.prisma.project.delete({ where: { id } });
   }
 
   // ---------- PUBLIC METHODS ----------
@@ -60,12 +72,16 @@ export class ProjectService {
     return this.prisma.project.findMany({
       where: { isPublished: true },
       orderBy: { createdAt: 'desc' },
+      include: { tags: true },
     });
   }
 
-  findPublishedBySlug(slug: string) {
-    return this.prisma.project.findFirst({
+  async findPublishedBySlug(slug: string) {
+    const project = await this.prisma.project.findFirst({
       where: { slug, isPublished: true },
+      include: { tags: true },
     });
+    if (!project) throw new NotFoundException('Project not found');
+    return project;
   }
 }

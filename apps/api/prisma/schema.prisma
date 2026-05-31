@@ -7,48 +7,203 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ContactStatus {
+  NEW
+  READ
+  REPLIED
+}
+
+enum PageSectionType {
+  HERO
+  SERVICES
+  PROJECTS
+  SKILLS
+  EXPERIENCE
+  EDUCATION
+  TESTIMONIALS
+  TECH_STACK
+  BLOG
+  CONTACT
+  ABOUT
+}
+
 model Admin {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  role      String
-  refreshToken  String?
-  createdAt DateTime @default(now())
+  id           String   @id @default(uuid())
+  email        String   @unique
+  password     String
+  role         String
+  refreshToken String?
+  createdAt    DateTime @default(now())
 }
 
 model Service {
-  id          String   @id @default(uuid())
-  title       String
-  slug        String   @unique
-  description String
-  content     String
-
-  isPublished Boolean  @default(false)
-
+  id             String   @id @default(uuid())
+  title          String
+  slug           String   @unique
+  description    String
+  content        String   @db.Text
+  isPublished    Boolean  @default(false)
   seoTitle       String?
   seoDescription String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  tags           Tag[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 model Project {
-  id          String   @id @default(uuid())
-  title       String
-  slug        String   @unique
-  summary     String
-  content     String
-
-  coverImageUrl String?
-  demoUrl       String?
-  githubUrl     String?
-
-  isPublished Boolean @default(false)
-
+  id             String   @id @default(uuid())
+  title          String
+  slug           String   @unique
+  summary        String
+  content        String   @db.Text
+  coverImageUrl  String?
+  demoUrl        String?
+  githubUrl      String?
+  isPublished    Boolean  @default(false)
   seoTitle       String?
   seoDescription String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  tags           Tag[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
+model Profile {
+  id          String   @id @default(uuid())
+  name        String
+  title       String
+  bio         String   @db.Text
+  headline    String
+  avatarUrl   String?
+  resumeUrl   String?
+  email       String
+  location    String?
+  socialLinks Json     @default("{}")
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Skill {
+  id          String   @id @default(uuid())
+  name        String
+  category    String
+  proficiency Int      @default(0)
+  iconUrl     String?
+  order       Int      @default(0)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Experience {
+  id          String    @id @default(uuid())
+  company     String
+  role        String
+  description String    @db.Text
+  startDate   DateTime
+  endDate     DateTime?
+  isPresent   Boolean   @default(false)
+  logoUrl     String?
+  order       Int       @default(0)
+  isPublished Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Education {
+  id          String    @id @default(uuid())
+  institution String
+  degree      String
+  field       String
+  startDate   DateTime
+  endDate     DateTime?
+  logoUrl     String?
+  order       Int       @default(0)
+  isPublished Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Testimonial {
+  id          String   @id @default(uuid())
+  name        String
+  role        String
+  company     String
+  avatarUrl   String?
+  content     String   @db.Text
+  rating      Int      @default(5)
+  order       Int      @default(0)
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Tag {
+  id        String     @id @default(uuid())
+  name      String
+  slug      String     @unique
+  projects  Project[]
+  services  Service[]
+  blogPosts BlogPost[]
+  createdAt DateTime   @default(now())
+}
+
+model BlogPost {
+  id             String    @id @default(uuid())
+  title          String
+  slug           String    @unique
+  summary        String
+  content        String    @db.Text
+  coverImageUrl  String?
+  readTime       Int       @default(0)
+  isPublished    Boolean   @default(false)
+  publishedAt    DateTime?
+  seoTitle       String?
+  seoDescription String?
+  tags           Tag[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model ContactInquiry {
+  id        String        @id @default(uuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String        @db.Text
+  status    ContactStatus @default(NEW)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model TechStack {
+  id          String   @id @default(uuid())
+  name        String
+  iconUrl     String?
+  category    String
+  url         String?
+  order       Int      @default(0)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model PageSection {
+  id        String          @id @default(uuid())
+  type      PageSectionType @unique
+  label     String
+  isEnabled Boolean         @default(true)
+  order     Int             @default(0)
+  updatedAt DateTime        @updatedAt
+}
+
+model Media {
+  id         String   @id @default(uuid())
+  url        String
+  publicId   String   @unique
+  filename   String
+  mimeType   String
+  size       Int
+  uploadedAt DateTime @default(now())
+}

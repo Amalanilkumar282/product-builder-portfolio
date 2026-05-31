@@ -1,10 +1,12 @@
 import {
+  IsArray,
   IsBoolean,
   IsOptional,
   IsString,
   Length,
   Matches,
 } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UpdateServiceDto {
   @IsOptional()
@@ -42,4 +44,10 @@ export class UpdateServiceDto {
   @IsOptional()
   @IsBoolean()
   isPublished?: boolean;
+
+  @ApiPropertyOptional({ type: [String], description: 'Array of tag IDs' })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  tagIds?: string[];
 }
