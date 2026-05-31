@@ -1,77 +1,88 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-// @ts-ignore - allow side-effect css import without type declarations
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Inter, Plus_Jakarta_Sans, Geist_Mono } from 'next/font/google';
+import './globals.css';
+import ThemeProvider from '@/components/layout/ThemeProvider';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import { fetchProfile } from '@/lib/api';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const inter = Inter({
+  variable: '--font-inter',
+  subsets: ['latin'],
+  display: 'swap',
+});
+
+const plusJakarta = Plus_Jakarta_Sans({
+  variable: '--font-plus-jakarta',
+  subsets: ['latin'],
+  display: 'swap',
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
+  display: 'swap',
 });
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3001';
+const ownerName = 'Amal Anilkumar';
 
 export const metadata: Metadata = {
   title: {
-    default: "Product Builder Portfolio",
-    template: "%s | Product Builder Portfolio",
+    default: `${ownerName} — Software Engineer`,
+    template: `%s | ${ownerName}`,
   },
-  description: "Professional product builder portfolio showcasing innovative projects and services",
-  keywords: ["product builder",
-  "freelance product builder",
-  "freelance developer",
-  "full stack developer",
-  "website development",
-  "admin panel development",
-  "portfolio",],
-  authors: [{ name: "Product Builder" }],
-  creator: "Product Builder",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+  description:
+    'Passionate full-stack software engineer building scalable web products and systems.',
+  keywords: [
+    'software engineer',
+    'full stack developer',
+    'product builder',
+    'Next.js',
+    'NestJS',
+    'TypeScript',
+    'portfolio',
+  ],
+  authors: [{ name: ownerName }],
+  creator: ownerName,
+  metadataBase: new URL(siteUrl),
   openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: "/",
-    title: "Product Builder Portfolio",
-    description: "Professional product builder portfolio showcasing innovative projects and services",
-    siteName: "Product Builder Portfolio",
+    type: 'website',
+    locale: 'en_US',
+    url: '/',
+    title: `${ownerName} — Software Engineer`,
+    description:
+      'Passionate full-stack software engineer building scalable web products and systems.',
+    siteName: ownerName,
   },
   twitter: {
-    card: "summary_large_image",
-    title: "Product Builder Portfolio",
-    description: "Professional product builder portfolio showcasing innovative projects and services",
+    card: 'summary_large_image',
+    title: `${ownerName} — Software Engineer`,
+    description:
+      'Passionate full-stack software engineer building scalable web products and systems.',
   },
   robots: {
     index: true,
     follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
-  verification: {
-    // Add your verification tokens here when ready
-    // google: "your-google-verification-code",
-    // yandex: "your-yandex-verification-code",
+    googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },
   },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const profile = await fetchProfile();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.variable} ${plusJakarta.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <ThemeProvider>
+          <Navbar ownerName={profile?.name ?? ownerName} />
+          <main>{children}</main>
+          <Footer profile={profile} />
+        </ThemeProvider>
       </body>
     </html>
   );
 }
+
