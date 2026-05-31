@@ -1,49 +1,110 @@
+import type {
+  Profile,
+  Service,
+  Project,
+  Skill,
+  Experience,
+  Education,
+  Testimonial,
+  TechStack,
+  BlogPost,
+  PageSection,
+  ContactPayload,
+} from './types';
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 
-// ---------- SERVICES ----------
-
-export async function fetchServices() {
-  const res = await fetch(`${API_URL}/services`, {
-    next: { revalidate: 60 },
-  });
-
-  if (!res.ok) {
-    throw new Error('Failed to fetch services');
-  }
-
-  return res.json();
-}
-
-export async function fetchService(slug: string) {
-  const res = await fetch(`${API_URL}/services/${slug}`);
-
-  if (!res.ok) {
+async function safeFetch<T>(url: string, options?: RequestInit): Promise<T | null> {
+  try {
+    const res = await fetch(url, options);
+    if (!res.ok) return null;
+    return res.json() as Promise<T>;
+  } catch {
     return null;
   }
-
-  return res.json();
 }
 
-// ---------- PROJECTS ----------
+// ─── Profile ───────────────────────────────────────────
+export function fetchProfile(): Promise<Profile | null> {
+  return safeFetch<Profile>(`${API_URL}/profile`, { next: { revalidate: 300 } });
+}
 
-export async function fetchProjects() {
-  const res = await fetch(`${API_URL}/projects`, {
-    next: { revalidate: 60 },
+// ─── Services ──────────────────────────────────────────
+export async function fetchServices(): Promise<Service[]> {
+  return (await safeFetch<Service[]>(`${API_URL}/services`, { next: { revalidate: 60 } })) ?? [];
+}
+
+export function fetchService(slug: string): Promise<Service | null> {
+  return safeFetch<Service>(`${API_URL}/services/${slug}`, { next: { revalidate: 60 } });
+}
+
+// ─── Projects ──────────────────────────────────────────
+export async function fetchProjects(): Promise<Project[]> {
+  return (await safeFetch<Project[]>(`${API_URL}/projects`, { next: { revalidate: 60 } })) ?? [];
+}
+
+export function fetchProject(slug: string): Promise<Project | null> {
+  return safeFetch<Project>(`${API_URL}/projects/${slug}`, { next: { revalidate: 60 } });
+}
+
+// ─── Skills ────────────────────────────────────────────
+export async function fetchSkills(): Promise<Skill[]> {
+  return (await safeFetch<Skill[]>(`${API_URL}/skills`, { next: { revalidate: 300 } })) ?? [];
+}
+
+// ─── Experience ────────────────────────────────────────
+export async function fetchExperience(): Promise<Experience[]> {
+  return (await safeFetch<Experience[]>(`${API_URL}/experience`, { next: { revalidate: 300 } })) ?? [];
+}
+
+// ─── Education ─────────────────────────────────────────
+export async function fetchEducation(): Promise<Education[]> {
+  return (await safeFetch<Education[]>(`${API_URL}/education`, { next: { revalidate: 300 } })) ?? [];
+}
+
+// ─── Testimonials ──────────────────────────────────────
+export async function fetchTestimonials(): Promise<Testimonial[]> {
+  return (await safeFetch<Testimonial[]>(`${API_URL}/testimonials`, { next: { revalidate: 300 } })) ?? [];
+}
+
+// ─── Tech Stack ────────────────────────────────────────
+export async function fetchTechStack(): Promise<TechStack[]> {
+  return (await safeFetch<TechStack[]>(`${API_URL}/tech-stack`, { next: { revalidate: 300 } })) ?? [];
+}
+
+// ─── Blog ──────────────────────────────────────────────
+export async function fetchBlogPosts(): Promise<BlogPost[]> {
+  return (await safeFetch<BlogPost[]>(`${API_URL}/blog`, { next: { revalidate: 60 } })) ?? [];
+}
+
+export function fetchBlogPost(slug: string): Promise<BlogPost | null> {
+  return safeFetch<BlogPost>(`${API_URL}/blog/${slug}`, { next: { revalidate: 60 } });
+}
+
+// ─── Contact ───────────────────────────────────────────
+export async function submitContact(data: ContactPayload): Promise<void> {
+  const res = await fetch(`${API_URL}/contact`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
   });
-
   if (!res.ok) {
-    throw new Error('Failed to fetch projects');
+    const body = await res.json().catch(() => ({}));
+    throw new Error((body as { message?: string }).message ?? 'Failed to send message');
   }
-
-  return res.json();
 }
 
-export async function fetchProject(slug: string) {
-  const res = await fetch(`${API_URL}/projects/${slug}`);
-
-  if (!res.ok) {
-    return null;
-  }
-
-  return res.json();
+// ─── Page Sections ─────────────────────────────────────
+export async function fetchPageSections(): Promise<PageSection[]> {
+  return (await safeFetch<PageSection[]>(`${API_URL}/page-sections`, { next: { revalidate: 60 } })) ?? [];
 }
+
+// ─── Search ────────────────────────────────────────────
+export function searchContent(query: string) {
+  return safeFetch<{ projects: Project[]; services: Service[]; blogPosts: BlogPost[] }>(
+    `${API_URL}/search?q=${encodeURIComponent(query)}`,
+  );
+}
+
+
+
