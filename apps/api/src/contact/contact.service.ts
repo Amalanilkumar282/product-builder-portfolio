@@ -8,13 +8,18 @@ import { Resend } from 'resend';
 @Injectable()
 export class ContactService {
   private readonly logger = new Logger(ContactService.name);
-  private readonly resend: Resend;
+  private resend: Resend | null = null;
 
   constructor(
     private readonly prisma: PrismaService,
     private readonly config: ConfigService,
   ) {
-    this.resend = new Resend(this.config.get<string>('app.resend.apiKey'));
+    const apiKey = this.config.get<string>('app.resend.apiKey');
+    if (apiKey) {
+      this.resend = new Resend(apiKey);
+    } else {
+      this.logger.warn('RESEND_API_KEY not set — email notifications disabled');
+    }
   }
 
   async create(dto: CreateContactInquiryDto) {
@@ -37,7 +42,7 @@ export class ContactService {
     const fromEmail = this.config.get<string>('app.resend.fromEmail');
     const notifyEmail = this.config.get<string>('app.resend.notifyEmail');
 
-    if (!notifyEmail || !fromEmail) return;
+    if (!notifyEmail || !fromEmail || !this.resend) return;
 
     await this.resend.emails.send({
       from: fromEmail,
