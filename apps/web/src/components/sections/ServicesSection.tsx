@@ -17,9 +17,9 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
     <section id="services" className="max-w-7xl mx-auto px-6 py-24">
       <AnimatedSection>
         <SectionHeader
-          label="What I Offer"
+          label="What I Build For Clients"
           title="Services"
-          subtitle="End-to-end digital solutions tailored to your product goals."
+          subtitle="End-to-end digital products — from idea to production, built to last."
         />
       </AnimatedSection>
 

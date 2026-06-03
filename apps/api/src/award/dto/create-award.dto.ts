@@ -1,7 +1,5 @@
 import {
   IsBoolean,
-  IsDateString,
-  IsEnum,
   IsInt,
   IsOptional,
   IsString,
@@ -11,47 +9,38 @@ import {
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { ExperienceType } from '@prisma/client';
 
-export class CreateExperienceDto {
+export class CreateAwardDto {
   @ApiProperty()
   @IsString()
-  @Length(1, 120)
-  company: string;
-
-  @ApiProperty()
-  @IsString()
-  @Length(1, 120)
-  role: string;
+  @Length(1, 200)
+  title: string;
 
   @ApiProperty()
   @IsString()
-  @Length(10, 2000)
-  description: string;
-
-  @ApiProperty()
-  @IsDateString()
-  startDate: string;
+  @Length(1, 200)
+  issuer: string;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsDateString()
-  endDate?: string;
+  @IsString()
+  description?: string;
 
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsBoolean()
-  isPresent?: boolean;
+  @ApiProperty()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1900)
+  year: number;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsUrl()
-  logoUrl?: string;
+  iconUrl?: string;
 
-  @ApiPropertyOptional({ enum: ExperienceType })
+  @ApiPropertyOptional()
   @IsOptional()
-  @IsEnum(ExperienceType)
-  experienceType?: ExperienceType;
+  @IsUrl()
+  url?: string;
 
   @ApiPropertyOptional()
   @IsOptional()

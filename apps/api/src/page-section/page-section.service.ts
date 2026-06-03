@@ -12,9 +12,10 @@ const DEFAULT_SECTIONS: { type: PageSectionType; label: string; order: number }[
   { type: PageSectionType.EDUCATION, label: 'Education', order: 5 },
   { type: PageSectionType.TESTIMONIALS, label: 'Testimonials', order: 6 },
   { type: PageSectionType.TECH_STACK, label: 'Tech Stack', order: 7 },
-  { type: PageSectionType.BLOG, label: 'Blog', order: 8 },
-  { type: PageSectionType.ABOUT, label: 'About', order: 9 },
-  { type: PageSectionType.CONTACT, label: 'Contact', order: 10 },
+  { type: PageSectionType.ACHIEVEMENTS, label: 'Achievements', order: 8 },
+  { type: PageSectionType.BLOG, label: 'Blog', order: 9 },
+  { type: PageSectionType.ABOUT, label: 'About', order: 10 },
+  { type: PageSectionType.CONTACT, label: 'Contact', order: 11 },
 ];
 
 @Injectable()

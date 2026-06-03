@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowDown, Download, GitFork, Globe, X, Mail } from 'lucide-react';
+import { ArrowDown, Download, GitFork, ExternalLink, X, Mail } from 'lucide-react';
 import type { Profile, SocialLinks } from '@/lib/types';
 
 interface HeroSectionProps {
@@ -50,7 +50,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
           >
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium text-purple-300 border border-purple-500/30 bg-purple-500/10">
               <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-              Available for work
+              Available for Projects
             </span>
           </motion.div>
 
@@ -68,12 +68,21 @@ export default function HeroSection({ profile }: HeroSectionProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.2 }}
-            className="text-xl sm:text-2xl font-medium text-slate-400 mb-6"
+            className="text-xl sm:text-2xl font-medium text-slate-400 mb-2"
           >
-            {profile?.title ?? 'Software Engineer'}
+            {profile?.title ?? 'Full-Stack & Mobile Engineer'}
             {profile?.location && (
               <span className="text-base ml-3 text-slate-500">📍 {profile.location}</span>
             )}
+          </motion.p>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.25 }}
+            className="text-sm font-medium tracking-widest text-purple-400 uppercase mb-6"
+          >
+            Product Builder · Full-Stack Engineer · Problem Solver
           </motion.p>
 
           <motion.p
@@ -131,9 +140,9 @@ export default function HeroSection({ profile }: HeroSectionProps) {
                 <Mail size={15} /> {profile.email}
               </a>
             )}
-            {socials.GitFork && (
+            {socials.github && (
               <a
-                href={socials.GitFork}
+                href={socials.github}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 glass rounded-xl text-slate-400 hover:text-white hover:border-purple-500/30 transition-all"
@@ -148,7 +157,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
                 rel="noopener noreferrer"
                 className="p-2.5 glass rounded-xl text-slate-400 hover:text-white hover:border-blue-500/30 transition-all"
               >
-                <Globe size={18} />
+                <ExternalLink size={18} />
               </a>
             )}
             {socials.twitter && (
@@ -193,7 +202,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
               className="absolute -right-6 top-12 glass rounded-xl px-3 py-2 text-xs font-medium whitespace-nowrap shadow-lg"
             >
               <span className="text-green-400">● </span>
-              <span className="text-slate-300">Open to work</span>
+              <span className="text-slate-300">Available for Projects</span>
             </motion.div>
 
             {/* Floating badge 2 */}
@@ -202,8 +211,8 @@ export default function HeroSection({ profile }: HeroSectionProps) {
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
               className="absolute -left-6 bottom-16 glass rounded-xl px-3 py-2 text-xs font-medium whitespace-nowrap shadow-lg"
             >
-              <span className="text-blue-400">⚡ </span>
-              <span className="text-slate-300">Full-Stack Dev</span>
+              <span className="text-purple-400">⚡ </span>
+              <span className="text-slate-300">Product Builder</span>
             </motion.div>
           </div>
         </motion.div>

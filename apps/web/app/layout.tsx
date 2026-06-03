@@ -26,23 +26,27 @@ const geistMono = Geist_Mono({
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3001';
-const ownerName = 'Amal Anilkumar';
+const ownerName = 'Amal A';
+const ownerTitle = 'Full-Stack & Mobile Engineer';
 
 export const metadata: Metadata = {
   title: {
-    default: `${ownerName} — Software Engineer`,
+    default: `${ownerName} — Product Builder & Full-Stack Engineer`,
     template: `%s | ${ownerName}`,
   },
   description:
-    'Passionate full-stack software engineer building scalable web products and systems.',
+    'Full-stack and mobile engineer who builds complete, production-ready products — from web apps and mobile to enterprise tools and AI integrations.',
   keywords: [
-    'software engineer',
-    'full stack developer',
     'product builder',
-    'Next.js',
-    'NestJS',
-    'TypeScript',
-    'portfolio',
+    'full stack developer',
+    'mobile app developer',
+    'react native developer',
+    'Next.js developer',
+    'NestJS developer',
+    'software engineer Kerala',
+    'hire developer India',
+    'TypeScript developer',
+    'freelance developer',
   ],
   authors: [{ name: ownerName }],
   creator: ownerName,
@@ -51,18 +55,18 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: '/',
-    title: `${ownerName} — Software Engineer`,
+    title: `${ownerName} — Product Builder & Full-Stack Engineer`,
     description:
-      'Passionate full-stack software engineer building scalable web products and systems.',
+      'Full-stack and mobile engineer who builds complete, production-ready products — web apps, mobile, enterprise tools, and AI integrations.',
     siteName: ownerName,
-    images: [{ url: `${siteUrl}/og?title=${encodeURIComponent(ownerName + ' — Software Engineer')}&subtitle=${encodeURIComponent('Full-stack engineer passionate about scalable web products')}&type=page`, width: 1200, height: 630 }],
+    images: [{ url: `${siteUrl}/og?title=${encodeURIComponent(ownerName + ' — Product Builder')}&subtitle=${encodeURIComponent(ownerTitle)}&type=page`, width: 1200, height: 630 }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: `${ownerName} — Software Engineer`,
+    title: `${ownerName} — Product Builder & Full-Stack Engineer`,
     description:
-      'Passionate full-stack software engineer building scalable web products and systems.',
-    images: [`${siteUrl}/og?title=${encodeURIComponent(ownerName + ' — Software Engineer')}&type=page`],
+      'Full-stack and mobile engineer who builds complete, production-ready products.',
+    images: [`${siteUrl}/og?title=${encodeURIComponent(ownerName + ' — Product Builder')}&type=page`],
   },
   alternates: {
     canonical: '/',
@@ -87,7 +91,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body
         className={`${inter.variable} ${plusJakarta.variable} ${geistMono.variable} antialiased`}
       >
-        <JsonLd data={[buildWebSiteSchema(), buildPersonSchema({ name: profile?.name, bio: profile?.bio, email: profile?.email, avatarUrl: profile?.avatarUrl })]} />
+        <JsonLd data={[buildWebSiteSchema(), buildPersonSchema({ name: profile?.name, bio: profile?.bio, email: profile?.email, avatarUrl: profile?.avatarUrl, sameAs: ['https://github.com/Amalanilkumar282', 'https://www.linkedin.com/in/amal-a-99360b31b/'] })]} />
         <ThemeProvider>
           <Navbar ownerName={profile?.name ?? ownerName} />
           <main>{children}</main>

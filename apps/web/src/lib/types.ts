@@ -4,6 +4,8 @@ export interface Tag {
   slug: string;
 }
 
+export type ExperienceType = 'WORK' | 'INTERNSHIP' | 'FREELANCE' | 'LEADERSHIP';
+
 export interface Profile {
   id: string;
   name: string;
@@ -11,6 +13,7 @@ export interface Profile {
   bio: string;
   headline?: string;
   email: string;
+  alternateEmail?: string;
   location?: string;
   avatarUrl?: string;
   resumeUrl?: string;
@@ -76,6 +79,7 @@ export interface Experience {
   endDate?: string;
   isPresent: boolean;
   logoUrl?: string;
+  experienceType: ExperienceType;
   order: number;
   isPublished: boolean;
 }
@@ -145,4 +149,16 @@ export interface ContactPayload {
   phone?: string;
   subject: string;
   message: string;
+}
+
+export interface Award {
+  id: string;
+  title: string;
+  issuer: string;
+  description?: string;
+  year: number;
+  iconUrl?: string;
+  url?: string;
+  order: number;
+  isPublished: boolean;
 }

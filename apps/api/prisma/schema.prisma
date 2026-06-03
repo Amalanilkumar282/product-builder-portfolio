@@ -13,6 +13,13 @@ enum ContactStatus {
   REPLIED
 }
 
+enum ExperienceType {
+  WORK
+  INTERNSHIP
+  FREELANCE
+  LEADERSHIP
+}
+
 enum PageSectionType {
   HERO
   SERVICES
@@ -25,6 +32,7 @@ enum PageSectionType {
   BLOG
   CONTACT
   ABOUT
+  ACHIEVEMENTS
 }
 
 model Admin {
@@ -75,9 +83,10 @@ model Profile {
   headline    String
   avatarUrl   String?
   resumeUrl   String?
-  email       String
-  location    String?
-  socialLinks Json     @default("{}")
+  email          String
+  alternateEmail String?
+  location       String?
+  socialLinks    Json     @default("{}")
   isPublished Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -96,18 +105,19 @@ model Skill {
 }
 
 model Experience {
-  id          String    @id @default(uuid())
-  company     String
-  role        String
-  description String    @db.Text
-  startDate   DateTime
-  endDate     DateTime?
-  isPresent   Boolean   @default(false)
-  logoUrl     String?
-  order       Int       @default(0)
-  isPublished Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id             String         @id @default(uuid())
+  company        String
+  role           String
+  description    String         @db.Text
+  startDate      DateTime
+  endDate        DateTime?
+  isPresent      Boolean        @default(false)
+  logoUrl        String?
+  experienceType ExperienceType @default(WORK)
+  order          Int            @default(0)
+  isPublished    Boolean        @default(true)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 }
 
 model Education {
@@ -196,6 +206,20 @@ model PageSection {
   isEnabled Boolean         @default(true)
   order     Int             @default(0)
   updatedAt DateTime        @updatedAt
+}
+
+model Award {
+  id          String   @id @default(uuid())
+  title       String
+  issuer      String
+  description String?
+  year        Int
+  iconUrl     String?
+  url         String?
+  order       Int      @default(0)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Media {

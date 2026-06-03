@@ -36,6 +36,11 @@ export class UpdateProfileDto {
 
   @ApiPropertyOptional()
   @IsOptional()
+  @IsEmail()
+  alternateEmail?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
   @Length(2, 100)
   location?: string;
