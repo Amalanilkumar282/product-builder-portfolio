@@ -76,6 +76,14 @@ export default function ContactSection({ profile }: ContactSectionProps) {
                   >
                     {profile.email}
                   </a>
+                  {profile.alternateEmail && (
+                    <a
+                      href={`mailto:${profile.alternateEmail}`}
+                      className="block text-sm text-slate-400 hover:text-purple-400 transition-colors mt-0.5"
+                    >
+                      {profile.alternateEmail}
+                    </a>
+                  )}
                 </div>
               </GlassCard>
             )}

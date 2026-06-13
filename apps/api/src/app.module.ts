@@ -18,6 +18,7 @@ import { BlogModule } from './blog/blog.module';
 import { ContactModule } from './contact/contact.module';
 import { TechStackModule } from './tech-stack/tech-stack.module';
 import { PageSectionModule } from './page-section/page-section.module';
+import { AwardModule } from './award/award.module';
 import { UploadModule } from './upload/upload.module';
 import { SearchModule } from './search/search.module';
 import { HealthModule } from './health/health.module';
@@ -57,6 +58,7 @@ import appConfig from './config/app.config';
     ContactModule,
     TechStackModule,
     PageSectionModule,
+    AwardModule,
     UploadModule,
     SearchModule,
     HealthModule,

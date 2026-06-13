@@ -10,6 +10,7 @@ import type {
   BlogPost,
   PageSection,
   ContactPayload,
+  Award,
 } from './types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL!;
@@ -97,6 +98,11 @@ export async function submitContact(data: ContactPayload): Promise<void> {
 // ─── Page Sections ─────────────────────────────────────
 export async function fetchPageSections(): Promise<PageSection[]> {
   return (await safeFetch<PageSection[]>(`${API_URL}/page-sections`, { next: { revalidate: 60 } })) ?? [];
+}
+
+// ─── Awards ────────────────────────────────────────────
+export async function fetchAwards(): Promise<Award[]> {
+  return (await safeFetch<Award[]>(`${API_URL}/awards`, { next: { revalidate: 300 } })) ?? [];
 }
 
 // ─── Search ────────────────────────────────────────────
