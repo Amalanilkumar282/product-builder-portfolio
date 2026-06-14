@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { Mail, Send, GitFork, Globe, X, MapPin } from 'lucide-react';
@@ -253,3 +253,7 @@ export default function ContactSection({ profile }: ContactSectionProps) {
     </section>
   );
 }
+
+
+
+

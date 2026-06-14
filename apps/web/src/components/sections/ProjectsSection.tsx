@@ -1,4 +1,4 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, ExternalLink, GitFork } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
@@ -115,3 +115,5 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
     </section>
   );
 }
+
+

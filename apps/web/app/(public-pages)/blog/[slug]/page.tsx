@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -122,7 +122,7 @@ export default async function BlogPostPage({
         {/* Article content */}
         <AnimatedSection delay={0.1}>
           <div className="glass rounded-2xl p-8 md:p-10">
-            <div className="prose dark:prose-invert prose-slate max-w-none prose-headings:font-bold prose-a:text-accent prose-code:text-accent-muted prose-pre:bg-elevated prose-pre:border prose-pre:border-default">
+            <div className="prose dark:prose-invert prose-slate max-w-none prose-headings:font-bold prose-a:text-purple-400 prose-code:text-purple-300 prose-pre:bg-elevated prose-pre:border prose-pre:border-default">
               {post.content}
             </div>
           </div>
@@ -148,7 +148,7 @@ export default async function BlogPostPage({
                 )}
               </div>
               <div>
-                <p className="text-xs text-accent font-semibold tracking-widest uppercase mb-1">
+                <p className="text-xs text-purple-400 font-semibold tracking-widest uppercase mb-1">
                   About the author
                 </p>
                 <p className="text-primary font-semibold text-sm mb-1">
@@ -161,9 +161,9 @@ export default async function BlogPostPage({
                 <div className="flex items-center gap-4 mt-3">
                   <Link
                     href="/contact"
-                    className="text-xs text-accent hover:text-accent-muted transition-colors"
+                    className="text-xs text-purple-400 hover:text-purple-300 transition-colors"
                   >
-                    Work together →
+                    Work together â†’
                   </Link>
                   <Link
                     href="/blog"
@@ -180,3 +180,4 @@ export default async function BlogPostPage({
     </div>
   );
 }
+
