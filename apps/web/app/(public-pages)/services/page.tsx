@@ -49,7 +49,7 @@ export default async function ServicesPage() {
                   <h2 className="text-lg font-semibold text-primary mb-2">
                     <Link
                       href={`/services/${service.slug}`}
-                      className="hover:text-accent transition-colors"
+                      className="hover:text-purple-400 transition-colors"
                     >
                       {service.title}
                     </Link>
@@ -68,7 +68,7 @@ export default async function ServicesPage() {
                   )}
                   <Link
                     href={`/services/${service.slug}`}
-                    className="inline-flex items-center gap-1 text-xs text-accent hover:text-accent-muted transition-colors font-medium mt-auto"
+                    className="inline-flex items-center gap-1 text-xs text-purple-400 hover:text-purple-300 transition-colors font-medium mt-auto"
                   >
                     Learn more <ArrowRight size={12} />
                   </Link>

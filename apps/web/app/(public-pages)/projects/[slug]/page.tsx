@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -128,7 +128,7 @@ export default async function ProjectDetailPage({
         {/* Content */}
         <AnimatedSection delay={0.1}>
           <div className="glass rounded-2xl p-8 md:p-10">
-            <div className="prose dark:prose-invert prose-slate max-w-none prose-headings:font-bold prose-a:text-accent prose-a:no-underline hover:prose-a:underline prose-code:text-accent-muted prose-pre:bg-elevated prose-pre:border prose-pre:border-default">
+            <div className="prose dark:prose-invert prose-slate max-w-none prose-headings:font-bold prose-a:text-purple-400 prose-a:no-underline hover:prose-a:underline prose-code:text-purple-300 prose-pre:bg-elevated prose-pre:border prose-pre:border-default">
               {project.content}
             </div>
           </div>
@@ -137,4 +137,5 @@ export default async function ProjectDetailPage({
     </div>
   );
 }
+
 

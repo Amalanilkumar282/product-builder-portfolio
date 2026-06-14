@@ -69,7 +69,7 @@ export default async function BlogPage() {
                     )}
 
                     <Link href={`/blog/${post.slug}`}>
-                      <h2 className="text-base font-bold text-primary mb-2 hover:text-accent-muted transition-colors line-clamp-2">
+                      <h2 className="text-base font-bold text-primary mb-2 hover:text-purple-300 transition-colors line-clamp-2">
                         {post.title}
                       </h2>
                     </Link>

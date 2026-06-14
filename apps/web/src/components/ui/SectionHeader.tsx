@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+﻿import { cn } from '@/lib/utils';
 
 interface SectionHeaderProps {
   label?: string;
@@ -31,3 +31,4 @@ export default function SectionHeader({
     </div>
   );
 }
+
