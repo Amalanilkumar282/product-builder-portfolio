@@ -1,4 +1,4 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Clock, Calendar } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
@@ -57,7 +57,7 @@ export default function BlogSection({ posts }: BlogSectionProps) {
                 )}
 
                 <Link href={`/blog/${post.slug}`}>
-                  <h3 className="text-base font-semibold text-primary mb-2 hover:text-purple-300 transition-colors line-clamp-2">
+                  <h3 className="text-base font-semibold text-primary mb-2 hover:text-accent-muted transition-colors line-clamp-2">
                     {post.title}
                   </h3>
                 </Link>
@@ -86,7 +86,7 @@ export default function BlogSection({ posts }: BlogSectionProps) {
         <AnimatedSection className="mt-10 text-center">
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 glass px-6 py-3 rounded-xl text-secondary text-sm font-medium hover:border-purple-500/30 hover:text-primary transition-all"
+            className="inline-flex items-center gap-2 glass px-6 py-3 rounded-xl text-secondary text-sm font-medium hover:border-accent hover:text-primary transition-all"
           >
             View all articles <ArrowRight size={16} />
           </Link>
@@ -95,3 +95,4 @@ export default function BlogSection({ posts }: BlogSectionProps) {
     </section>
   );
 }
+

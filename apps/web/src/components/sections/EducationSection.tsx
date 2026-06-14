@@ -1,4 +1,4 @@
-import Image from 'next/image';
+﻿import Image from 'next/image';
 import { GraduationCap, Award } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
 import GlassCard from '@/components/ui/GlassCard';
@@ -50,7 +50,7 @@ export default function EducationSection({ education }: EducationSectionProps) {
                   </p>
                 </div>
               </div>
-              <p className="text-sm text-purple-300 font-medium mb-1">{edu.degree}</p>
+              <p className="text-sm text-accent-muted font-medium mb-1">{edu.degree}</p>
               <p className="text-xs text-secondary">{edu.field}</p>
             </GlassCard>
           </AnimatedSection>
@@ -66,9 +66,9 @@ export default function EducationSection({ education }: EducationSectionProps) {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {certifications.map((cert, i) => (
               <AnimatedSection key={cert.id} delay={i * 0.07}>
-                <div className="glass rounded-xl px-4 py-3.5 flex items-center gap-3 hover:border-purple-500/20 transition-all">
-                  <div className="w-8 h-8 rounded-lg bg-purple-500/15 border border-purple-500/20 flex items-center justify-center shrink-0">
-                    <Award size={14} className="text-purple-400" />
+                <div className="glass rounded-xl px-4 py-3.5 flex items-center gap-3 hover:border-accent transition-all">
+                  <div className="w-8 h-8 rounded-lg bg-accent-light border border-accent flex items-center justify-center shrink-0">
+                    <Award size={14} className="text-accent" />
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm font-medium text-primary truncate">{cert.field}</p>
@@ -83,4 +83,7 @@ export default function EducationSection({ education }: EducationSectionProps) {
     </section>
   );
 }
+
+
+
 

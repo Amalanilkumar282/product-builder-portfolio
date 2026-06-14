@@ -1,4 +1,4 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, ExternalLink, GitFork } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
@@ -29,7 +29,7 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
       <div className="grid md:grid-cols-2 gap-8">
         {projects.slice(0, 4).map((project, i) => (
           <AnimatedSection key={project.id} delay={i * 0.1}>
-            <div className="group relative rounded-2xl overflow-hidden glass hover:border-purple-500/30 hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 hover:-translate-y-1">
+            <div className="group relative rounded-2xl overflow-hidden glass hover:border-accent hover:shadow-xl hover:shadow-accent transition-all duration-300 hover:-translate-y-1">
               {/* Cover image */}
               <div className="relative h-52 overflow-hidden">
                 {project.coverImageUrl ? (
@@ -60,7 +60,7 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
                   ))}
                 </div>
 
-                <h3 className="text-xl font-bold text-primary mb-2 group-hover:text-purple-300 transition-colors">
+                <h3 className="text-xl font-bold text-primary mb-2 group-hover:text-accent-muted transition-colors">
                   <Link href={`/projects/${project.slug}`}>{project.title}</Link>
                 </h3>
 
@@ -71,7 +71,7 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
                 <div className="flex items-center gap-3">
                   <Link
                     href={`/projects/${project.slug}`}
-                    className="text-xs font-medium text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1"
+                    className="text-xs font-medium text-accent hover:text-accent-muted transition-colors flex items-center gap-1"
                   >
                     Case study <ArrowRight size={13} />
                   </Link>
@@ -106,7 +106,7 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
         <AnimatedSection className="mt-12 text-center">
           <Link
             href="/projects"
-            className="inline-flex items-center gap-2 glass px-6 py-3 rounded-xl text-secondary text-sm font-medium hover:border-purple-500/30 hover:text-primary transition-all"
+            className="inline-flex items-center gap-2 glass px-6 py-3 rounded-xl text-secondary text-sm font-medium hover:border-accent hover:text-primary transition-all"
           >
             View all projects <ArrowRight size={16} />
           </Link>
@@ -115,3 +115,5 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
     </section>
   );
 }
+
+

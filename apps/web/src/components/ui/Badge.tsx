@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+﻿import { cn } from '@/lib/utils';
 
 interface BadgeProps {
   children: React.ReactNode;
@@ -8,9 +8,9 @@ interface BadgeProps {
 
 export default function Badge({ children, className = '', variant = 'purple' }: BadgeProps) {
   const variants = {
-    purple: 'bg-purple-500/10 text-purple-300 border-purple-500/20',
-    blue:   'bg-blue-500/10 text-blue-300 border-blue-500/20',
-    slate:  'bg-slate-500/10 text-secondary border-slate-500/20',
+    purple: 'bg-accent-light text-accent-muted border-accent',
+    blue:   'bg-blue-light text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-500/20',
+    slate:  'bg-slate-200 dark:bg-slate-500/10 text-secondary border-slate-300 dark:border-slate-500/20',
   };
 
   return (
@@ -25,3 +25,7 @@ export default function Badge({ children, className = '', variant = 'purple' }: 
     </span>
   );
 }
+
+
+
+

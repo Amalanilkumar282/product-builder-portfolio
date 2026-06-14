@@ -1,4 +1,4 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import { GitFork, Globe, X, Mail, Code2 } from 'lucide-react';
 import type { SocialLinks } from '@/lib/types';
 
@@ -77,7 +77,7 @@ export default function Footer({ profile }: FooterProps) {
             {email && (
               <a
                 href={`mailto:${email}`}
-                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-purple-500/30 transition-all"
+                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-accent transition-all"
                 aria-label="Email"
               >
                 <Mail size={18} />
@@ -88,7 +88,7 @@ export default function Footer({ profile }: FooterProps) {
                 href={socials.GitFork}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-purple-500/30 transition-all"
+                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-accent transition-all"
                 aria-label="GitFork"
               >
                 <GitFork size={18} />
@@ -99,7 +99,7 @@ export default function Footer({ profile }: FooterProps) {
                 href={socials.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-blue-500/30 transition-all"
+                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-blue-400 transition-all"
                 aria-label="LinkedIn"
               >
                 <Globe size={18} />
@@ -110,7 +110,7 @@ export default function Footer({ profile }: FooterProps) {
                 href={socials.twitter}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-sky-500/30 transition-all"
+                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-sky-400 transition-all"
                 aria-label="Twitter"
               >
                 <X size={18} />
@@ -119,7 +119,7 @@ export default function Footer({ profile }: FooterProps) {
           </div>
           {email && (
             <p className="text-sm text-muted">
-              <a href={`mailto:${email}`} className="hover:text-purple-400 transition-colors">
+              <a href={`mailto:${email}`} className="hover:text-accent transition-colors">
                 {email}
               </a>
             </p>
@@ -128,8 +128,10 @@ export default function Footer({ profile }: FooterProps) {
       </div>
 
       <div className="border-t border-default py-6 text-center text-xs text-muted">
-        © {year} {name}. Built with Next.js &amp; NestJS.
+        Â© {year} {name}. Built with Next.js &amp; NestJS.
       </div>
     </footer>
   );
 }
+
+

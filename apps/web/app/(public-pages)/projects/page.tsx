@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ExternalLink, GitFork, ArrowLeft } from 'lucide-react';
@@ -45,7 +45,7 @@ export default async function ProjectsPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {projects.map((project, i) => (
               <AnimatedSection key={project.id} delay={i * 0.07}>
-                <div className="group relative rounded-2xl overflow-hidden glass hover:border-purple-500/30 hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 hover:-translate-y-1 h-full flex flex-col">
+                <div className="group relative rounded-2xl overflow-hidden glass hover:border-accent hover:shadow-xl hover:shadow-accent transition-all duration-300 hover:-translate-y-1 h-full flex flex-col">
                   {/* Cover */}
                   <div className="relative h-44 overflow-hidden shrink-0">
                     {project.coverImageUrl ? (
@@ -89,7 +89,7 @@ export default async function ProjectsPage() {
                         href={`/projects/${project.slug}`}
                         className="text-xs font-medium text-purple-400 hover:text-purple-300 transition-colors"
                       >
-                        Read more →
+                        Read more â†’
                       </Link>
                       {project.demoUrl && (
                         <a
@@ -122,4 +122,5 @@ export default async function ProjectsPage() {
     </div>
   );
 }
+
 

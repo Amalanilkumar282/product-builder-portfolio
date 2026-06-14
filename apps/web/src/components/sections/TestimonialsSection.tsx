@@ -1,4 +1,4 @@
-import Image from 'next/image';
+﻿import Image from 'next/image';
 import { Star, Quote } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
 import GlassCard from '@/components/ui/GlassCard';
@@ -30,7 +30,7 @@ export default function TestimonialsSection({ testimonials }: TestimonialsSectio
           <AnimatedSection key={t.id} delay={i * 0.1}>
             <GlassCard className="h-full flex flex-col">
               {/* Quote icon */}
-              <Quote size={28} className="text-purple-500/40 mb-4 shrink-0" />
+              <Quote size={28} className="text-accent opacity-40 mb-4 shrink-0" />
 
               {/* Stars */}
               <div className="flex gap-1 mb-4">
@@ -76,3 +76,4 @@ export default function TestimonialsSection({ testimonials }: TestimonialsSectio
     </section>
   );
 }
+

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -79,7 +79,7 @@ export default function Navbar({ ownerName = 'Amal Anilkumar' }: NavbarProps) {
 
           <Link
             href="/#contact"
-            className="gradient-bg px-4 py-2 rounded-xl text-sm text-white font-semibold hover:opacity-90 transition-opacity shadow-lg shadow-purple-500/20"
+            className="gradient-bg px-4 py-2 rounded-xl text-sm text-white font-semibold hover:opacity-90 transition-opacity shadow-lg shadow-accent"
           >
             Hire Me
           </Link>
@@ -139,3 +139,4 @@ export default function Navbar({ ownerName = 'Amal Anilkumar' }: NavbarProps) {
     </header>
   );
 }
+

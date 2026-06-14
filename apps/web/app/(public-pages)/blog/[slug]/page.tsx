@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -114,7 +114,7 @@ export default async function BlogPostPage({
             )}
           </div>
 
-          <p className="text-secondary text-lg leading-relaxed mb-8 border-l-2 border-purple-500/50 pl-4">
+          <p className="text-secondary text-lg leading-relaxed mb-8 border-l-2 border-accent pl-4">
             {post.summary}
           </p>
         </AnimatedSection>
@@ -130,7 +130,7 @@ export default async function BlogPostPage({
 
         {/* About the author */}
         <AnimatedSection delay={0.2} className="mt-10">
-          <div className="glass rounded-2xl p-6 md:p-8 border border-purple-500/10">
+          <div className="glass rounded-2xl p-6 md:p-8 border border-accent">
             <div className="flex items-start gap-5">
               <div className="shrink-0">
                 {profile?.avatarUrl ? (
@@ -163,7 +163,7 @@ export default async function BlogPostPage({
                     href="/contact"
                     className="text-xs text-purple-400 hover:text-purple-300 transition-colors"
                   >
-                    Work together →
+                    Work together â†’
                   </Link>
                   <Link
                     href="/blog"
@@ -180,3 +180,4 @@ export default async function BlogPostPage({
     </div>
   );
 }
+

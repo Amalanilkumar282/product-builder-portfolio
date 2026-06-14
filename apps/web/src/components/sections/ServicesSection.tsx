@@ -1,4 +1,4 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import { ArrowRight, Layers } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
 import GlassCard from '@/components/ui/GlassCard';
@@ -19,7 +19,7 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
         <SectionHeader
           label="What I Build For Clients"
           title="Services"
-          subtitle="End-to-end digital products — from idea to production, built to last."
+          subtitle="End-to-end digital products â€” from idea to production, built to last."
         />
       </AnimatedSection>
 
@@ -33,7 +33,7 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
               <h3 className="text-lg font-semibold text-primary mb-2">
                 <Link
                   href={`/services/${service.slug}`}
-                  className="hover:text-purple-400 transition-colors"
+                  className="hover:text-accent transition-colors"
                 >
                   {service.title}
                 </Link>
@@ -59,7 +59,7 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
         <AnimatedSection className="mt-10 text-center">
           <Link
             href="/services"
-            className="inline-flex items-center gap-2 glass px-6 py-3 rounded-xl text-secondary text-sm font-medium hover:border-purple-500/30 hover:text-primary transition-all"
+            className="inline-flex items-center gap-2 glass px-6 py-3 rounded-xl text-secondary text-sm font-medium hover:border-accent hover:text-primary transition-all"
           >
             View all services <ArrowRight size={16} />
           </Link>
@@ -68,3 +68,4 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
     </section>
   );
 }
+

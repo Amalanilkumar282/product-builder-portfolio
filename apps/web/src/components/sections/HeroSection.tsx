@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -29,18 +29,18 @@ export default function HeroSection({ profile }: HeroSectionProps) {
       {/* Background: animated gradient orbs */}
       <div className="absolute inset-0 pointer-events-none select-none">
         <div
-          className="absolute top-[15%] left-[10%] w-[500px] h-[500px] rounded-full bg-purple-500/10 blur-[120px]"
+          className="absolute top-[15%] left-[10%] w-[500px] h-[500px] rounded-full bg-accent-light blur-[120px]"
           style={{ animation: 'float 8s ease-in-out infinite' }}
         />
         <div
-          className="absolute bottom-[10%] right-[8%] w-[450px] h-[450px] rounded-full bg-blue-500/10 blur-[120px]"
+          className="absolute bottom-[10%] right-[8%] w-[450px] h-[450px] rounded-full bg-blue-light blur-[120px]"
           style={{ animation: 'float 10s ease-in-out infinite reverse' }}
         />
         <div className="absolute inset-0 grid-bg opacity-40" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 w-full grid lg:grid-cols-2 gap-16 items-center py-20">
-        {/* ── Left: text ── */}
+        {/* â”€â”€ Left: text â”€â”€ */}
         <div>
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -48,8 +48,8 @@ export default function HeroSection({ profile }: HeroSectionProps) {
             transition={{ duration: 0.5 }}
             className="mb-6"
           >
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium text-purple-300 border border-purple-500/30 bg-purple-500/10">
-              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium text-accent-muted border border-accent bg-accent-light">
+              <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
               Available for Projects
             </span>
           </motion.div>
@@ -72,7 +72,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
           >
             {profile?.title ?? 'Full-Stack & Mobile Engineer'}
             {profile?.location && (
-              <span className="text-base ml-3 text-muted">📍 {profile.location}</span>
+              <span className="text-base ml-3 text-muted">ðŸ“ {profile.location}</span>
             )}
           </motion.p>
 
@@ -80,9 +80,9 @@ export default function HeroSection({ profile }: HeroSectionProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.25 }}
-            className="text-sm font-medium tracking-widest text-purple-400 uppercase mb-6"
+            className="text-sm font-medium tracking-widest text-accent uppercase mb-6"
           >
-            Product Builder · Full-Stack Engineer · Problem Solver
+            Product Builder Â· Full-Stack Engineer Â· Problem Solver
           </motion.p>
 
           <motion.p
@@ -104,13 +104,13 @@ export default function HeroSection({ profile }: HeroSectionProps) {
           >
             <Link
               href="#contact"
-              className="gradient-bg px-6 py-3 rounded-xl text-white font-semibold text-sm shadow-lg shadow-purple-500/25 hover:opacity-90 hover:-translate-y-0.5 transition-all"
+              className="gradient-bg px-6 py-3 rounded-xl text-white font-semibold text-sm shadow-lg shadow-accent hover:opacity-90 hover:-translate-y-0.5 transition-all"
             >
               Let&apos;s Work Together
             </Link>
             <Link
               href="#projects"
-              className="glass px-6 py-3 rounded-xl text-secondary font-semibold text-sm hover:border-purple-500/30 hover:text-primary hover:-translate-y-0.5 transition-all"
+              className="glass px-6 py-3 rounded-xl text-secondary font-semibold text-sm hover:border-accent hover:text-primary hover:-translate-y-0.5 transition-all"
             >
               View My Work
             </Link>
@@ -118,7 +118,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
               <a
                 href={profile.resumeUrl}
                 download
-                className="glass px-6 py-3 rounded-xl text-secondary font-semibold text-sm flex items-center gap-2 hover:border-purple-500/30 hover:text-primary hover:-translate-y-0.5 transition-all"
+                className="glass px-6 py-3 rounded-xl text-secondary font-semibold text-sm flex items-center gap-2 hover:border-accent hover:text-primary hover:-translate-y-0.5 transition-all"
               >
                 <Download size={15} /> Resume
               </a>
@@ -135,7 +135,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
             {profile?.email && (
               <a
                 href={`mailto:${profile.email}`}
-                className="flex items-center gap-2 glass px-4 py-2.5 rounded-xl text-secondary text-sm hover:text-primary hover:border-purple-500/30 transition-all"
+                className="flex items-center gap-2 glass px-4 py-2.5 rounded-xl text-secondary text-sm hover:text-primary hover:border-accent transition-all"
               >
                 <Mail size={15} /> {profile.email}
               </a>
@@ -145,7 +145,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
                 href={socials.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-purple-500/30 transition-all"
+                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-accent transition-all"
               >
                 <GitFork size={18} />
               </a>
@@ -155,7 +155,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
                 href={socials.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-blue-500/30 transition-all"
+                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-blue-400 transition-all"
               >
                 <ExternalLink size={18} />
               </a>
@@ -165,7 +165,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
                 href={socials.twitter}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-sky-500/30 transition-all"
+                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-sky-400 transition-all"
               >
                 <X size={18} />
               </a>
@@ -173,7 +173,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
           </motion.div>
         </div>
 
-        {/* ── Right: avatar ── */}
+        {/* â”€â”€ Right: avatar â”€â”€ */}
         <motion.div
           initial={{ opacity: 0, scale: 0.85 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -185,7 +185,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
             <div className="absolute -inset-4 gradient-bg rounded-full blur-3xl opacity-15" />
 
             {/* Avatar */}
-            <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-2 border-purple-500/30 glow-purple">
+            <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-2 border-accent glow-purple">
               {profile?.avatarUrl ? (
                 <Image src={profile.avatarUrl} alt={profile.name} fill className="object-cover" />
               ) : (
@@ -201,7 +201,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
               transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
               className="absolute -right-6 top-12 glass rounded-xl px-3 py-2 text-xs font-medium whitespace-nowrap shadow-lg"
             >
-              <span className="text-green-400">● </span>
+              <span className="text-success">â— </span>
               <span className="text-secondary">Available for Projects</span>
             </motion.div>
 
@@ -211,7 +211,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
               className="absolute -left-6 bottom-16 glass rounded-xl px-3 py-2 text-xs font-medium whitespace-nowrap shadow-lg"
             >
-              <span className="text-purple-400">⚡ </span>
+              <span className="text-accent">âš¡ </span>
               <span className="text-secondary">Product Builder</span>
             </motion.div>
           </div>
@@ -229,3 +229,6 @@ export default function HeroSection({ profile }: HeroSectionProps) {
     </section>
   );
 }
+
+
+

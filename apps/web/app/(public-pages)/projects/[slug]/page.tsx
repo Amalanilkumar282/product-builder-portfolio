@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -104,7 +104,7 @@ export default async function ProjectDetailPage({
                 href={project.demoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 gradient-bg px-5 py-2.5 rounded-xl text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-lg shadow-purple-500/20"
+                className="inline-flex items-center gap-2 gradient-bg px-5 py-2.5 rounded-xl text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-lg shadow-accent"
               >
                 <ExternalLink size={15} /> Live Demo
               </a>
@@ -114,7 +114,7 @@ export default async function ProjectDetailPage({
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 glass px-5 py-2.5 rounded-xl text-secondary text-sm font-semibold hover:border-purple-500/30 hover:text-primary transition-all"
+                className="inline-flex items-center gap-2 glass px-5 py-2.5 rounded-xl text-secondary text-sm font-semibold hover:border-accent hover:text-primary transition-all"
               >
                 <GitFork size={15} /> Source Code
               </a>
@@ -137,4 +137,5 @@ export default async function ProjectDetailPage({
     </div>
   );
 }
+
 

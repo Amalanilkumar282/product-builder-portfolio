@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, MessageSquare, HelpCircle } from 'lucide-react';
@@ -48,11 +48,11 @@ function buildServiceFaqs(service: {
     {
       question: 'How long does a typical project take?',
       answer:
-        'Timelines depend on scope. A focused feature or landing page typically takes 1–2 weeks; a full product build ranges from 4–12 weeks. I provide a detailed timeline estimate after the initial scoping call.',
+        'Timelines depend on scope. A focused feature or landing page typically takes 1â€“2 weeks; a full product build ranges from 4â€“12 weeks. I provide a detailed timeline estimate after the initial scoping call.',
     },
     {
       question: `What technologies do you use for ${service.title}?`,
-      answer: `I primarily work with ${techList}. I choose the right stack for your project's requirements — prioritising maintainability, performance, and your team's ability to take ownership after handover.`,
+      answer: `I primarily work with ${techList}. I choose the right stack for your project's requirements â€” prioritising maintainability, performance, and your team's ability to take ownership after handover.`,
     },
     {
       question: 'Do you offer ongoing support after launch?',
@@ -142,7 +142,7 @@ export default async function ServiceDetailPage({
 
         {/* CTA */}
         <AnimatedSection delay={0.2}>
-          <div className="glass rounded-2xl p-8 text-center border border-purple-500/20">
+          <div className="glass rounded-2xl p-8 text-center border border-accent">
             <div className="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center mx-auto mb-4">
               <MessageSquare size={20} className="text-white" />
             </div>
@@ -154,7 +154,7 @@ export default async function ServiceDetailPage({
             </p>
             <Link
               href="/#contact"
-              className="inline-flex items-center gap-2 gradient-bg px-6 py-3 rounded-xl text-white font-semibold text-sm hover:opacity-90 transition-opacity shadow-lg shadow-purple-500/20"
+              className="inline-flex items-center gap-2 gradient-bg px-6 py-3 rounded-xl text-white font-semibold text-sm hover:opacity-90 transition-opacity shadow-lg shadow-accent"
             >
               Get in touch
             </Link>
@@ -164,4 +164,6 @@ export default async function ServiceDetailPage({
     </div>
   );
 }
+
+
 

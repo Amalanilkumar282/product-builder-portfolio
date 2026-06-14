@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { Mail, Send, GitFork, Globe, X, MapPin } from 'lucide-react';
@@ -72,14 +72,14 @@ export default function ContactSection({ profile }: ContactSectionProps) {
                   <p className="text-xs text-muted uppercase tracking-wider mb-0.5">Email</p>
                   <a
                     href={`mailto:${profile.email}`}
-                    className="text-sm text-secondary hover:text-purple-400 transition-colors"
+                    className="text-sm text-secondary hover:text-accent transition-colors"
                   >
                     {profile.email}
                   </a>
                   {profile.alternateEmail && (
                     <a
                       href={`mailto:${profile.alternateEmail}`}
-                      className="block text-sm text-secondary hover:text-purple-400 transition-colors mt-0.5"
+                      className="block text-sm text-secondary hover:text-accent transition-colors mt-0.5"
                     >
                       {profile.alternateEmail}
                     </a>
@@ -109,7 +109,7 @@ export default function ContactSection({ profile }: ContactSectionProps) {
                   href={socials.GitFork}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 glass rounded-xl text-secondary hover:text-primary hover:border-purple-500/30 transition-all"
+                  className="p-3 glass rounded-xl text-secondary hover:text-primary hover:border-accent transition-all"
                 >
                   <GitFork size={20} />
                 </a>
@@ -119,7 +119,7 @@ export default function ContactSection({ profile }: ContactSectionProps) {
                   href={socials.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 glass rounded-xl text-secondary hover:text-primary hover:border-blue-500/30 transition-all"
+                  className="p-3 glass rounded-xl text-secondary hover:text-primary hover:border-blue-400 transition-all"
                 >
                   <Globe size={20} />
                 </a>
@@ -129,7 +129,7 @@ export default function ContactSection({ profile }: ContactSectionProps) {
                   href={socials.twitter}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 glass rounded-xl text-secondary hover:text-primary hover:border-sky-500/30 transition-all"
+                  className="p-3 glass rounded-xl text-secondary hover:text-primary hover:border-sky-400 transition-all"
                 >
                   <X size={20} />
                 </a>
@@ -152,7 +152,7 @@ export default function ContactSection({ profile }: ContactSectionProps) {
                 </p>
                 <button
                   onClick={() => setStatus('idle')}
-                  className="mt-6 text-sm text-purple-400 hover:text-purple-300 transition-colors"
+                  className="mt-6 text-sm text-accent hover:text-accent-muted transition-colors"
                 >
                   Send another message
                 </button>
@@ -169,7 +169,7 @@ export default function ContactSection({ profile }: ContactSectionProps) {
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
                       placeholder="John Doe"
-                      className="w-full glass rounded-xl px-4 py-3 text-sm text-primary placeholder-slate-600 focus:outline-none focus:border-purple-500/50 transition-colors"
+                      className="w-full glass rounded-xl px-4 py-3 text-sm text-primary placeholder-slate-600 focus:outline-none focus:border-accent transition-colors"
                     />
                   </div>
                   <div>
@@ -182,7 +182,7 @@ export default function ContactSection({ profile }: ContactSectionProps) {
                       value={form.email}
                       onChange={(e) => setForm({ ...form, email: e.target.value })}
                       placeholder="john@example.com"
-                      className="w-full glass rounded-xl px-4 py-3 text-sm text-primary placeholder-slate-600 focus:outline-none focus:border-purple-500/50 transition-colors"
+                      className="w-full glass rounded-xl px-4 py-3 text-sm text-primary placeholder-slate-600 focus:outline-none focus:border-accent transition-colors"
                     />
                   </div>
                 </div>
@@ -194,7 +194,7 @@ export default function ContactSection({ profile }: ContactSectionProps) {
                     value={form.phone}
                     onChange={(e) => setForm({ ...form, phone: e.target.value })}
                     placeholder="+1 (555) 000-0000"
-                    className="w-full glass rounded-xl px-4 py-3 text-sm text-primary placeholder-slate-600 focus:outline-none focus:border-purple-500/50 transition-colors"
+                    className="w-full glass rounded-xl px-4 py-3 text-sm text-primary placeholder-slate-600 focus:outline-none focus:border-accent transition-colors"
                   />
                 </div>
 
@@ -207,7 +207,7 @@ export default function ContactSection({ profile }: ContactSectionProps) {
                     value={form.subject}
                     onChange={(e) => setForm({ ...form, subject: e.target.value })}
                     placeholder="Project inquiry"
-                    className="w-full glass rounded-xl px-4 py-3 text-sm text-primary placeholder-slate-600 focus:outline-none focus:border-purple-500/50 transition-colors"
+                    className="w-full glass rounded-xl px-4 py-3 text-sm text-primary placeholder-slate-600 focus:outline-none focus:border-accent transition-colors"
                   />
                 </div>
 
@@ -221,18 +221,18 @@ export default function ContactSection({ profile }: ContactSectionProps) {
                     value={form.message}
                     onChange={(e) => setForm({ ...form, message: e.target.value })}
                     placeholder="Tell me about your project..."
-                    className="w-full glass rounded-xl px-4 py-3 text-sm text-primary placeholder-slate-600 focus:outline-none focus:border-purple-500/50 transition-colors resize-none"
+                    className="w-full glass rounded-xl px-4 py-3 text-sm text-primary placeholder-slate-600 focus:outline-none focus:border-accent transition-colors resize-none"
                   />
                 </div>
 
                 {status === 'error' && (
-                  <p className="text-red-400 text-xs">{errorMsg}</p>
+                  <p className="text-red-600 dark:text-red-400 text-xs">{errorMsg}</p>
                 )}
 
                 <button
                   type="submit"
                   disabled={status === 'loading'}
-                  className="w-full gradient-bg py-3 rounded-xl text-white font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-90 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-purple-500/20"
+                  className="w-full gradient-bg py-3 rounded-xl text-white font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-90 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-accent"
                 >
                   {status === 'loading' ? (
                     <>
@@ -253,3 +253,7 @@ export default function ContactSection({ profile }: ContactSectionProps) {
     </section>
   );
 }
+
+
+
+

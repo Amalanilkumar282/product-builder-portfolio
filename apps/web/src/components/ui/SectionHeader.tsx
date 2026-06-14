@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+﻿import { cn } from '@/lib/utils';
 
 interface SectionHeaderProps {
   label?: string;
@@ -18,7 +18,7 @@ export default function SectionHeader({
   return (
     <div className={cn('mb-14', centered && 'text-center', className)}>
       {label && (
-        <span className="inline-block text-xs font-semibold tracking-[0.2em] uppercase text-purple-400 mb-3">
+        <span className="inline-block text-xs font-semibold tracking-[0.2em] uppercase text-accent mb-3">
           {label}
         </span>
       )}
@@ -31,3 +31,4 @@ export default function SectionHeader({
     </div>
   );
 }
+
