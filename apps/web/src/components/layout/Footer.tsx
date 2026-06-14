@@ -128,7 +128,7 @@ export default function Footer({ profile }: FooterProps) {
       </div>
 
       <div className="border-t border-default py-6 text-center text-xs text-muted">
-        Â© {year} {name}. Built with Next.js &amp; NestJS.
+        © {year} {name}. Built with Next.js & NestJS.
       </div>
     </footer>
   );

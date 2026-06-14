@@ -86,7 +86,7 @@ export default function LoginPage() {
                   type={showPassword ? 'text' : 'password'}
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                  placeholder="••••••••"
                   className="w-full glass rounded-xl pl-10 pr-12 py-3 text-sm text-primary placeholder-slate-600 focus:outline-none focus:border-accent transition-colors"
                   autoComplete="current-password"
                 />

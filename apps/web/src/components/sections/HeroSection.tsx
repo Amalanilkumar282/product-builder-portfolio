@@ -40,7 +40,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 w-full grid lg:grid-cols-2 gap-16 items-center py-20">
-        {/* â”€â”€ Left: text â”€â”€ */}
+        {/* —— Left: text —— */}
         <div>
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -72,7 +72,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
           >
             {profile?.title ?? 'Full-Stack & Mobile Engineer'}
             {profile?.location && (
-              <span className="text-base ml-3 text-muted">ðŸ“ {profile.location}</span>
+              <span className="text-base ml-3 text-muted">📍 {profile.location}</span>
             )}
           </motion.p>
 
@@ -82,7 +82,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
             transition={{ duration: 0.55, delay: 0.25 }}
             className="text-sm font-medium tracking-widest text-accent uppercase mb-6"
           >
-            Product Builder Â· Full-Stack Engineer Â· Problem Solver
+            Product Builder · Full-Stack Engineer · Problem Solver
           </motion.p>
 
           <motion.p
@@ -173,7 +173,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
           </motion.div>
         </div>
 
-        {/* â”€â”€ Right: avatar â”€â”€ */}
+        {/* —— Right: avatar —— */}
         <motion.div
           initial={{ opacity: 0, scale: 0.85 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -201,7 +201,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
               transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
               className="absolute -right-6 top-12 glass rounded-xl px-3 py-2 text-xs font-medium whitespace-nowrap shadow-lg"
             >
-              <span className="text-success">â— </span>
+              <span className="text-success">• </span>
               <span className="text-secondary">Available for Projects</span>
             </motion.div>
 
@@ -211,7 +211,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
               className="absolute -left-6 bottom-16 glass rounded-xl px-3 py-2 text-xs font-medium whitespace-nowrap shadow-lg"
             >
-              <span className="text-accent">âš¡ </span>
+              <span className="text-accent">⚡ </span>
               <span className="text-secondary">Product Builder</span>
             </motion.div>
           </div>

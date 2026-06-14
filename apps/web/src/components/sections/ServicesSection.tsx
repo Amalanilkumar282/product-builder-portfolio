@@ -19,7 +19,7 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
         <SectionHeader
           label="What I Build For Clients"
           title="Services"
-          subtitle="End-to-end digital products â€” from idea to production, built to last."
+          subtitle="End-to-end digital products — from idea to production, built to last."
         />
       </AnimatedSection>
 
