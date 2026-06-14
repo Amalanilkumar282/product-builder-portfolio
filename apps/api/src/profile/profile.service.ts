@@ -18,7 +18,9 @@ export class ProfileService {
       return this.prisma.profile.update({ where: { id: existing.id }, data });
     }
 
-    return this.prisma.profile.create({ data: { ...data, socialLinks: data.socialLinks ?? {} } });
+    return this.prisma.profile.create({
+      data: { ...data, socialLinks: data.socialLinks ?? {} },
+    });
   }
 
   async findPublished() {

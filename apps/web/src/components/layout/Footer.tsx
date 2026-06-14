@@ -1,6 +1,24 @@
 ﻿import Link from 'next/link';
-import { GitFork, Globe, X, Mail, Code2 } from 'lucide-react';
+import { GitFork, Globe, X, Mail, Code2, Phone, MessageCircle } from 'lucide-react';
 import type { SocialLinks } from '@/lib/types';
+
+const DEFAULT_CONTACT_PHONE = process.env.NEXT_PUBLIC_CONTACT_PHONE ?? '+917594919014';
+const DEFAULT_CONTACT_PHONE_RAW = process.env.NEXT_PUBLIC_CONTACT_PHONE ?? '917594919014';
+
+function getContactPhone(): { display: string; raw: string } {
+  const raw = DEFAULT_CONTACT_PHONE_RAW.replace(/[^0-9]/g, '');
+  if (raw.length === 10 && !DEFAULT_CONTACT_PHONE.startsWith('91')) {
+    return { display: `+91 ${raw}`, raw: `91${raw}` };
+  }
+  return {
+    display: DEFAULT_CONTACT_PHONE.startsWith('+') ? DEFAULT_CONTACT_PHONE : `+${raw}`,
+    raw: raw.startsWith('91') ? raw : `91${raw}`,
+  };
+}
+
+const phoneRaw = getContactPhone().raw;
+const waUrl = `https://wa.me/${phoneRaw}`;
+const telUrl = `tel:+${phoneRaw}`;
 
 const quickLinks = [
   { href: '/#services', label: 'Services' },
@@ -83,6 +101,22 @@ export default function Footer({ profile }: FooterProps) {
                 <Mail size={18} />
               </a>
             )}
+            <a
+              href={waUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2.5 glass rounded-xl text-secondary hover:text-green-500 hover:border-green-400 transition-all"
+              aria-label="WhatsApp"
+            >
+              <MessageCircle size={18} />
+            </a>
+            <a
+              href={telUrl}
+              className="p-2.5 glass rounded-xl text-secondary hover:text-accent hover:border-accent transition-all"
+              aria-label="Call"
+            >
+              <Phone size={18} />
+            </a>
             {socials.GitFork && (
               <a
                 href={socials.GitFork}

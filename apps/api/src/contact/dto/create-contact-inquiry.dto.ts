@@ -20,7 +20,9 @@ export class CreateContactInquiryDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  @Matches(/^\+?[0-9\s\-().]{7,20}$/, { message: 'Invalid phone number format' })
+  @Matches(/^\+?[0-9\s\-().]{7,20}$/, {
+    message: 'Invalid phone number format',
+  })
   phone?: string;
 
   @ApiProperty()

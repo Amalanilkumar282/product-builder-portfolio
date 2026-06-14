@@ -14,7 +14,9 @@ async function bootstrap() {
   app.use(compression());
 
   // CORS — configured from environment
-  const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? 'http://localhost:3001')
+  const allowedOrigins = (
+    process.env.ALLOWED_ORIGINS ?? 'http://localhost:3001'
+  )
     .split(',')
     .map((o) => o.trim());
   app.enableCors({

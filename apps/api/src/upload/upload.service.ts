@@ -28,7 +28,8 @@ export class UploadService {
           unique_filename: true,
         },
         (error, result) => {
-          if (error || !result) return reject(error ?? new Error('Upload failed'));
+          if (error || !result)
+            return reject(error ?? new Error('Upload failed'));
           resolve(result);
         },
       );

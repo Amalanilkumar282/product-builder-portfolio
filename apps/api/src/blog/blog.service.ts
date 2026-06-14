@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateBlogPostDto } from './dto/create-blog-post.dto';
 import { UpdateBlogPostDto } from './dto/update-blog-post.dto';
@@ -10,14 +14,19 @@ export class BlogService {
   async create(dto: CreateBlogPostDto) {
     const { tagIds, publishedAt, ...rest } = dto;
 
-    const existing = await this.prisma.blogPost.findUnique({ where: { slug: rest.slug } });
-    if (existing) throw new BadRequestException('Blog post with this slug already exists');
+    const existing = await this.prisma.blogPost.findUnique({
+      where: { slug: rest.slug },
+    });
+    if (existing)
+      throw new BadRequestException('Blog post with this slug already exists');
 
     return this.prisma.blogPost.create({
       data: {
         ...rest,
         publishedAt: publishedAt ? new Date(publishedAt) : null,
-        tags: tagIds?.length ? { connect: tagIds.map((id) => ({ id })) } : undefined,
+        tags: tagIds?.length
+          ? { connect: tagIds.map((id) => ({ id })) }
+          : undefined,
       },
       include: { tags: true },
     });
@@ -45,9 +54,13 @@ export class BlogService {
     const { tagIds, publishedAt, ...rest } = dto;
 
     if (rest.slug) {
-      const existing = await this.prisma.blogPost.findUnique({ where: { slug: rest.slug } });
+      const existing = await this.prisma.blogPost.findUnique({
+        where: { slug: rest.slug },
+      });
       if (existing && existing.id !== id) {
-        throw new BadRequestException('Blog post with this slug already exists');
+        throw new BadRequestException(
+          'Blog post with this slug already exists',
+        );
       }
     }
 
@@ -55,10 +68,16 @@ export class BlogService {
       where: { id },
       data: {
         ...rest,
-        publishedAt: publishedAt !== undefined ? (publishedAt ? new Date(publishedAt) : null) : undefined,
-        tags: tagIds !== undefined
-          ? { set: tagIds.map((tagId) => ({ id: tagId })) }
-          : undefined,
+        publishedAt:
+          publishedAt !== undefined
+            ? publishedAt
+              ? new Date(publishedAt)
+              : null
+            : undefined,
+        tags:
+          tagIds !== undefined
+            ? { set: tagIds.map((tagId) => ({ id: tagId })) }
+            : undefined,
       },
       include: { tags: true },
     });

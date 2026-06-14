@@ -62,7 +62,8 @@ async function main() {
     data: {
       name: 'Amal A',
       title: 'Full-Stack & Mobile Engineer',
-      headline: 'Building scalable, client-ready products — from concept to deployment.',
+      headline:
+        'Building scalable, client-ready products — from concept to deployment.',
       bio: `Software Engineer with a vision to build a future where technology and nature thrive in harmony. Driven to contribute to sustainable innovation through continuous learning and impactful tech solutions.`,
       email: 'amalanilkumar282@gmail.com',
       alternateEmail: 'amalanilkumaredu@gmail.com',
@@ -271,7 +272,7 @@ async function main() {
       company: 'IEEE SB, SJCET',
       role: 'Publicity Coordinator',
       description:
-        'Drove awareness and engagement for IEEE student branch events through social media campaigns, campus outreach, and digital communications — growing event participation and the chapter\'s online presence.',
+        "Drove awareness and engagement for IEEE student branch events through social media campaigns, campus outreach, and digital communications — growing event participation and the chapter's online presence.",
       startDate: new Date('2024-05-01'),
       endDate: new Date('2025-04-30'),
       isPresent: false,
@@ -311,50 +312,165 @@ async function main() {
   console.log('⚡ Seeding skills...');
   const skillsData = [
     // Programming Languages
-    { name: 'JavaScript / TypeScript', category: 'Programming Languages', proficiency: 90, order: 0 },
-    { name: 'Python', category: 'Programming Languages', proficiency: 80, order: 1 },
-    { name: 'HTML / CSS', category: 'Programming Languages', proficiency: 88, order: 2 },
-    { name: 'SQL', category: 'Programming Languages', proficiency: 75, order: 3 },
-    { name: 'Java', category: 'Programming Languages', proficiency: 65, order: 4 },
+    {
+      name: 'JavaScript / TypeScript',
+      category: 'Programming Languages',
+      proficiency: 90,
+      order: 0,
+    },
+    {
+      name: 'Python',
+      category: 'Programming Languages',
+      proficiency: 80,
+      order: 1,
+    },
+    {
+      name: 'HTML / CSS',
+      category: 'Programming Languages',
+      proficiency: 88,
+      order: 2,
+    },
+    {
+      name: 'SQL',
+      category: 'Programming Languages',
+      proficiency: 75,
+      order: 3,
+    },
+    {
+      name: 'Java',
+      category: 'Programming Languages',
+      proficiency: 65,
+      order: 4,
+    },
     { name: 'C', category: 'Programming Languages', proficiency: 62, order: 5 },
     // Frontend
     { name: 'React.js', category: 'Frontend', proficiency: 90, order: 0 },
     { name: 'Next.js', category: 'Frontend', proficiency: 88, order: 1 },
     { name: 'Tailwind CSS', category: 'Frontend', proficiency: 85, order: 2 },
-    { name: 'Responsive Design', category: 'Frontend', proficiency: 87, order: 3 },
+    {
+      name: 'Responsive Design',
+      category: 'Frontend',
+      proficiency: 87,
+      order: 3,
+    },
     // Backend
     { name: 'NestJS', category: 'Backend', proficiency: 85, order: 0 },
-    { name: 'Node.js / Express', category: 'Backend', proficiency: 88, order: 1 },
+    {
+      name: 'Node.js / Express',
+      category: 'Backend',
+      proficiency: 88,
+      order: 1,
+    },
     { name: '.NET (C#)', category: 'Backend', proficiency: 68, order: 2 },
     { name: 'Flask', category: 'Backend', proficiency: 72, order: 3 },
     { name: 'REST API Design', category: 'Backend', proficiency: 88, order: 4 },
     // Mobile
-    { name: 'React Native (iOS & Android)', category: 'Mobile', proficiency: 82, order: 0 },
+    {
+      name: 'React Native (iOS & Android)',
+      category: 'Mobile',
+      proficiency: 82,
+      order: 0,
+    },
     // Database
     { name: 'PostgreSQL', category: 'Database', proficiency: 82, order: 0 },
     { name: 'MongoDB', category: 'Database', proficiency: 80, order: 1 },
     { name: 'Prisma ORM', category: 'Database', proficiency: 85, order: 2 },
-    { name: 'SQL Design & Optimisation', category: 'Database', proficiency: 75, order: 3 },
+    {
+      name: 'SQL Design & Optimisation',
+      category: 'Database',
+      proficiency: 75,
+      order: 3,
+    },
     // Cloud & DevOps
-    { name: 'Azure DevOps', category: 'Cloud & DevOps', proficiency: 70, order: 0 },
-    { name: 'Git / GitHub', category: 'Cloud & DevOps', proficiency: 90, order: 1 },
-    { name: 'Cloudinary', category: 'Cloud & DevOps', proficiency: 72, order: 2 },
+    {
+      name: 'Azure DevOps',
+      category: 'Cloud & DevOps',
+      proficiency: 70,
+      order: 0,
+    },
+    {
+      name: 'Git / GitHub',
+      category: 'Cloud & DevOps',
+      proficiency: 90,
+      order: 1,
+    },
+    {
+      name: 'Cloudinary',
+      category: 'Cloud & DevOps',
+      proficiency: 72,
+      order: 2,
+    },
     // Architecture & Patterns
-    { name: 'CQRS Architecture', category: 'Architecture & Patterns', proficiency: 75, order: 0 },
-    { name: 'RBAC (Role-Based Access)', category: 'Architecture & Patterns', proficiency: 82, order: 1 },
-    { name: 'MVC / Component Architecture', category: 'Architecture & Patterns', proficiency: 88, order: 2 },
-    { name: 'Agile / Scrum', category: 'Architecture & Patterns', proficiency: 78, order: 3 },
+    {
+      name: 'CQRS Architecture',
+      category: 'Architecture & Patterns',
+      proficiency: 75,
+      order: 0,
+    },
+    {
+      name: 'RBAC (Role-Based Access)',
+      category: 'Architecture & Patterns',
+      proficiency: 82,
+      order: 1,
+    },
+    {
+      name: 'MVC / Component Architecture',
+      category: 'Architecture & Patterns',
+      proficiency: 88,
+      order: 2,
+    },
+    {
+      name: 'Agile / Scrum',
+      category: 'Architecture & Patterns',
+      proficiency: 78,
+      order: 3,
+    },
     // AI / ML
     { name: 'Scikit-learn', category: 'AI / ML', proficiency: 70, order: 0 },
     { name: 'AutoML', category: 'AI / ML', proficiency: 65, order: 1 },
-    { name: 'Deep Learning (Intro)', category: 'AI / ML', proficiency: 55, order: 2 },
-    { name: 'AI Integration in Web Apps', category: 'AI / ML', proficiency: 68, order: 3 },
+    {
+      name: 'Deep Learning (Intro)',
+      category: 'AI / ML',
+      proficiency: 55,
+      order: 2,
+    },
+    {
+      name: 'AI Integration in Web Apps',
+      category: 'AI / ML',
+      proficiency: 68,
+      order: 3,
+    },
     // Soft Skills
-    { name: 'Team Leadership', category: 'Soft Skills', proficiency: 88, order: 0 },
-    { name: 'Problem Solving', category: 'Soft Skills', proficiency: 90, order: 1 },
-    { name: 'Communication', category: 'Soft Skills', proficiency: 85, order: 2 },
-    { name: 'Adaptability', category: 'Soft Skills', proficiency: 85, order: 3 },
-    { name: 'Attention to Detail', category: 'Soft Skills', proficiency: 84, order: 4 },
+    {
+      name: 'Team Leadership',
+      category: 'Soft Skills',
+      proficiency: 88,
+      order: 0,
+    },
+    {
+      name: 'Problem Solving',
+      category: 'Soft Skills',
+      proficiency: 90,
+      order: 1,
+    },
+    {
+      name: 'Communication',
+      category: 'Soft Skills',
+      proficiency: 85,
+      order: 2,
+    },
+    {
+      name: 'Adaptability',
+      category: 'Soft Skills',
+      proficiency: 85,
+      order: 3,
+    },
+    {
+      name: 'Attention to Detail',
+      category: 'Soft Skills',
+      proficiency: 84,
+      order: 4,
+    },
   ];
   await prisma.skill.createMany({ data: skillsData });
   console.log(`  → ${skillsData.length} skills created.\n`);
@@ -363,31 +479,121 @@ async function main() {
   console.log('🛠️  Seeding tech stack...');
   const techStackData = [
     // Frontend
-    { name: 'React.js', category: 'Frontend', url: 'https://react.dev/', order: 0 },
-    { name: 'Next.js', category: 'Frontend', url: 'https://nextjs.org/', order: 1 },
-    { name: 'TypeScript', category: 'Frontend', url: 'https://www.typescriptlang.org/', order: 2 },
-    { name: 'Tailwind CSS', category: 'Frontend', url: 'https://tailwindcss.com/', order: 3 },
+    {
+      name: 'React.js',
+      category: 'Frontend',
+      url: 'https://react.dev/',
+      order: 0,
+    },
+    {
+      name: 'Next.js',
+      category: 'Frontend',
+      url: 'https://nextjs.org/',
+      order: 1,
+    },
+    {
+      name: 'TypeScript',
+      category: 'Frontend',
+      url: 'https://www.typescriptlang.org/',
+      order: 2,
+    },
+    {
+      name: 'Tailwind CSS',
+      category: 'Frontend',
+      url: 'https://tailwindcss.com/',
+      order: 3,
+    },
     // Backend
-    { name: 'NestJS', category: 'Backend', url: 'https://nestjs.com/', order: 0 },
-    { name: 'Node.js', category: 'Backend', url: 'https://nodejs.org/', order: 1 },
-    { name: '.NET', category: 'Backend', url: 'https://dotnet.microsoft.com/', order: 2 },
-    { name: 'Flask', category: 'Backend', url: 'https://flask.palletsprojects.com/', order: 3 },
-    { name: 'Prisma ORM', category: 'Backend', url: 'https://www.prisma.io/', order: 4 },
+    {
+      name: 'NestJS',
+      category: 'Backend',
+      url: 'https://nestjs.com/',
+      order: 0,
+    },
+    {
+      name: 'Node.js',
+      category: 'Backend',
+      url: 'https://nodejs.org/',
+      order: 1,
+    },
+    {
+      name: '.NET',
+      category: 'Backend',
+      url: 'https://dotnet.microsoft.com/',
+      order: 2,
+    },
+    {
+      name: 'Flask',
+      category: 'Backend',
+      url: 'https://flask.palletsprojects.com/',
+      order: 3,
+    },
+    {
+      name: 'Prisma ORM',
+      category: 'Backend',
+      url: 'https://www.prisma.io/',
+      order: 4,
+    },
     // Mobile
-    { name: 'React Native', category: 'Mobile', url: 'https://reactnative.dev/', order: 0 },
+    {
+      name: 'React Native',
+      category: 'Mobile',
+      url: 'https://reactnative.dev/',
+      order: 0,
+    },
     // Database
-    { name: 'PostgreSQL', category: 'Database', url: 'https://www.postgresql.org/', order: 0 },
-    { name: 'Neon DB', category: 'Database', url: 'https://neon.tech/', order: 1 },
-    { name: 'MongoDB', category: 'Database', url: 'https://www.mongodb.com/', order: 2 },
+    {
+      name: 'PostgreSQL',
+      category: 'Database',
+      url: 'https://www.postgresql.org/',
+      order: 0,
+    },
+    {
+      name: 'Neon DB',
+      category: 'Database',
+      url: 'https://neon.tech/',
+      order: 1,
+    },
+    {
+      name: 'MongoDB',
+      category: 'Database',
+      url: 'https://www.mongodb.com/',
+      order: 2,
+    },
     // Cloud & DevOps
-    { name: 'Azure DevOps', category: 'Cloud & DevOps', url: 'https://azure.microsoft.com/en-us/products/devops', order: 0 },
-    { name: 'Cloudinary', category: 'Cloud & DevOps', url: 'https://cloudinary.com/', order: 1 },
-    { name: 'Git / GitHub', category: 'Cloud & DevOps', url: 'https://github.com/', order: 2 },
+    {
+      name: 'Azure DevOps',
+      category: 'Cloud & DevOps',
+      url: 'https://azure.microsoft.com/en-us/products/devops',
+      order: 0,
+    },
+    {
+      name: 'Cloudinary',
+      category: 'Cloud & DevOps',
+      url: 'https://cloudinary.com/',
+      order: 1,
+    },
+    {
+      name: 'Git / GitHub',
+      category: 'Cloud & DevOps',
+      url: 'https://github.com/',
+      order: 2,
+    },
     // Tools
     { name: 'Stripe', category: 'Tools', url: 'https://stripe.com/', order: 0 },
     { name: 'Resend', category: 'Tools', url: 'https://resend.com/', order: 1 },
-    { name: 'Jira', category: 'Tools', url: 'https://www.atlassian.com/software/jira', order: 2 },
-    { name: 'Postman', category: 'Tools', url: 'https://www.postman.com/', order: 3 },
+    {
+      name: 'Jira',
+      category: 'Tools',
+      url: 'https://www.atlassian.com/software/jira',
+      order: 2,
+    },
+    {
+      name: 'Postman',
+      category: 'Tools',
+      url: 'https://www.postman.com/',
+      order: 3,
+    },
   ];
   await prisma.techStack.createMany({ data: techStackData });
   console.log(`  → ${techStackData.length} tech stack items created.\n`);
@@ -432,7 +638,15 @@ Production deployments to cloud platforms with CI/CD pipelines, environment conf
       seoTitle: 'Full-Stack Web Development | Amal A',
       seoDescription:
         'End-to-end web application development with React, Next.js, NestJS, and PostgreSQL. Clean architecture. Production-ready.',
-      tagSlugs: ['react', 'nextjs', 'nodejs', 'nestjs', 'typescript', 'postgresql', 'full-stack'],
+      tagSlugs: [
+        'react',
+        'nextjs',
+        'nodejs',
+        'nestjs',
+        'typescript',
+        'postgresql',
+        'full-stack',
+      ],
     },
     {
       title: 'Mobile App Development',
@@ -689,7 +903,14 @@ Built on the **MERN Stack** (MongoDB, Express, React, Node.js) with:
       seoTitle: 'Collab-E — Event Management Platform | Amal A',
       seoDescription:
         'University event management web app with Stripe payments, AI recommendations, and multi-platform auth. Built with the MERN stack.',
-      tagSlugs: ['react', 'nodejs', 'mongodb', 'stripe', 'mern-stack', 'full-stack'],
+      tagSlugs: [
+        'react',
+        'nodejs',
+        'mongodb',
+        'stripe',
+        'mern-stack',
+        'full-stack',
+      ],
     },
     {
       title: 'Sharetable — Food Distribution Platform',

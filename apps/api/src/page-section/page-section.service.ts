@@ -3,7 +3,11 @@ import { PrismaService } from '../prisma/prisma.service';
 import { PageSectionType } from '@prisma/client';
 import { UpdatePageSectionDto } from './dto/update-page-section.dto';
 
-const DEFAULT_SECTIONS: { type: PageSectionType; label: string; order: number }[] = [
+const DEFAULT_SECTIONS: {
+  type: PageSectionType;
+  label: string;
+  order: number;
+}[] = [
   { type: PageSectionType.HERO, label: 'Hero', order: 0 },
   { type: PageSectionType.SERVICES, label: 'Services', order: 1 },
   { type: PageSectionType.PROJECTS, label: 'Projects', order: 2 },
@@ -45,7 +49,9 @@ export class PageSectionService implements OnModuleInit {
   }
 
   async update(type: PageSectionType, dto: UpdatePageSectionDto) {
-    const section = await this.prisma.pageSection.findUnique({ where: { type } });
+    const section = await this.prisma.pageSection.findUnique({
+      where: { type },
+    });
     if (!section) throw new NotFoundException('Page section not found');
     return this.prisma.pageSection.update({ where: { type }, data: dto });
   }

@@ -28,6 +28,10 @@ export default registerAs('app', () => ({
     notifyEmail: process.env.CONTACT_NOTIFY_EMAIL ?? '',
   },
 
+  contact: {
+    phone: process.env.CONTACT_PHONE ?? '',
+  },
+
   database: {
     url: process.env.DATABASE_URL ?? '',
   },

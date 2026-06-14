@@ -12,7 +12,9 @@ export class SkillService {
   }
 
   findAll() {
-    return this.prisma.skill.findMany({ orderBy: [{ category: 'asc' }, { order: 'asc' }] });
+    return this.prisma.skill.findMany({
+      orderBy: [{ category: 'asc' }, { order: 'asc' }],
+    });
   }
 
   async findOne(id: string) {

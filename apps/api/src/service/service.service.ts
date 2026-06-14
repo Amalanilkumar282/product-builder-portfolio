@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
@@ -10,13 +14,18 @@ export class ServiceService {
   async create(dto: CreateServiceDto) {
     const { tagIds, ...rest } = dto;
 
-    const existing = await this.prisma.service.findUnique({ where: { slug: rest.slug } });
-    if (existing) throw new BadRequestException('Service with this slug already exists');
+    const existing = await this.prisma.service.findUnique({
+      where: { slug: rest.slug },
+    });
+    if (existing)
+      throw new BadRequestException('Service with this slug already exists');
 
     return this.prisma.service.create({
       data: {
         ...rest,
-        tags: tagIds?.length ? { connect: tagIds.map((id) => ({ id })) } : undefined,
+        tags: tagIds?.length
+          ? { connect: tagIds.map((id) => ({ id })) }
+          : undefined,
       },
       include: { tags: true },
     });
@@ -43,7 +52,9 @@ export class ServiceService {
     await this.findOne(id);
 
     if (rest.slug) {
-      const existing = await this.prisma.service.findUnique({ where: { slug: rest.slug } });
+      const existing = await this.prisma.service.findUnique({
+        where: { slug: rest.slug },
+      });
       if (existing && existing.id !== id) {
         throw new BadRequestException('Service with this slug already exists');
       }
@@ -53,7 +64,10 @@ export class ServiceService {
       where: { id },
       data: {
         ...rest,
-        tags: tagIds !== undefined ? { set: tagIds.map((tagId) => ({ id: tagId })) } : undefined,
+        tags:
+          tagIds !== undefined
+            ? { set: tagIds.map((tagId) => ({ id: tagId })) }
+            : undefined,
       },
       include: { tags: true },
     });

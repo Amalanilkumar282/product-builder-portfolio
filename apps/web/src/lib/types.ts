@@ -14,10 +14,11 @@ export interface Profile {
   headline?: string;
   email: string;
   alternateEmail?: string;
+  phone?: string;
   location?: string;
   avatarUrl?: string;
   resumeUrl?: string;
-  socialLinks?: string; // JSON string: { github, linkedin, twitter, website }
+  socialLinks?: string;
   isPublished: boolean;
 }
 

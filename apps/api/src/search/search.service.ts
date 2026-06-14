@@ -21,7 +21,13 @@ export class SearchService {
     const [projects, services, blogPosts] = await Promise.all([
       this.prisma.project.findMany({
         where: { isPublished: true, ...searchFilter },
-        select: { id: true, title: true, slug: true, summary: true, coverImageUrl: true },
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          summary: true,
+          coverImageUrl: true,
+        },
         take: 5,
       }),
       this.prisma.service.findMany({
@@ -31,7 +37,13 @@ export class SearchService {
       }),
       this.prisma.blogPost.findMany({
         where: { isPublished: true, ...searchFilter },
-        select: { id: true, title: true, slug: true, summary: true, coverImageUrl: true },
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          summary: true,
+          coverImageUrl: true,
+        },
         take: 5,
       }),
     ]);
