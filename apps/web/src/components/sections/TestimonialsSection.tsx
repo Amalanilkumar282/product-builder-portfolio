@@ -1,4 +1,4 @@
-import Image from 'next/image';
+﻿import Image from 'next/image';
 import { Star, Quote } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
 import GlassCard from '@/components/ui/GlassCard';
@@ -30,7 +30,7 @@ export default function TestimonialsSection({ testimonials }: TestimonialsSectio
           <AnimatedSection key={t.id} delay={i * 0.1}>
             <GlassCard className="h-full flex flex-col">
               {/* Quote icon */}
-              <Quote size={28} className="text-purple-500/40 mb-4 shrink-0" />
+              <Quote size={28} className="text-accent opacity-40 mb-4 shrink-0" />
 
               {/* Stars */}
               <div className="flex gap-1 mb-4">
@@ -43,12 +43,12 @@ export default function TestimonialsSection({ testimonials }: TestimonialsSectio
                 ))}
               </div>
 
-              <p className="text-slate-400 text-sm leading-relaxed mb-6 flex-1">
+              <p className="text-secondary text-sm leading-relaxed mb-6 flex-1">
                 &ldquo;{t.content}&rdquo;
               </p>
 
               {/* Author */}
-              <div className="flex items-center gap-3 pt-4 border-t border-white/[0.05]">
+              <div className="flex items-center gap-3 pt-4 border-t border-default">
                 {t.avatarUrl ? (
                   <Image
                     src={t.avatarUrl}
@@ -63,8 +63,8 @@ export default function TestimonialsSection({ testimonials }: TestimonialsSectio
                   </div>
                 )}
                 <div>
-                  <p className="text-sm font-semibold text-slate-200">{t.name}</p>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-sm font-semibold text-primary">{t.name}</p>
+                  <p className="text-xs text-muted">
                     {t.role}, {t.company}
                   </p>
                 </div>
@@ -76,3 +76,4 @@ export default function TestimonialsSection({ testimonials }: TestimonialsSectio
     </section>
   );
 }
+

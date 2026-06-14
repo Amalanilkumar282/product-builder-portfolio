@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -45,55 +45,55 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center px-4">
       {/* Background orbs */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/3 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-accent-light rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/3 w-96 h-96 bg-blue-light rounded-full blur-3xl" />
       </div>
 
       <div className="relative w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="w-14 h-14 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-purple-500/30">
+          <div className="w-14 h-14 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-accent">
             <Code2 size={28} className="text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-slate-100">Admin Login</h1>
-          <p className="text-sm text-slate-500 mt-1">Sign in to manage your portfolio</p>
+          <h1 className="text-2xl font-bold text-primary">Admin Login</h1>
+          <p className="text-sm text-muted mt-1">Sign in to manage your portfolio</p>
         </div>
 
-        <div className="glass rounded-2xl p-8 border border-white/[0.08]">
+        <div className="glass rounded-2xl p-8 border border-default">
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-xs text-slate-400 mb-1.5 font-medium">Email</label>
+              <label className="block text-xs text-secondary mb-1.5 font-medium">Email</label>
               <div className="relative">
-                <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
                 <input
                   required
                   type="email"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   placeholder="admin@example.com"
-                  className="w-full glass rounded-xl pl-10 pr-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-purple-500/50 transition-colors"
+                  className="w-full glass rounded-xl pl-10 pr-4 py-3 text-sm text-primary placeholder-slate-600 focus:outline-none focus:border-accent transition-colors"
                   autoComplete="email"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs text-slate-400 mb-1.5 font-medium">Password</label>
+              <label className="block text-xs text-secondary mb-1.5 font-medium">Password</label>
               <div className="relative">
-                <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
                 <input
                   required
                   type={showPassword ? 'text' : 'password'}
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  placeholder="••••••••"
-                  className="w-full glass rounded-xl pl-10 pr-12 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-purple-500/50 transition-colors"
+                  placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                  className="w-full glass rounded-xl pl-10 pr-12 py-3 text-sm text-primary placeholder-slate-600 focus:outline-none focus:border-accent transition-colors"
                   autoComplete="current-password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted hover:text-secondary transition-colors"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -101,7 +101,7 @@ export default function LoginPage() {
             </div>
 
             {status === 'error' && (
-              <p className="text-red-400 text-xs bg-red-500/10 rounded-xl px-4 py-2.5">
+              <p className="text-red-600 dark:text-red-400 text-xs bg-red-100 dark:bg-red-500/10 rounded-xl px-4 py-2.5">
                 {errorMsg}
               </p>
             )}
@@ -109,7 +109,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={status === 'loading'}
-              className="w-full gradient-bg py-3 rounded-xl text-white font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-90 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-purple-500/20 mt-2"
+              className="w-full gradient-bg py-3 rounded-xl text-white font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-90 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-accent mt-2"
             >
               {status === 'loading' ? (
                 <>
@@ -126,3 +126,5 @@ export default function LoginPage() {
     </div>
   );
 }
+
+

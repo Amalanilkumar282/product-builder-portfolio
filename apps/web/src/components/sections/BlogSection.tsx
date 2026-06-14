@@ -1,4 +1,4 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Clock, Calendar } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
@@ -57,14 +57,14 @@ export default function BlogSection({ posts }: BlogSectionProps) {
                 )}
 
                 <Link href={`/blog/${post.slug}`}>
-                  <h3 className="text-base font-semibold text-slate-100 mb-2 hover:text-purple-300 transition-colors line-clamp-2">
+                  <h3 className="text-base font-semibold text-primary mb-2 hover:text-accent-muted transition-colors line-clamp-2">
                     {post.title}
                   </h3>
                 </Link>
 
-                <p className="text-sm text-slate-400 line-clamp-2 mb-4 flex-1">{post.summary}</p>
+                <p className="text-sm text-secondary line-clamp-2 mb-4 flex-1">{post.summary}</p>
 
-                <div className="flex items-center gap-4 text-xs text-slate-500 pt-3 border-t border-white/[0.05]">
+                <div className="flex items-center gap-4 text-xs text-muted pt-3 border-t border-default">
                   {post.publishedAt && (
                     <span className="flex items-center gap-1">
                       <Calendar size={12} /> {formatDate(post.publishedAt)}
@@ -86,7 +86,7 @@ export default function BlogSection({ posts }: BlogSectionProps) {
         <AnimatedSection className="mt-10 text-center">
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 glass px-6 py-3 rounded-xl text-slate-300 text-sm font-medium hover:border-purple-500/30 hover:text-white transition-all"
+            className="inline-flex items-center gap-2 glass px-6 py-3 rounded-xl text-secondary text-sm font-medium hover:border-accent hover:text-primary transition-all"
           >
             View all articles <ArrowRight size={16} />
           </Link>
@@ -95,3 +95,4 @@ export default function BlogSection({ posts }: BlogSectionProps) {
     </section>
   );
 }
+

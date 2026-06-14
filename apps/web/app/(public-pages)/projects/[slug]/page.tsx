@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -58,7 +58,7 @@ export default async function ProjectDetailPage({
         <AnimatedSection className="mb-8">
           <Link
             href="/projects"
-            className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-300 transition-colors group"
+            className="inline-flex items-center gap-2 text-sm text-muted hover:text-secondary transition-colors group"
           >
             <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
             All projects
@@ -92,11 +92,11 @@ export default async function ProjectDetailPage({
             </div>
           )}
 
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-100 mb-4 leading-tight">
+          <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4 leading-tight">
             {project.title}
           </h1>
 
-          <p className="text-slate-400 text-lg mb-6">{project.summary}</p>
+          <p className="text-secondary text-lg mb-6">{project.summary}</p>
 
           <div className="flex flex-wrap items-center gap-4 mb-8">
             {project.demoUrl && (
@@ -104,7 +104,7 @@ export default async function ProjectDetailPage({
                 href={project.demoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 gradient-bg px-5 py-2.5 rounded-xl text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-lg shadow-purple-500/20"
+                className="inline-flex items-center gap-2 gradient-bg px-5 py-2.5 rounded-xl text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-lg shadow-accent"
               >
                 <ExternalLink size={15} /> Live Demo
               </a>
@@ -114,12 +114,12 @@ export default async function ProjectDetailPage({
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 glass px-5 py-2.5 rounded-xl text-slate-300 text-sm font-semibold hover:border-purple-500/30 hover:text-white transition-all"
+                className="inline-flex items-center gap-2 glass px-5 py-2.5 rounded-xl text-secondary text-sm font-semibold hover:border-accent hover:text-primary transition-all"
               >
                 <GitFork size={15} /> Source Code
               </a>
             )}
-            <span className="flex items-center gap-1.5 text-xs text-slate-500 ml-auto">
+            <span className="flex items-center gap-1.5 text-xs text-muted ml-auto">
               <Calendar size={13} /> {formatDate(project.createdAt)}
             </span>
           </div>
@@ -128,7 +128,7 @@ export default async function ProjectDetailPage({
         {/* Content */}
         <AnimatedSection delay={0.1}>
           <div className="glass rounded-2xl p-8 md:p-10">
-            <div className="prose prose-invert prose-slate max-w-none prose-headings:font-bold prose-a:text-purple-400 prose-a:no-underline hover:prose-a:underline prose-code:text-purple-300 prose-pre:bg-slate-900 prose-pre:border prose-pre:border-white/10">
+            <div className="prose dark:prose-invert prose-slate max-w-none prose-headings:font-bold prose-a:text-purple-400 prose-a:no-underline hover:prose-a:underline prose-code:text-purple-300 prose-pre:bg-elevated prose-pre:border prose-pre:border-default">
               {project.content}
             </div>
           </div>
@@ -137,4 +137,5 @@ export default async function ProjectDetailPage({
     </div>
   );
 }
+
 

@@ -15,22 +15,22 @@ const TYPE_CONFIG: Record<
 > = {
   WORK: {
     label: 'Full-Time',
-    className: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25',
+    className: 'bg-emerald-100 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-500/25',
     Icon: Briefcase,
   },
   INTERNSHIP: {
     label: 'Internship',
-    className: 'bg-blue-500/15 text-blue-400 border border-blue-500/25',
+    className: 'bg-blue-100 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-300 dark:border-blue-500/25',
     Icon: GraduationCap,
   },
   FREELANCE: {
     label: 'Freelance',
-    className: 'bg-amber-500/15 text-amber-400 border border-amber-500/25',
+    className: 'bg-amber-100 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-300 dark:border-amber-500/25',
     Icon: Code2,
   },
   LEADERSHIP: {
     label: 'Leadership',
-    className: 'bg-purple-500/15 text-purple-400 border border-purple-500/25',
+    className: 'bg-accent-light text-accent border border-accent',
     Icon: Users,
   },
 };
@@ -54,7 +54,7 @@ export default function ExperienceSection({ experience }: ExperienceSectionProps
             <AnimatedSection key={exp.id} delay={i * 0.1} direction="left">
               <div className="relative pl-16 md:pl-20">
                 <div className="absolute left-3 md:left-5 top-5 w-5 h-5 rounded-full gradient-bg border-2 border-slate-950 glow-purple" />
-                <div className="glass rounded-2xl p-6 hover:border-purple-500/20 hover:shadow-lg hover:shadow-purple-500/5 transition-all">
+                <div className="glass rounded-2xl p-6 hover:border-accent hover:shadow-lg hover:shadow-accent transition-all">
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
                     <div className="flex items-center gap-3">
                       {exp.logoUrl ? (
@@ -72,7 +72,7 @@ export default function ExperienceSection({ experience }: ExperienceSectionProps
                       )}
                       <div>
                         <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className="text-base font-semibold text-slate-100">{exp.role}</h3>
+                          <h3 className="text-base font-semibold text-primary">{exp.role}</h3>
                           <span
                             className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${typeConfig.className}`}
                           >
@@ -80,15 +80,15 @@ export default function ExperienceSection({ experience }: ExperienceSectionProps
                             {typeConfig.label}
                           </span>
                         </div>
-                        <p className="text-sm text-purple-400">{exp.company}</p>
+                        <p className="text-sm text-accent">{exp.company}</p>
                       </div>
                     </div>
-                    <span className="flex items-center gap-1.5 text-xs text-slate-500 whitespace-nowrap shrink-0">
+                    <span className="flex items-center gap-1.5 text-xs text-muted whitespace-nowrap shrink-0">
                       <Calendar size={12} />
                       {formatDateRange(exp.startDate, exp.endDate, exp.isPresent)}
                     </span>
                   </div>
-                  <p className="text-sm text-slate-400 leading-relaxed">{exp.description}</p>
+                  <p className="text-sm text-secondary leading-relaxed">{exp.description}</p>
                 </div>
               </div>
             </AnimatedSection>
@@ -113,7 +113,7 @@ export default function ExperienceSection({ experience }: ExperienceSectionProps
       <div className="space-y-16">
         {professional.length > 0 && (
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-8 ml-1">
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-muted mb-8 ml-1">
               Professional
             </h3>
             {renderTimeline(professional)}
@@ -122,7 +122,7 @@ export default function ExperienceSection({ experience }: ExperienceSectionProps
 
         {leadership.length > 0 && (
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-8 ml-1">
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-muted mb-8 ml-1">
               Leadership &amp; Positions of Responsibility
             </h3>
             {renderTimeline(leadership)}
@@ -132,3 +132,6 @@ export default function ExperienceSection({ experience }: ExperienceSectionProps
     </section>
   );
 }
+
+
+

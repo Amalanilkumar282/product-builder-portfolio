@@ -21,7 +21,7 @@ export default async function ServicesPage() {
         <AnimatedSection className="mb-4">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-300 transition-colors mb-8 group"
+            className="inline-flex items-center gap-2 text-sm text-muted hover:text-secondary transition-colors mb-8 group"
           >
             <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
             Back home
@@ -37,7 +37,7 @@ export default async function ServicesPage() {
         </AnimatedSection>
 
         {services.length === 0 ? (
-          <div className="text-center py-20 text-slate-500">No services listed yet.</div>
+          <div className="text-center py-20 text-muted">No services listed yet.</div>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((service, i) => (
@@ -46,7 +46,7 @@ export default async function ServicesPage() {
                   <div className="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <Layers size={18} className="text-white" />
                   </div>
-                  <h2 className="text-lg font-semibold text-slate-100 mb-2">
+                  <h2 className="text-lg font-semibold text-primary mb-2">
                     <Link
                       href={`/services/${service.slug}`}
                       className="hover:text-purple-400 transition-colors"
@@ -54,7 +54,7 @@ export default async function ServicesPage() {
                       {service.title}
                     </Link>
                   </h2>
-                  <p className="text-slate-400 text-sm leading-relaxed mb-4 line-clamp-3">
+                  <p className="text-secondary text-sm leading-relaxed mb-4 line-clamp-3">
                     {service.description}
                   </p>
                   {service.tags?.length > 0 && (

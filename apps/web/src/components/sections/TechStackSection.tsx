@@ -1,4 +1,4 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import Image from 'next/image';
 import SectionHeader from '@/components/ui/SectionHeader';
 import AnimatedSection from '@/components/ui/AnimatedSection';
@@ -39,7 +39,7 @@ export default function TechStackSection({ techStack }: TechStackSectionProps) {
         {Object.entries(grouped).map(([category, items], i) => (
           <AnimatedSection key={category} delay={i * 0.08}>
             <div>
-              <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 mb-4">
+              <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-muted mb-4">
                 {category}
               </h3>
               <div className="flex flex-wrap gap-3">
@@ -50,7 +50,7 @@ export default function TechStackSection({ techStack }: TechStackSectionProps) {
                         href={tech.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 glass px-4 py-2.5 rounded-xl text-sm text-slate-300 font-medium hover:border-purple-500/30 hover:text-white hover:-translate-y-0.5 transition-all"
+                        className="flex items-center gap-2 glass px-4 py-2.5 rounded-xl text-sm text-secondary font-medium hover:border-accent hover:text-primary hover:-translate-y-0.5 transition-all"
                       >
                         {tech.iconUrl && (
                           <Image
@@ -64,7 +64,7 @@ export default function TechStackSection({ techStack }: TechStackSectionProps) {
                         {tech.name}
                       </Link>
                     ) : (
-                      <div className="flex items-center gap-2 glass px-4 py-2.5 rounded-xl text-sm text-slate-300 font-medium">
+                      <div className="flex items-center gap-2 glass px-4 py-2.5 rounded-xl text-sm text-secondary font-medium">
                         {tech.iconUrl && (
                           <Image
                             src={tech.iconUrl}
@@ -87,3 +87,4 @@ export default function TechStackSection({ techStack }: TechStackSectionProps) {
     </section>
   );
 }
+

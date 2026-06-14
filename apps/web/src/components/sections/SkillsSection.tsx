@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { motion } from 'framer-motion';
 import SectionHeader from '@/components/ui/SectionHeader';
@@ -39,16 +39,16 @@ export default function SkillsSection({ skills }: SkillsSectionProps) {
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {Object.entries(grouped).map(([category, categorySkills], i) => (
           <AnimatedSection key={category} delay={i * 0.1}>
-            <div className="glass rounded-2xl p-6 hover:border-purple-500/20 transition-all">
-              <h3 className="text-sm font-semibold uppercase tracking-widest text-purple-400 mb-5">
+            <div className="glass rounded-2xl p-6 hover:border-accent transition-all">
+              <h3 className="text-sm font-semibold uppercase tracking-widest text-accent mb-5">
                 {category}
               </h3>
               <div className="space-y-4">
                 {categorySkills.map((skill, j) => (
                   <div key={skill.id}>
                     <div className="flex justify-between text-sm mb-1.5">
-                      <span className="text-slate-300 font-medium">{skill.name}</span>
-                      <span className="text-slate-500">{skill.proficiency}%</span>
+                      <span className="text-secondary font-medium">{skill.name}</span>
+                      <span className="text-muted">{skill.proficiency}%</span>
                     </div>
                     <div className="h-1.5 rounded-full bg-slate-800 overflow-hidden">
                       <motion.div
@@ -69,3 +69,5 @@ export default function SkillsSection({ skills }: SkillsSectionProps) {
     </section>
   );
 }
+
+
