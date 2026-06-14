@@ -1,4 +1,4 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import { ArrowRight, Layers } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
 import GlassCard from '@/components/ui/GlassCard';
@@ -19,7 +19,7 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
         <SectionHeader
           label="What I Build For Clients"
           title="Services"
-          subtitle="End-to-end digital products â€” from idea to production, built to last."
+          subtitle="End-to-end digital products — from idea to production, built to last."
         />
       </AnimatedSection>
 
@@ -68,4 +68,3 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
     </section>
   );
 }
-

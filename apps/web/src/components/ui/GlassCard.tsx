@@ -1,4 +1,4 @@
-﻿import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 interface GlassCardProps {
   children: React.ReactNode;
@@ -26,6 +26,3 @@ export default function GlassCard({
     </div>
   );
 }
-
-
-

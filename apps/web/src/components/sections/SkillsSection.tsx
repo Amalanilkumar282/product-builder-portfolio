@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { motion } from 'framer-motion';
 import SectionHeader from '@/components/ui/SectionHeader';
@@ -69,5 +69,3 @@ export default function SkillsSection({ skills }: SkillsSectionProps) {
     </section>
   );
 }
-
-

@@ -1,4 +1,4 @@
-﻿import { Trophy } from 'lucide-react';
+import { Trophy } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
 import GlassCard from '@/components/ui/GlassCard';
 import AnimatedSection from '@/components/ui/AnimatedSection';
@@ -55,5 +55,3 @@ export default function AchievementsSection({ awards }: AchievementsSectionProps
     </section>
   );
 }
-
-
