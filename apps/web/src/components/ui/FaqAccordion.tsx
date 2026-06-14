@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import * as Accordion from '@radix-ui/react-accordion';
 import { ChevronDown } from 'lucide-react';
@@ -48,5 +48,3 @@ export default function FaqAccordion({ items, className }: FaqAccordionProps) {
     </Accordion.Root>
   );
 }
-
-

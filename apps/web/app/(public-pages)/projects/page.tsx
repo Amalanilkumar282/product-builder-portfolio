@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ExternalLink, GitFork, ArrowLeft } from 'lucide-react';
@@ -75,7 +75,7 @@ export default async function ProjectsPage() {
                     </div>
 
                     <Link href={`/projects/${project.slug}`}>
-                      <h2 className="text-base font-bold text-primary mb-2 hover:text-purple-300 transition-colors line-clamp-2">
+                      <h2 className="text-base font-bold text-primary mb-2 hover:text-accent-muted transition-colors line-clamp-2">
                         {project.title}
                       </h2>
                     </Link>
@@ -87,9 +87,9 @@ export default async function ProjectsPage() {
                     <div className="flex items-center gap-3 pt-3 border-t border-default">
                       <Link
                         href={`/projects/${project.slug}`}
-                        className="text-xs font-medium text-purple-400 hover:text-purple-300 transition-colors"
+                        className="text-xs font-medium text-accent hover:text-accent-muted transition-colors"
                       >
-                        Read more â†’
+                        Read more →
                       </Link>
                       {project.demoUrl && (
                         <a
@@ -122,5 +122,4 @@ export default async function ProjectsPage() {
     </div>
   );
 }
-
 

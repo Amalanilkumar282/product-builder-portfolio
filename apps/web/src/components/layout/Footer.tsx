@@ -1,4 +1,4 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import { GitFork, Globe, X, Mail, Code2 } from 'lucide-react';
 import type { SocialLinks } from '@/lib/types';
 
@@ -128,10 +128,8 @@ export default function Footer({ profile }: FooterProps) {
       </div>
 
       <div className="border-t border-default py-6 text-center text-xs text-muted">
-        Â© {year} {name}. Built with Next.js &amp; NestJS.
+        © {year} {name}. Built with Next.js &amp; NestJS.
       </div>
     </footer>
   );
 }
-
-

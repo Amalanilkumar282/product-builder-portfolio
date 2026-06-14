@@ -1,4 +1,4 @@
-﻿import Image from 'next/image';
+import Image from 'next/image';
 import { Star, Quote } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
 import GlassCard from '@/components/ui/GlassCard';
@@ -76,4 +76,3 @@ export default function TestimonialsSection({ testimonials }: TestimonialsSectio
     </section>
   );
 }
-
