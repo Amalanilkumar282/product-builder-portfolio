@@ -12,7 +12,9 @@ export class TechStackService {
   }
 
   findAll() {
-    return this.prisma.techStack.findMany({ orderBy: [{ category: 'asc' }, { order: 'asc' }] });
+    return this.prisma.techStack.findMany({
+      orderBy: [{ category: 'asc' }, { order: 'asc' }],
+    });
   }
 
   async findOne(id: string) {

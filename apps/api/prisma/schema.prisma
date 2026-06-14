@@ -85,6 +85,7 @@ model Profile {
   resumeUrl   String?
   email          String
   alternateEmail String?
+  phone       String?
   location       String?
   socialLinks    Json     @default("{}")
   isPublished Boolean  @default(false)

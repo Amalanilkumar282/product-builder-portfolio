@@ -31,9 +31,7 @@ export class UploadController {
       },
     },
   })
-  @UseInterceptors(
-    FileInterceptor('file', { storage: memoryStorage() }),
-  )
+  @UseInterceptors(FileInterceptor('file', { storage: memoryStorage() }))
   upload(@UploadedFile() file: Express.Multer.File) {
     return this.uploadService.upload(file);
   }

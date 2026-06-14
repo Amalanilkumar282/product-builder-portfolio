@@ -48,11 +48,11 @@ function buildServiceFaqs(service: {
     {
       question: 'How long does a typical project take?',
       answer:
-        'Timelines depend on scope. A focused feature or landing page typically takes 1â€“2 weeks; a full product build ranges from 4â€“12 weeks. I provide a detailed timeline estimate after the initial scoping call.',
+        'Timelines depend on scope. A focused feature or landing page typically takes 1–2 weeks; a full product build ranges from 4–12 weeks. I provide a detailed timeline estimate after the initial scoping call.',
     },
     {
       question: `What technologies do you use for ${service.title}?`,
-      answer: `I primarily work with ${techList}. I choose the right stack for your project's requirements â€” prioritising maintainability, performance, and your team's ability to take ownership after handover.`,
+      answer: `I primarily work with ${techList}. I choose the right stack for your project's requirements — prioritising maintainability, performance, and your team's ability to take ownership after handover.`,
     },
     {
       question: 'Do you offer ongoing support after launch?',

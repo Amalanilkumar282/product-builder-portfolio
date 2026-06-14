@@ -30,7 +30,8 @@ export class AuthService {
     const accessToken = await this.tokenService.generateAccessToken(payload);
     const refreshToken = await this.tokenService.generateRefreshToken(payload);
 
-    const hashedRefresh = await this.tokenService.hashRefreshToken(refreshToken);
+    const hashedRefresh =
+      await this.tokenService.hashRefreshToken(refreshToken);
 
     await this.adminService.updateRefreshToken(admin.id, hashedRefresh);
 
@@ -59,8 +60,10 @@ export class AuthService {
       role: admin.role,
     };
 
-    const newAccessToken = await this.tokenService.generateAccessToken(newPayload);
-    const newRefreshToken = await this.tokenService.generateRefreshToken(newPayload);
+    const newAccessToken =
+      await this.tokenService.generateAccessToken(newPayload);
+    const newRefreshToken =
+      await this.tokenService.generateRefreshToken(newPayload);
 
     const hashed = await this.tokenService.hashRefreshToken(newRefreshToken);
     await this.adminService.updateRefreshToken(admin.id, hashed);

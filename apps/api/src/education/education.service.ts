@@ -34,7 +34,11 @@ export class EducationService {
       data: {
         ...dto,
         startDate: dto.startDate ? new Date(dto.startDate) : undefined,
-        endDate: dto.endDate ? new Date(dto.endDate) : dto.endDate === null ? null : undefined,
+        endDate: dto.endDate
+          ? new Date(dto.endDate)
+          : dto.endDate === null
+            ? null
+            : undefined,
       },
     });
   }

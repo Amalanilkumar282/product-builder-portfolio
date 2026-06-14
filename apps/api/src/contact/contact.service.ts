@@ -30,7 +30,9 @@ export class ContactService {
       this.logger.error('Failed to send contact notification email', err),
     );
 
-    return { message: 'Your message has been received. I will get back to you soon!' };
+    return {
+      message: 'Your message has been received. I will get back to you soon!',
+    };
   }
 
   private async sendNotificationEmail(inquiry: {
@@ -65,14 +67,19 @@ export class ContactService {
   }
 
   async findOne(id: string) {
-    const inquiry = await this.prisma.contactInquiry.findUnique({ where: { id } });
+    const inquiry = await this.prisma.contactInquiry.findUnique({
+      where: { id },
+    });
     if (!inquiry) throw new NotFoundException('Inquiry not found');
     return inquiry;
   }
 
   async updateStatus(id: string, dto: UpdateContactStatusDto) {
     await this.findOne(id);
-    return this.prisma.contactInquiry.update({ where: { id }, data: { status: dto.status } });
+    return this.prisma.contactInquiry.update({
+      where: { id },
+      data: { status: dto.status },
+    });
   }
 
   async remove(id: string) {
