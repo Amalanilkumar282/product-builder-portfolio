@@ -23,7 +23,7 @@ export default async function BlogPage() {
         <AnimatedSection className="mb-4">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-300 transition-colors mb-8 group"
+            className="inline-flex items-center gap-2 text-sm text-muted hover:text-secondary transition-colors mb-8 group"
           >
             <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
             Back home
@@ -39,7 +39,7 @@ export default async function BlogPage() {
         </AnimatedSection>
 
         {posts.length === 0 ? (
-          <div className="text-center py-20 text-slate-500">No articles yet. Check back soon!</div>
+          <div className="text-center py-20 text-muted">No articles yet. Check back soon!</div>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post, i) => (
@@ -69,14 +69,14 @@ export default async function BlogPage() {
                     )}
 
                     <Link href={`/blog/${post.slug}`}>
-                      <h2 className="text-base font-bold text-slate-100 mb-2 hover:text-purple-300 transition-colors line-clamp-2">
+                      <h2 className="text-base font-bold text-primary mb-2 hover:text-purple-300 transition-colors line-clamp-2">
                         {post.title}
                       </h2>
                     </Link>
 
-                    <p className="text-sm text-slate-400 line-clamp-3 mb-4 flex-1">{post.summary}</p>
+                    <p className="text-sm text-secondary line-clamp-3 mb-4 flex-1">{post.summary}</p>
 
-                    <div className="flex items-center gap-4 text-xs text-slate-500 pt-3 border-t border-white/[0.05]">
+                    <div className="flex items-center gap-4 text-xs text-muted pt-3 border-t border-default">
                       {post.publishedAt && (
                         <span className="flex items-center gap-1">
                           <Calendar size={12} /> {formatDate(post.publishedAt)}

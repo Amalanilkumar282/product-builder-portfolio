@@ -47,8 +47,8 @@ export default function SkillsSection({ skills }: SkillsSectionProps) {
                 {categorySkills.map((skill, j) => (
                   <div key={skill.id}>
                     <div className="flex justify-between text-sm mb-1.5">
-                      <span className="text-slate-300 font-medium">{skill.name}</span>
-                      <span className="text-slate-500">{skill.proficiency}%</span>
+                      <span className="text-secondary font-medium">{skill.name}</span>
+                      <span className="text-muted">{skill.proficiency}%</span>
                     </div>
                     <div className="h-1.5 rounded-full bg-slate-800 overflow-hidden">
                       <motion.div

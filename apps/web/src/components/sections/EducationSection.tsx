@@ -44,14 +44,14 @@ export default function EducationSection({ education }: EducationSectionProps) {
                   </div>
                 )}
                 <div>
-                  <p className="font-semibold text-slate-100 text-sm">{edu.institution}</p>
-                  <p className="text-xs text-slate-500">
+                  <p className="font-semibold text-primary text-sm">{edu.institution}</p>
+                  <p className="text-xs text-muted">
                     {formatDateRange(edu.startDate, edu.endDate)}
                   </p>
                 </div>
               </div>
               <p className="text-sm text-purple-300 font-medium mb-1">{edu.degree}</p>
-              <p className="text-xs text-slate-400">{edu.field}</p>
+              <p className="text-xs text-secondary">{edu.field}</p>
             </GlassCard>
           </AnimatedSection>
         ))}
@@ -60,7 +60,7 @@ export default function EducationSection({ education }: EducationSectionProps) {
       {/* Certifications */}
       {certifications.length > 0 && (
         <AnimatedSection>
-          <h3 className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-6 ml-1">
+          <h3 className="text-xs font-semibold uppercase tracking-widest text-muted mb-6 ml-1">
             Certifications &amp; Courses
           </h3>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -71,8 +71,8 @@ export default function EducationSection({ education }: EducationSectionProps) {
                     <Award size={14} className="text-purple-400" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-slate-200 truncate">{cert.field}</p>
-                    <p className="text-xs text-slate-500 truncate">{cert.institution}</p>
+                    <p className="text-sm font-medium text-primary truncate">{cert.field}</p>
+                    <p className="text-xs text-muted truncate">{cert.institution}</p>
                   </div>
                 </div>
               </AnimatedSection>

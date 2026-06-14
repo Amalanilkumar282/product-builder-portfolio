@@ -24,7 +24,7 @@ export default async function ProjectsPage() {
         <AnimatedSection className="mb-4">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-300 transition-colors mb-8 group"
+            className="inline-flex items-center gap-2 text-sm text-muted hover:text-secondary transition-colors mb-8 group"
           >
             <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
             Back home
@@ -40,7 +40,7 @@ export default async function ProjectsPage() {
         </AnimatedSection>
 
         {projects.length === 0 ? (
-          <div className="text-center py-20 text-slate-500">No projects yet.</div>
+          <div className="text-center py-20 text-muted">No projects yet.</div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {projects.map((project, i) => (
@@ -75,16 +75,16 @@ export default async function ProjectsPage() {
                     </div>
 
                     <Link href={`/projects/${project.slug}`}>
-                      <h2 className="text-base font-bold text-slate-100 mb-2 hover:text-purple-300 transition-colors line-clamp-2">
+                      <h2 className="text-base font-bold text-primary mb-2 hover:text-purple-300 transition-colors line-clamp-2">
                         {project.title}
                       </h2>
                     </Link>
 
-                    <p className="text-sm text-slate-400 line-clamp-2 mb-4 flex-1">
+                    <p className="text-sm text-secondary line-clamp-2 mb-4 flex-1">
                       {project.summary}
                     </p>
 
-                    <div className="flex items-center gap-3 pt-3 border-t border-white/[0.05]">
+                    <div className="flex items-center gap-3 pt-3 border-t border-default">
                       <Link
                         href={`/projects/${project.slug}`}
                         className="text-xs font-medium text-purple-400 hover:text-purple-300 transition-colors"
@@ -96,7 +96,7 @@ export default async function ProjectsPage() {
                           href={project.demoUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="p-1.5 text-slate-500 hover:text-slate-300 transition-colors ml-auto"
+                          className="p-1.5 text-muted hover:text-secondary transition-colors ml-auto"
                         >
                           <ExternalLink size={14} />
                         </a>
@@ -106,7 +106,7 @@ export default async function ProjectsPage() {
                           href={project.githubUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="p-1.5 text-slate-500 hover:text-slate-300 transition-colors"
+                          className="p-1.5 text-muted hover:text-secondary transition-colors"
                         >
                           <GitFork size={14} />
                         </a>

@@ -60,11 +60,11 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
                   ))}
                 </div>
 
-                <h3 className="text-xl font-bold text-slate-100 mb-2 group-hover:text-purple-300 transition-colors">
+                <h3 className="text-xl font-bold text-primary mb-2 group-hover:text-purple-300 transition-colors">
                   <Link href={`/projects/${project.slug}`}>{project.title}</Link>
                 </h3>
 
-                <p className="text-slate-400 text-sm leading-relaxed mb-5 line-clamp-2">
+                <p className="text-secondary text-sm leading-relaxed mb-5 line-clamp-2">
                   {project.summary}
                 </p>
 
@@ -80,7 +80,7 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
                       href={project.demoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-1.5 text-slate-500 hover:text-slate-300 transition-colors"
+                      className="p-1.5 text-muted hover:text-secondary transition-colors"
                     >
                       <ExternalLink size={15} />
                     </a>
@@ -90,7 +90,7 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
                       href={project.githubUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-1.5 text-slate-500 hover:text-slate-300 transition-colors"
+                      className="p-1.5 text-muted hover:text-secondary transition-colors"
                     >
                       <GitFork size={15} />
                     </a>
@@ -106,7 +106,7 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
         <AnimatedSection className="mt-12 text-center">
           <Link
             href="/projects"
-            className="inline-flex items-center gap-2 glass px-6 py-3 rounded-xl text-slate-300 text-sm font-medium hover:border-purple-500/30 hover:text-white transition-all"
+            className="inline-flex items-center gap-2 glass px-6 py-3 rounded-xl text-secondary text-sm font-medium hover:border-purple-500/30 hover:text-primary transition-all"
           >
             View all projects <ArrowRight size={16} />
           </Link>

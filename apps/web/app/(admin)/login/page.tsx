@@ -55,45 +55,45 @@ export default function LoginPage() {
           <div className="w-14 h-14 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-purple-500/30">
             <Code2 size={28} className="text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-slate-100">Admin Login</h1>
-          <p className="text-sm text-slate-500 mt-1">Sign in to manage your portfolio</p>
+          <h1 className="text-2xl font-bold text-primary">Admin Login</h1>
+          <p className="text-sm text-muted mt-1">Sign in to manage your portfolio</p>
         </div>
 
-        <div className="glass rounded-2xl p-8 border border-white/[0.08]">
+        <div className="glass rounded-2xl p-8 border border-default">
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-xs text-slate-400 mb-1.5 font-medium">Email</label>
+              <label className="block text-xs text-secondary mb-1.5 font-medium">Email</label>
               <div className="relative">
-                <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
                 <input
                   required
                   type="email"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   placeholder="admin@example.com"
-                  className="w-full glass rounded-xl pl-10 pr-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-purple-500/50 transition-colors"
+                  className="w-full glass rounded-xl pl-10 pr-4 py-3 text-sm text-primary placeholder-slate-600 focus:outline-none focus:border-purple-500/50 transition-colors"
                   autoComplete="email"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs text-slate-400 mb-1.5 font-medium">Password</label>
+              <label className="block text-xs text-secondary mb-1.5 font-medium">Password</label>
               <div className="relative">
-                <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
                 <input
                   required
                   type={showPassword ? 'text' : 'password'}
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
                   placeholder="••••••••"
-                  className="w-full glass rounded-xl pl-10 pr-12 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-purple-500/50 transition-colors"
+                  className="w-full glass rounded-xl pl-10 pr-12 py-3 text-sm text-primary placeholder-slate-600 focus:outline-none focus:border-purple-500/50 transition-colors"
                   autoComplete="current-password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted hover:text-secondary transition-colors"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>

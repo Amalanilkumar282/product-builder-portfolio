@@ -37,12 +37,12 @@ export default function AchievementsSection({ awards }: AchievementsSectionProps
                       {award.year}
                     </span>
                   </div>
-                  <h3 className="text-sm font-semibold text-slate-100 mt-2 mb-1 leading-snug">
+                  <h3 className="text-sm font-semibold text-primary mt-2 mb-1 leading-snug">
                     {award.title}
                   </h3>
                   <p className="text-xs text-purple-400 font-medium mb-2">{award.issuer}</p>
                   {award.description && (
-                    <p className="text-xs text-slate-400 leading-relaxed line-clamp-3">
+                    <p className="text-xs text-secondary leading-relaxed line-clamp-3">
                       {award.description}
                     </p>
                   )}

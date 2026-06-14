@@ -28,7 +28,7 @@ export default function StatsBar() {
             >
               {stat.value}
             </motion.p>
-            <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">
+            <p className="text-xs text-muted font-medium uppercase tracking-wider">
               {stat.label}
             </p>
           </div>

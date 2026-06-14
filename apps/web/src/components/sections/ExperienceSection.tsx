@@ -72,7 +72,7 @@ export default function ExperienceSection({ experience }: ExperienceSectionProps
                       )}
                       <div>
                         <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className="text-base font-semibold text-slate-100">{exp.role}</h3>
+                          <h3 className="text-base font-semibold text-primary">{exp.role}</h3>
                           <span
                             className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${typeConfig.className}`}
                           >
@@ -83,12 +83,12 @@ export default function ExperienceSection({ experience }: ExperienceSectionProps
                         <p className="text-sm text-purple-400">{exp.company}</p>
                       </div>
                     </div>
-                    <span className="flex items-center gap-1.5 text-xs text-slate-500 whitespace-nowrap shrink-0">
+                    <span className="flex items-center gap-1.5 text-xs text-muted whitespace-nowrap shrink-0">
                       <Calendar size={12} />
                       {formatDateRange(exp.startDate, exp.endDate, exp.isPresent)}
                     </span>
                   </div>
-                  <p className="text-sm text-slate-400 leading-relaxed">{exp.description}</p>
+                  <p className="text-sm text-secondary leading-relaxed">{exp.description}</p>
                 </div>
               </div>
             </AnimatedSection>
@@ -113,7 +113,7 @@ export default function ExperienceSection({ experience }: ExperienceSectionProps
       <div className="space-y-16">
         {professional.length > 0 && (
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-8 ml-1">
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-muted mb-8 ml-1">
               Professional
             </h3>
             {renderTimeline(professional)}
@@ -122,7 +122,7 @@ export default function ExperienceSection({ experience }: ExperienceSectionProps
 
         {leadership.length > 0 && (
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-8 ml-1">
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-muted mb-8 ml-1">
               Leadership &amp; Positions of Responsibility
             </h3>
             {renderTimeline(leadership)}

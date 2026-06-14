@@ -33,7 +33,7 @@ export default function Footer({ profile }: FooterProps) {
   })();
 
   return (
-    <footer className="relative border-t border-white/[0.07] mt-24">
+    <footer className="relative border-t border-default mt-24">
       {/* Gradient top line */}
       <div className="absolute top-0 left-0 right-0 h-px gradient-bg opacity-50" />
 
@@ -46,12 +46,12 @@ export default function Footer({ profile }: FooterProps) {
             </div>
             <span className="font-bold gradient-text">{name}</span>
           </Link>
-          <p className="text-sm text-slate-500 leading-relaxed max-w-xs">{bio}</p>
+          <p className="text-sm text-muted leading-relaxed max-w-xs">{bio}</p>
         </div>
 
         {/* Quick links */}
         <div>
-          <h3 className="text-sm font-semibold text-slate-300 mb-4 uppercase tracking-widest">
+          <h3 className="text-sm font-semibold text-secondary mb-4 uppercase tracking-widest">
             Navigation
           </h3>
           <ul className="space-y-2">
@@ -59,7 +59,7 @@ export default function Footer({ profile }: FooterProps) {
               <li key={l.href}>
                 <Link
                   href={l.href}
-                  className="text-sm text-slate-500 hover:text-slate-300 transition-colors"
+                  className="text-sm text-muted hover:text-secondary transition-colors"
                 >
                   {l.label}
                 </Link>
@@ -70,14 +70,14 @@ export default function Footer({ profile }: FooterProps) {
 
         {/* Social + contact */}
         <div>
-          <h3 className="text-sm font-semibold text-slate-300 mb-4 uppercase tracking-widest">
+          <h3 className="text-sm font-semibold text-secondary mb-4 uppercase tracking-widest">
             Connect
           </h3>
           <div className="flex flex-wrap gap-3 mb-4">
             {email && (
               <a
                 href={`mailto:${email}`}
-                className="p-2.5 glass rounded-xl text-slate-400 hover:text-white hover:border-purple-500/30 transition-all"
+                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-purple-500/30 transition-all"
                 aria-label="Email"
               >
                 <Mail size={18} />
@@ -88,7 +88,7 @@ export default function Footer({ profile }: FooterProps) {
                 href={socials.GitFork}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 glass rounded-xl text-slate-400 hover:text-white hover:border-purple-500/30 transition-all"
+                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-purple-500/30 transition-all"
                 aria-label="GitFork"
               >
                 <GitFork size={18} />
@@ -99,7 +99,7 @@ export default function Footer({ profile }: FooterProps) {
                 href={socials.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 glass rounded-xl text-slate-400 hover:text-white hover:border-blue-500/30 transition-all"
+                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-blue-500/30 transition-all"
                 aria-label="LinkedIn"
               >
                 <Globe size={18} />
@@ -110,7 +110,7 @@ export default function Footer({ profile }: FooterProps) {
                 href={socials.twitter}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 glass rounded-xl text-slate-400 hover:text-white hover:border-sky-500/30 transition-all"
+                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-sky-500/30 transition-all"
                 aria-label="Twitter"
               >
                 <X size={18} />
@@ -118,7 +118,7 @@ export default function Footer({ profile }: FooterProps) {
             )}
           </div>
           {email && (
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-muted">
               <a href={`mailto:${email}`} className="hover:text-purple-400 transition-colors">
                 {email}
               </a>
@@ -127,7 +127,7 @@ export default function Footer({ profile }: FooterProps) {
         </div>
       </div>
 
-      <div className="border-t border-white/[0.05] py-6 text-center text-xs text-slate-600">
+      <div className="border-t border-default py-6 text-center text-xs text-muted">
         © {year} {name}. Built with Next.js &amp; NestJS.
       </div>
     </footer>

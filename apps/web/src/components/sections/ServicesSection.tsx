@@ -30,7 +30,7 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
               <div className="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <Layers size={18} className="text-white" />
               </div>
-              <h3 className="text-lg font-semibold text-slate-100 mb-2">
+              <h3 className="text-lg font-semibold text-primary mb-2">
                 <Link
                   href={`/services/${service.slug}`}
                   className="hover:text-purple-400 transition-colors"
@@ -38,7 +38,7 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
                   {service.title}
                 </Link>
               </h3>
-              <p className="text-slate-400 text-sm leading-relaxed mb-4 line-clamp-3">
+              <p className="text-secondary text-sm leading-relaxed mb-4 line-clamp-3">
                 {service.description}
               </p>
               {service.tags?.length > 0 && (
@@ -59,7 +59,7 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
         <AnimatedSection className="mt-10 text-center">
           <Link
             href="/services"
-            className="inline-flex items-center gap-2 glass px-6 py-3 rounded-xl text-slate-300 text-sm font-medium hover:border-purple-500/30 hover:text-white transition-all"
+            className="inline-flex items-center gap-2 glass px-6 py-3 rounded-xl text-secondary text-sm font-medium hover:border-purple-500/30 hover:text-primary transition-all"
           >
             View all services <ArrowRight size={16} />
           </Link>

@@ -58,7 +58,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.1 }}
-            className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] text-slate-100 mb-4"
+            className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] text-primary mb-4"
           >
             Hi, I&apos;m{' '}
             <span className="gradient-text">{profile?.name ?? 'Amal Anilkumar'}</span>
@@ -68,11 +68,11 @@ export default function HeroSection({ profile }: HeroSectionProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.2 }}
-            className="text-xl sm:text-2xl font-medium text-slate-400 mb-2"
+            className="text-xl sm:text-2xl font-medium text-secondary mb-2"
           >
             {profile?.title ?? 'Full-Stack & Mobile Engineer'}
             {profile?.location && (
-              <span className="text-base ml-3 text-slate-500">📍 {profile.location}</span>
+              <span className="text-base ml-3 text-muted">📍 {profile.location}</span>
             )}
           </motion.p>
 
@@ -89,7 +89,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.3 }}
-            className="text-slate-400 text-base md:text-lg max-w-xl mb-10 leading-relaxed"
+            className="text-secondary text-base md:text-lg max-w-xl mb-10 leading-relaxed"
           >
             {profile?.bio ??
               'Passionate about a world where tech and nature thrive together.'}
@@ -110,7 +110,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
             </Link>
             <Link
               href="#projects"
-              className="glass px-6 py-3 rounded-xl text-slate-300 font-semibold text-sm hover:border-purple-500/30 hover:text-white hover:-translate-y-0.5 transition-all"
+              className="glass px-6 py-3 rounded-xl text-secondary font-semibold text-sm hover:border-purple-500/30 hover:text-primary hover:-translate-y-0.5 transition-all"
             >
               View My Work
             </Link>
@@ -118,7 +118,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
               <a
                 href={profile.resumeUrl}
                 download
-                className="glass px-6 py-3 rounded-xl text-slate-400 font-semibold text-sm flex items-center gap-2 hover:border-purple-500/30 hover:text-white hover:-translate-y-0.5 transition-all"
+                className="glass px-6 py-3 rounded-xl text-secondary font-semibold text-sm flex items-center gap-2 hover:border-purple-500/30 hover:text-primary hover:-translate-y-0.5 transition-all"
               >
                 <Download size={15} /> Resume
               </a>
@@ -135,7 +135,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
             {profile?.email && (
               <a
                 href={`mailto:${profile.email}`}
-                className="flex items-center gap-2 glass px-4 py-2.5 rounded-xl text-slate-400 text-sm hover:text-white hover:border-purple-500/30 transition-all"
+                className="flex items-center gap-2 glass px-4 py-2.5 rounded-xl text-secondary text-sm hover:text-primary hover:border-purple-500/30 transition-all"
               >
                 <Mail size={15} /> {profile.email}
               </a>
@@ -145,7 +145,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
                 href={socials.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 glass rounded-xl text-slate-400 hover:text-white hover:border-purple-500/30 transition-all"
+                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-purple-500/30 transition-all"
               >
                 <GitFork size={18} />
               </a>
@@ -155,7 +155,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
                 href={socials.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 glass rounded-xl text-slate-400 hover:text-white hover:border-blue-500/30 transition-all"
+                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-blue-500/30 transition-all"
               >
                 <ExternalLink size={18} />
               </a>
@@ -165,7 +165,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
                 href={socials.twitter}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 glass rounded-xl text-slate-400 hover:text-white hover:border-sky-500/30 transition-all"
+                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-sky-500/30 transition-all"
               >
                 <X size={18} />
               </a>
@@ -202,7 +202,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
               className="absolute -right-6 top-12 glass rounded-xl px-3 py-2 text-xs font-medium whitespace-nowrap shadow-lg"
             >
               <span className="text-green-400">● </span>
-              <span className="text-slate-300">Available for Projects</span>
+              <span className="text-secondary">Available for Projects</span>
             </motion.div>
 
             {/* Floating badge 2 */}
@@ -212,7 +212,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
               className="absolute -left-6 bottom-16 glass rounded-xl px-3 py-2 text-xs font-medium whitespace-nowrap shadow-lg"
             >
               <span className="text-purple-400">⚡ </span>
-              <span className="text-slate-300">Product Builder</span>
+              <span className="text-secondary">Product Builder</span>
             </motion.div>
           </div>
         </motion.div>
@@ -222,7 +222,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
       <motion.div
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 text-slate-600"
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 text-muted"
       >
         <ArrowDown size={22} />
       </motion.div>

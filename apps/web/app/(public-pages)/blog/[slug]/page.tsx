@@ -64,7 +64,7 @@ export default async function BlogPostPage({
         <AnimatedSection className="mb-8">
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-300 transition-colors group"
+            className="inline-flex items-center gap-2 text-sm text-muted hover:text-secondary transition-colors group"
           >
             <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
             All articles
@@ -97,11 +97,11 @@ export default async function BlogPostPage({
             </div>
           )}
 
-          <h1 className="text-3xl md:text-4xl font-bold text-slate-100 mb-4 leading-tight">
+          <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4 leading-tight">
             {post.title}
           </h1>
 
-          <div className="flex items-center gap-5 text-sm text-slate-500 mb-8">
+          <div className="flex items-center gap-5 text-sm text-muted mb-8">
             {post.publishedAt && (
               <span className="flex items-center gap-1.5">
                 <Calendar size={14} /> {formatDate(post.publishedAt)}
@@ -114,7 +114,7 @@ export default async function BlogPostPage({
             )}
           </div>
 
-          <p className="text-slate-300 text-lg leading-relaxed mb-8 border-l-2 border-purple-500/50 pl-4">
+          <p className="text-secondary text-lg leading-relaxed mb-8 border-l-2 border-purple-500/50 pl-4">
             {post.summary}
           </p>
         </AnimatedSection>
@@ -122,7 +122,7 @@ export default async function BlogPostPage({
         {/* Article content */}
         <AnimatedSection delay={0.1}>
           <div className="glass rounded-2xl p-8 md:p-10">
-            <div className="prose prose-invert prose-slate max-w-none prose-headings:font-bold prose-a:text-purple-400 prose-code:text-purple-300 prose-pre:bg-slate-900 prose-pre:border prose-pre:border-white/10">
+            <div className="prose dark:prose-invert prose-slate max-w-none prose-headings:font-bold prose-a:text-purple-400 prose-code:text-purple-300 prose-pre:bg-elevated prose-pre:border prose-pre:border-default">
               {post.content}
             </div>
           </div>
@@ -151,10 +151,10 @@ export default async function BlogPostPage({
                 <p className="text-xs text-purple-400 font-semibold tracking-widest uppercase mb-1">
                   About the author
                 </p>
-                <p className="text-slate-200 font-semibold text-sm mb-1">
+                <p className="text-primary font-semibold text-sm mb-1">
                   {profile?.name ?? 'Amal Anilkumar'}
                 </p>
-                <p className="text-slate-400 text-sm leading-relaxed">
+                <p className="text-secondary text-sm leading-relaxed">
                   {profile?.bio ??
                     'Full-stack software engineer passionate about building scalable web products where tech and nature thrive together. Writing about engineering, product design, and everything in between.'}
                 </p>
@@ -167,7 +167,7 @@ export default async function BlogPostPage({
                   </Link>
                   <Link
                     href="/blog"
-                    className="text-xs text-slate-500 hover:text-slate-300 transition-colors"
+                    className="text-xs text-muted hover:text-secondary transition-colors"
                   >
                     More articles
                   </Link>

@@ -28,20 +28,20 @@ export default function Navbar({ ownerName = 'Amal Anilkumar' }: NavbarProps) {
   const pathname = usePathname();
 
   useEffect(() => {
-    setMounted(true);
+    setTimeout(() => setMounted(true), 0);
     const onScroll = () => setScrolled(window.scrollY > 24);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const isHome = pathname === '/';
+  
 
   return (
     <header
       className={cn(
         'fixed top-0 inset-x-0 z-50 transition-all duration-300',
         scrolled
-          ? 'glass border-b border-white/[0.07] dark:glass light:glass-light'
+          ? 'glass border-b border-default dark:glass light:glass-light'
           : 'bg-transparent',
       )}
     >
@@ -60,7 +60,7 @@ export default function Navbar({ ownerName = 'Amal Anilkumar' }: NavbarProps) {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm text-secondary hover:text-primary transition-colors hover:text-slate-100 dark:hover:text-slate-100"
+              className="text-sm text-secondary hover:text-primary transition-colors hover:text-primary dark:hover:text-primary"
             >
               {link.label}
             </Link>
@@ -71,7 +71,7 @@ export default function Navbar({ ownerName = 'Amal Anilkumar' }: NavbarProps) {
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               aria-label="Toggle theme"
-              className="p-2 rounded-lg glass hover:bg-white/10 transition-colors text-slate-400 hover:text-white"
+              className="p-2 rounded-lg glass hover:bg-white/10 transition-colors text-secondary hover:text-primary"
             >
               {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
             </button>
@@ -91,7 +91,7 @@ export default function Navbar({ ownerName = 'Amal Anilkumar' }: NavbarProps) {
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               aria-label="Toggle theme"
-              className="p-2 rounded-lg text-slate-400"
+              className="p-2 rounded-lg text-secondary"
             >
               {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
             </button>
@@ -99,7 +99,7 @@ export default function Navbar({ ownerName = 'Amal Anilkumar' }: NavbarProps) {
           <button
             onClick={() => setOpen(!open)}
             aria-label="Toggle menu"
-            className="p-2 text-slate-400 hover:text-white transition-colors"
+            className="p-2 text-secondary hover:text-primary transition-colors"
           >
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -114,14 +114,14 @@ export default function Navbar({ ownerName = 'Amal Anilkumar' }: NavbarProps) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden glass border-b border-white/[0.07] px-6 pb-4 pt-2"
+            className="md:hidden glass border-b border-default px-6 pb-4 pt-2"
           >
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="block py-3 text-slate-400 hover:text-white border-b border-white/[0.05] last:border-0 text-sm transition-colors"
+                className="block py-3 text-secondary hover:text-primary border-b border-default last:border-0 text-sm transition-colors"
               >
                 {link.label}
               </Link>
