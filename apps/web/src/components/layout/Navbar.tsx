@@ -39,10 +39,10 @@ export default function Navbar({ ownerName = 'Amal Anilkumar' }: NavbarProps) {
   return (
     <header
       className={cn(
-        'fixed top-0 inset-x-0 z-50 transition-all duration-300',
+        'fixed top-0 inset-x-0 z-[999] transition-all duration-300',
         scrolled
-          ? 'glass border-b border-default dark:glass light:glass-light'
-          : 'bg-transparent',
+          ? 'border-b border-default bg-background/80 backdrop-blur-md'
+          : 'bg-background/80 backdrop-blur-md',
       )}
     >
       <nav className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -114,7 +114,7 @@ export default function Navbar({ ownerName = 'Amal Anilkumar' }: NavbarProps) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden glass border-b border-default px-6 pb-4 pt-2"
+            className="md:hidden border-b border-default px-6 pb-4 pt-2 bg-background z-[998] backdrop-blur-md"
           >
             {navLinks.map((link) => (
               <Link
