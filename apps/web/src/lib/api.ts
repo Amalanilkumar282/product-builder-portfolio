@@ -17,7 +17,16 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 
 async function safeFetch<T>(url: string, options?: RequestInit): Promise<T | null> {
   try {
-    const res = await fetch(url, options);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+    
+    const res = await fetch(url, { 
+      ...options,
+      signal: controller.signal 
+    });
+    
+    clearTimeout(timeoutId);
+    
     if (!res.ok) return null;
     return res.json() as Promise<T>;
   } catch {

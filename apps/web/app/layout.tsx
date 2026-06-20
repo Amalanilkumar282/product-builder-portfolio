@@ -2,10 +2,6 @@ import type { Metadata } from 'next';
 import { Inter, Plus_Jakarta_Sans, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import ThemeProvider from '@/components/layout/ThemeProvider';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
-import { fetchProfile } from '@/lib/api';
-import { JsonLd, buildPersonSchema, buildWebSiteSchema } from '@/lib/jsonld';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -79,9 +75,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const profile = await fetchProfile();
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -91,11 +85,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body
         className={`${inter.variable} ${plusJakarta.variable} ${geistMono.variable} antialiased`}
       >
-        <JsonLd data={[buildWebSiteSchema(), buildPersonSchema({ name: profile?.name, bio: profile?.bio, email: profile?.email, avatarUrl: profile?.avatarUrl, sameAs: ['https://github.com/Amalanilkumar282', 'https://www.linkedin.com/in/amal-a-99360b31b/'] })]} />
         <ThemeProvider>
-          <Navbar ownerName={profile?.name ?? ownerName} />
-          <main>{children}</main>
-          <Footer profile={profile} />
+          {children}
         </ThemeProvider>
       </body>
     </html>

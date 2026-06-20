@@ -32,9 +32,10 @@ export default function LoginPage() {
       }
 
       const data = await res.json();
-      // Store access token in memory / session storage (not localStorage for security)
+      // Store both access and refresh tokens in session storage
       sessionStorage.setItem('access_token', data.accessToken ?? '');
-      router.push('/admin');
+      sessionStorage.setItem('refresh_token', data.refreshToken ?? '');
+      router.push('/admin'); // Redirect to admin index (will redirect to dashboard)
     } catch (err) {
       setStatus('error');
       setErrorMsg(err instanceof Error ? err.message : 'Login failed');
