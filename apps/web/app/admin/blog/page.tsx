@@ -51,22 +51,22 @@ export default function BlogPage() {
       ),
     },
     {
-      key: 'excerpt',
-      header: 'Excerpt',
-      render: (item: BlogPost) => <p className="text-sm line-clamp-2">{item.excerpt}</p>,
+      key: 'summary',
+      header: 'Summary',
+      render: (item: BlogPost) => <p className="text-sm line-clamp-2">{item.summary}</p>,
     },
     {
-      key: 'published',
+      key: 'isPublished',
       header: 'Status',
       render: (item: BlogPost) => (
         <span
           className={`px-2 py-1 rounded-lg text-xs font-medium ${
-            item.published
+            item.isPublished
               ? 'bg-green-500/10 text-green-500'
               : 'bg-yellow-500/10 text-yellow-500'
           }`}
         >
-          {item.published ? 'Published' : 'Draft'}
+          {item.isPublished ? 'Published' : 'Draft'}
         </span>
       ),
     },

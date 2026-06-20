@@ -43,6 +43,12 @@ export class CreateBlogPostDto {
 
   @ApiPropertyOptional()
   @IsOptional()
+  @IsString()
+  @Length(2, 200)
+  coverImageAlt?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
   @Type(() => Number)
   @IsInt()
   @Min(0)
@@ -69,6 +75,35 @@ export class CreateBlogPostDto {
   @IsString()
   @Length(10, 160)
   seoDescription?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @Length(2, 120)
+  category?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @Length(2, 120)
+  series?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsUrl()
+  canonicalUrl?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  featured?: boolean;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  order?: number;
 
   @ApiPropertyOptional({ type: [String], description: 'Array of tag IDs' })
   @IsOptional()

@@ -16,10 +16,10 @@ export default function BlogFormPage() {
   const [formData, setFormData] = useState<Partial<BlogPost>>({
     title: '',
     slug: '',
-    excerpt: '',
+    summary: '',
     content: '',
     coverImageUrl: '',
-    published: false,
+    isPublished: false,
     publishedAt: '',
   });
   const [loading, setLoading] = useState(!isNew);
@@ -126,10 +126,10 @@ export default function BlogFormPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Excerpt *</label>
+            <label className="block text-sm font-medium mb-2">Summary *</label>
             <textarea
-              value={formData.excerpt || ''}
-              onChange={(e) => handleChange('excerpt', e.target.value)}
+              value={formData.summary || ''}
+              onChange={(e) => handleChange('summary', e.target.value)}
               rows={2}
               className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-accent outline-none"
               required
@@ -180,8 +180,8 @@ export default function BlogFormPage() {
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"
-                checked={formData.published || false}
-                onChange={(e) => handleChange('published', e.target.checked)}
+                checked={formData.isPublished || false}
+                onChange={(e) => handleChange('isPublished', e.target.checked)}
                 className="w-5 h-5 rounded border-border text-accent focus:ring-accent"
               />
               <label className="text-sm font-medium">Published</label>
@@ -196,7 +196,7 @@ export default function BlogFormPage() {
             </Link>
             <button
               onClick={handleSave}
-              disabled={saving || !formData.title || !formData.slug || !formData.excerpt || !formData.content}
+              disabled={saving || !formData.title || !formData.slug || !formData.summary || !formData.content}
               className="px-6 py-3 gradient-bg rounded-xl text-white font-semibold flex items-center gap-2 hover:opacity-90 transition-all disabled:opacity-50"
             >
               <Save size={18} />

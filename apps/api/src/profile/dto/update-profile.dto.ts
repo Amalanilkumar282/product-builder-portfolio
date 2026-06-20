@@ -15,6 +15,12 @@ export class UpdateProfileDto {
   @Length(2, 100)
   name: string;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @Length(2, 100)
+  shortName?: string;
+
   @ApiProperty()
   @IsString()
   @Length(2, 100)
@@ -60,6 +66,54 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsUrl()
   resumeUrl?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsUrl()
+  websiteUrl?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsUrl()
+  githubUrl?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsUrl()
+  linkedinUrl?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsUrl()
+  twitterUrl?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsUrl()
+  instagramUrl?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsUrl()
+  whatsappUrl?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @Length(2, 150)
+  currentCompany?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @Length(2, 150)
+  currentRole?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @Length(2, 150)
+  alumniOf?: string;
 
   @ApiPropertyOptional()
   @IsOptional()

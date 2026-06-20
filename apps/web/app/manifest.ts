@@ -2,10 +2,10 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Amal Anilkumar — Software Engineer',
-    short_name: 'Amal.dev',
+    name: 'Amal Anilkumar | Full-Stack and AI Engineer',
+    short_name: 'Amal',
     description:
-      'Portfolio of Amal Anilkumar — full-stack software engineer building scalable web products.',
+      'Portfolio of Amal Anilkumar, a full-stack software engineer building scalable web products and AI-powered systems.',
     start_url: '/',
     display: 'standalone',
     background_color: '#020617',

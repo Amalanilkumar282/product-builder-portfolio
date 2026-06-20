@@ -16,12 +16,12 @@ export default function ProjectFormPage() {
   const [formData, setFormData] = useState<Partial<Project>>({
     title: '',
     slug: '',
-    description: '',
+    summary: '',
     coverImageUrl: '',
     demoUrl: '',
     githubUrl: '',
     featured: false,
-    published: false,
+    isPublished: false,
     order: 0,
   });
   const [loading, setLoading] = useState(!isNew);
@@ -127,11 +127,11 @@ export default function ProjectFormPage() {
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-2">Description *</label>
-            <textarea
-              value={formData.description || ''}
-              onChange={(e) => handleChange('description', e.target.value)}
+            <div>
+              <label className="block text-sm font-medium mb-2">Summary *</label>
+              <textarea
+              value={formData.summary || ''}
+              onChange={(e) => handleChange('summary', e.target.value)}
               rows={4}
               className="w-full px-4 py-2 rounded-lg bg-background border border-border focus:border-accent outline-none"
               required
@@ -201,8 +201,8 @@ export default function ProjectFormPage() {
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"
-                checked={formData.published || false}
-                onChange={(e) => handleChange('published', e.target.checked)}
+                checked={formData.isPublished || false}
+                onChange={(e) => handleChange('isPublished', e.target.checked)}
                 className="w-5 h-5 rounded border-border text-accent focus:ring-accent"
               />
               <label className="text-sm font-medium">Published</label>
@@ -217,7 +217,7 @@ export default function ProjectFormPage() {
             </Link>
             <button
               onClick={handleSave}
-              disabled={saving || !formData.title || !formData.slug || !formData.description}
+              disabled={saving || !formData.title || !formData.slug || !formData.summary}
               className="px-6 py-3 gradient-bg rounded-xl text-white font-semibold flex items-center gap-2 hover:opacity-90 transition-all disabled:opacity-50"
             >
               <Save size={18} />

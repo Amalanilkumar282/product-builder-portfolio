@@ -1,9 +1,8 @@
 import { fetchBlogPosts, fetchProfile } from '@/lib/api';
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3001';
+import { SITE_URL } from '@/lib/site';
 
 export const dynamic = 'force-dynamic';
-export const revalidate = 3600; // 1 hour
+export const revalidate = 3600;
 
 function escapeXml(str: string) {
   return str
@@ -21,20 +20,20 @@ export async function GET() {
   const authorEmail = profile?.email ?? '';
   const description =
     profile?.bio ??
-    'Thoughts on software engineering, product design, and building scalable web systems.';
+    'Technical writing on software engineering, product development, and scalable web systems.';
 
   const items = posts
-    .filter((p) => p.isPublished)
+    .filter((post) => post.isPublished)
     .sort((a, b) => {
-      const da = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
-      const db = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
-      return db - da;
+      const left = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
+      const right = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
+      return right - left;
     })
     .map((post) => {
       const pubDate = post.publishedAt
         ? new Date(post.publishedAt).toUTCString()
         : new Date(post.createdAt).toUTCString();
-      const tags = post.tags?.map((t) => `<category>${escapeXml(t.name)}</category>`).join('') ?? '';
+      const tags = post.tags?.map((tag) => `<category>${escapeXml(tag.name)}</category>`).join('') ?? '';
 
       return `
     <item>
@@ -56,7 +55,7 @@ export async function GET() {
   xmlns:content="http://purl.org/rss/1.0/modules/content/"
   xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
   <channel>
-    <title>${escapeXml(authorName)} — Blog</title>
+    <title>${escapeXml(authorName)} | Blog</title>
     <link>${SITE_URL}/blog</link>
     <description>${escapeXml(description)}</description>
     <language>en-us</language>

@@ -7,7 +7,7 @@ import GlassCard from '@/components/ui/GlassCard';
 import AnimatedSection from '@/components/ui/AnimatedSection';
 import SectionHeader from '@/components/ui/SectionHeader';
 import Badge from '@/components/ui/Badge';
-import { JsonLd, buildProjectListSchema } from '@/lib/jsonld';
+import { JsonLd, buildCollectionPageSchema, buildProjectListSchema } from '@/lib/entity-jsonld';
 
 export const metadata: Metadata = {
   title: 'Projects',
@@ -19,7 +19,16 @@ export default async function ProjectsPage() {
 
   return (
     <div className="min-h-screen pt-24 pb-20">
-      <JsonLd data={buildProjectListSchema(projects)} />
+      <JsonLd
+        data={[
+          buildCollectionPageSchema({
+            path: '/projects',
+            title: 'Projects',
+            description: 'Case studies, products, open-source work, and engineering experiments by Amal Anilkumar.',
+          }),
+          buildProjectListSchema(projects),
+        ]}
+      />
       <div className="max-w-7xl mx-auto px-6">
         <AnimatedSection className="mb-4">
           <Link

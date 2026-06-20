@@ -10,6 +10,7 @@ import {
   fetchTestimonials,
   fetchBlogPosts,
   fetchAwards,
+  fetchPageSections,
 } from '@/lib/api';
 import HeroSection from '@/components/sections/HeroSection';
 import StatsBar from '@/components/ui/StatsBar';
@@ -25,13 +26,54 @@ import BlogSection from '@/components/sections/BlogSection';
 import ContactSection from '@/components/sections/ContactSection';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import { JsonLd, buildPersonSchema, buildWebSiteSchema } from '@/lib/jsonld';
+import {
+  JsonLd,
+  buildOrganizationReference,
+  buildPersonSchema,
+  buildProfilePageSchema,
+  buildWebSiteSchema,
+} from '@/lib/entity-jsonld';
+import { CANONICAL_NAME, DEFAULT_BIO } from '@/lib/site';
+import type { PageSection } from '@/lib/types';
 
 export const metadata: Metadata = {
-  title: 'Amal A \u2014 Product Builder \u0026 Full-Stack Engineer',
-  description:
-    'Full-stack and mobile engineer who builds complete, production-ready products \u2014 web apps, mobile, enterprise tools, and AI integrations. Based in Kerala, India.',
+  title: 'Amal Anilkumar | Product Builder, Full-Stack and AI Engineer',
+  description: DEFAULT_BIO,
 };
+
+const sectionRenderers: Record<PageSection['type'], (data: HomePageData) => React.ReactNode> = {
+  HERO: (data) => (
+    <>
+      <HeroSection profile={data.profile} />
+      <StatsBar />
+    </>
+  ),
+  SERVICES: (data) => <ServicesSection services={data.services} />,
+  PROJECTS: (data) => <ProjectsSection projects={data.projects} />,
+  SKILLS: (data) => <SkillsSection skills={data.skills} />,
+  EXPERIENCE: (data) => <ExperienceSection experience={data.experience} />,
+  EDUCATION: (data) => <EducationSection education={data.education} />,
+  TESTIMONIALS: (data) => <TestimonialsSection testimonials={data.testimonials} />,
+  TECH_STACK: (data) => <TechStackSection techStack={data.techStack} />,
+  BLOG: (data) => <BlogSection posts={data.blogPosts} />,
+  CONTACT: (data) => <ContactSection profile={data.profile} />,
+  ABOUT: () => null,
+  ACHIEVEMENTS: (data) => <AchievementsSection awards={data.awards} />,
+};
+
+interface HomePageData {
+  profile: Awaited<ReturnType<typeof fetchProfile>>;
+  services: Awaited<ReturnType<typeof fetchServices>>;
+  projects: Awaited<ReturnType<typeof fetchProjects>>;
+  skills: Awaited<ReturnType<typeof fetchSkills>>;
+  techStack: Awaited<ReturnType<typeof fetchTechStack>>;
+  experience: Awaited<ReturnType<typeof fetchExperience>>;
+  education: Awaited<ReturnType<typeof fetchEducation>>;
+  testimonials: Awaited<ReturnType<typeof fetchTestimonials>>;
+  blogPosts: Awaited<ReturnType<typeof fetchBlogPosts>>;
+  awards: Awaited<ReturnType<typeof fetchAwards>>;
+  pageSections: Awaited<ReturnType<typeof fetchPageSections>>;
+}
 
 export default async function HomePage() {
   const [
@@ -45,6 +87,7 @@ export default async function HomePage() {
     testimonials,
     blogPosts,
     awards,
+    pageSections,
   ] = await Promise.all([
     fetchProfile(),
     fetchServices(),
@@ -56,29 +99,44 @@ export default async function HomePage() {
     fetchTestimonials(),
     fetchBlogPosts(),
     fetchAwards(),
+    fetchPageSections(),
   ]);
 
-  const ownerName = 'Amal A';
+  const pageData: HomePageData = {
+    profile,
+    services,
+    projects,
+    skills,
+    techStack,
+    experience,
+    education,
+    testimonials,
+    blogPosts,
+    awards,
+    pageSections,
+  };
 
   return (
     <>
-      {profile && (
-        <JsonLd data={[buildWebSiteSchema(), buildPersonSchema({ name: profile.name, bio: profile.bio, email: profile.email, avatarUrl: profile.avatarUrl, sameAs: ['https://github.com/Amalanilkumar282', 'https://www.linkedin.com/in/amal-a-99360b31b/'] })]} />
-      )}
-      <Navbar ownerName={profile?.name ?? ownerName} />
+      <JsonLd
+        data={[
+          buildWebSiteSchema(),
+          buildOrganizationReference(),
+          buildProfilePageSchema({
+            path: '/',
+            title: `${CANONICAL_NAME} Portfolio`,
+            description: DEFAULT_BIO,
+          }),
+          buildPersonSchema({ profile, experience, education, awards }),
+        ]}
+      />
+      <Navbar ownerName={profile?.name ?? CANONICAL_NAME} />
       <main>
-        <HeroSection profile={profile} />
-        <StatsBar />
-        <ServicesSection services={services} />
-        <ProjectsSection projects={projects} />
-        <SkillsSection skills={skills} />
-        <TechStackSection techStack={techStack} />
-        <ExperienceSection experience={experience} />
-        <EducationSection education={education} />
-        <AchievementsSection awards={awards} />
-        <TestimonialsSection testimonials={testimonials} />
-        <BlogSection posts={blogPosts} />
-        <ContactSection profile={profile} />
+        {(pageSections.length ? pageSections : [{ type: 'HERO' } as PageSection]).map((section) => (
+          <div key={section.type}>
+            {sectionRenderers[section.type]?.(pageData) ?? null}
+          </div>
+        ))}
       </main>
       <Footer profile={profile} />
     </>

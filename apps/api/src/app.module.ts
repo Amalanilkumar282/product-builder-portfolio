@@ -22,6 +22,8 @@ import { AwardModule } from './award/award.module';
 import { UploadModule } from './upload/upload.module';
 import { SearchModule } from './search/search.module';
 import { HealthModule } from './health/health.module';
+import { CertificationModule } from './certification/certification.module';
+import { TalkModule } from './talk/talk.module';
 import appConfig from './config/app.config';
 
 @Module({
@@ -59,6 +61,8 @@ import appConfig from './config/app.config';
     TechStackModule,
     PageSectionModule,
     AwardModule,
+    CertificationModule,
+    TalkModule,
     UploadModule,
     SearchModule,
     HealthModule,

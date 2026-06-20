@@ -1,12 +1,15 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
-import { Mail, Send, GitFork, Globe, X, MapPin, Phone, MessageCircle } from 'lucide-react';
-import SectionHeader from '@/components/ui/SectionHeader';
-import GlassCard from '@/components/ui/GlassCard';
+import { Mail, MapPin, MessageCircle, Phone, Send } from 'lucide-react';
 import AnimatedSection from '@/components/ui/AnimatedSection';
+import GlassCard from '@/components/ui/GlassCard';
+import SectionHeader from '@/components/ui/SectionHeader';
+import { trackEvent } from '@/lib/analytics';
+import { GitHubIcon, InstagramIcon, LinkedInIcon, XIcon } from '@/components/icons/SocialIcons';
 import { submitContact } from '@/lib/api';
-import type { Profile, SocialLinks } from '@/lib/types';
+import { parseSocialLinks } from '@/lib/site';
+import type { Profile } from '@/lib/types';
 
 const DEFAULT_CONTACT_PHONE = '+91 7594919014';
 const DEFAULT_CONTACT_PHONE_RAW = '917594919014';
@@ -14,18 +17,16 @@ const DEFAULT_CONTACT_PHONE_RAW = '917594919014';
 function getPhoneFromProfile(profile: Profile | null): { display: string; raw: string } {
   const raw = profile?.phone ?? process.env.NEXT_PUBLIC_CONTACT_PHONE ?? '';
   if (!raw) return { display: DEFAULT_CONTACT_PHONE, raw: DEFAULT_CONTACT_PHONE_RAW };
+
   const cleaned = raw.replace(/[^0-9]/g, '');
   if (cleaned.length === 10 && !raw.startsWith('91')) {
     return { display: `+91 ${cleaned}`, raw: `91${cleaned}` };
   }
+
   return {
     display: raw.startsWith('+') ? raw : `+${raw}`,
     raw: cleaned.startsWith('91') ? cleaned : `91${cleaned}`,
   };
-}
-
-function getWhatsAppUrl(raw: string): string {
-  return `https://wa.me/${raw}`;
 }
 
 interface ContactSectionProps {
@@ -40,21 +41,15 @@ export default function ContactSection({ profile }: ContactSectionProps) {
   const [errorMsg, setErrorMsg] = useState('');
 
   const phoneInfo = getPhoneFromProfile(profile);
-  const waUrl = getWhatsAppUrl(phoneInfo.raw);
-  const telUrl = `tel:${phoneInfo.display}`;
-
-  const socials: SocialLinks = (() => {
-    try {
-      return profile?.socialLinks ? JSON.parse(profile.socialLinks) : {};
-    } catch {
-      return {};
-    }
-  })();
+  const socials = parseSocialLinks(profile?.socialLinks);
+  const waUrl = socials.whatsapp ?? `https://wa.me/${phoneInfo.raw}`;
+  const telUrl = `tel:+${phoneInfo.raw}`;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('loading');
     setErrorMsg('');
+
     try {
       await submitContact({
         name: form.name,
@@ -63,6 +58,8 @@ export default function ContactSection({ profile }: ContactSectionProps) {
         subject: form.subject,
         message: form.message,
       });
+
+      trackEvent('contact_form_submit', { location: 'contact_section' });
       setStatus('success');
       setForm(initialForm);
     } catch (err) {
@@ -72,35 +69,36 @@ export default function ContactSection({ profile }: ContactSectionProps) {
   };
 
   return (
-    <section id="contact" className="max-w-7xl mx-auto px-6 py-24">
-      <div className="w-full h-px gradient-bg opacity-20 mb-24" />
+    <section id="contact" className="mx-auto max-w-7xl px-6 py-24">
+      <div className="mb-24 h-px w-full gradient-bg opacity-20" />
 
       <AnimatedSection>
         <SectionHeader
           label="Get In Touch"
           title="Let's Build Something"
-          subtitle="Have a project in mind? I'd love to hear about it. Drop me a message and I'll get back to you."
+          subtitle="Have a project in mind? Share the brief, the timeline, and the outcome you need."
         />
       </AnimatedSection>
 
-      {/* Prominent WhatsApp + Call CTAs */}
       <AnimatedSection className="mb-10" direction="up">
-        <div className="grid sm:grid-cols-2 gap-4">
-          {/* WhatsApp CTA */}
+        <div className="grid gap-4 sm:grid-cols-2">
           <a
             href={waUrl}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackEvent('whatsapp_click', { location: 'contact_section' })}
             className="group relative overflow-hidden rounded-2xl p-[1px] focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-background"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-green-400 via-emerald-500 to-green-600 opacity-80 group-hover:opacity-100 transition-opacity" />
+            <div className="absolute inset-0 bg-gradient-to-r from-green-400 via-emerald-500 to-green-600 opacity-80 transition-opacity group-hover:opacity-100" />
             <div className="relative flex items-center gap-4 rounded-2xl bg-background/90 px-6 py-5 backdrop-blur-sm">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-green-500/25 shrink-0">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-green-400 to-emerald-600 shadow-lg shadow-green-500/25">
                 <MessageCircle size={24} className="text-white" strokeWidth={2.5} />
               </div>
               <div>
-                <p className="text-xs text-muted uppercase tracking-wider font-medium mb-0.5">WhatsApp</p>
-                <p className="text-sm font-semibold text-primary group-hover:text-green-500 transition-colors">
+                <p className="mb-0.5 text-xs font-medium uppercase tracking-wider text-muted">
+                  WhatsApp
+                </p>
+                <p className="text-sm font-semibold text-primary transition-colors group-hover:text-green-500">
                   Message on WhatsApp
                 </p>
                 <p className="text-xs text-muted">{phoneInfo.display}</p>
@@ -108,19 +106,21 @@ export default function ContactSection({ profile }: ContactSectionProps) {
             </div>
           </a>
 
-          {/* Call CTA */}
           <a
             href={telUrl}
+            onClick={() => trackEvent('call_click', { location: 'contact_section' })}
             className="group relative overflow-hidden rounded-2xl p-[1px] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-accent via-purple-500 to-accent-muted opacity-80 group-hover:opacity-100 transition-opacity" />
+            <div className="absolute inset-0 bg-gradient-to-r from-accent via-purple-500 to-accent-muted opacity-80 transition-opacity group-hover:opacity-100" />
             <div className="relative flex items-center gap-4 rounded-2xl bg-background/90 px-6 py-5 backdrop-blur-sm">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent to-purple-600 flex items-center justify-center shadow-lg shadow-accent/25 shrink-0">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-accent to-purple-600 shadow-lg shadow-accent/25">
                 <Phone size={24} className="text-white" strokeWidth={2.5} />
               </div>
               <div>
-                <p className="text-xs text-muted uppercase tracking-wider font-medium mb-0.5">Direct Call</p>
-                <p className="text-sm font-semibold text-primary group-hover:text-accent transition-colors">
+                <p className="mb-0.5 text-xs font-medium uppercase tracking-wider text-muted">
+                  Direct Call
+                </p>
+                <p className="text-sm font-semibold text-primary transition-colors group-hover:text-accent">
                   Call Directly
                 </p>
                 <p className="text-xs text-muted">{phoneInfo.display}</p>
@@ -130,27 +130,30 @@ export default function ContactSection({ profile }: ContactSectionProps) {
         </div>
       </AnimatedSection>
 
-      <div className="grid lg:grid-cols-5 gap-10">
-        {/* Contact info */}
+      <div className="grid gap-10 lg:grid-cols-5">
         <AnimatedSection className="lg:col-span-2" direction="left">
           <div className="space-y-6">
             {profile?.email && (
               <GlassCard hover={false} className="flex items-center gap-4">
-                <div className="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center shrink-0">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl gradient-bg">
                   <Mail size={18} className="text-white" />
                 </div>
                 <div>
-                  <p className="text-xs text-muted uppercase tracking-wider mb-0.5">Email</p>
+                  <p className="mb-0.5 text-xs uppercase tracking-wider text-muted">Email</p>
                   <a
                     href={`mailto:${profile.email}`}
-                    className="text-sm text-secondary hover:text-accent transition-colors"
+                    onClick={() => trackEvent('email_click', { location: 'contact_section' })}
+                    className="text-sm text-secondary transition-colors hover:text-accent"
                   >
                     {profile.email}
                   </a>
                   {profile.alternateEmail && (
                     <a
                       href={`mailto:${profile.alternateEmail}`}
-                      className="block text-sm text-secondary hover:text-accent transition-colors mt-0.5"
+                      onClick={() =>
+                        trackEvent('email_click', { location: 'contact_section_alternate' })
+                      }
+                      className="mt-0.5 block text-sm text-secondary transition-colors hover:text-accent"
                     >
                       {profile.alternateEmail}
                     </a>
@@ -160,12 +163,16 @@ export default function ContactSection({ profile }: ContactSectionProps) {
             )}
 
             <GlassCard hover={false} className="flex items-center gap-4">
-              <div className="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center shrink-0">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl gradient-bg">
                 <Phone size={18} className="text-white" />
               </div>
               <div>
-                <p className="text-xs text-muted uppercase tracking-wider mb-0.5">Phone</p>
-                <a href={telUrl} className="text-sm text-secondary hover:text-accent transition-colors">
+                <p className="mb-0.5 text-xs uppercase tracking-wider text-muted">Phone</p>
+                <a
+                  href={telUrl}
+                  onClick={() => trackEvent('call_click', { location: 'contact_card' })}
+                  className="text-sm text-secondary transition-colors hover:text-accent"
+                >
                   {phoneInfo.display}
                 </a>
               </div>
@@ -173,28 +180,27 @@ export default function ContactSection({ profile }: ContactSectionProps) {
 
             {profile?.location && (
               <GlassCard hover={false} className="flex items-center gap-4">
-                <div className="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center shrink-0">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl gradient-bg">
                   <MapPin size={18} className="text-white" />
                 </div>
                 <div>
-                  <p className="text-xs text-muted uppercase tracking-wider mb-0.5">
-                    Location
-                  </p>
+                  <p className="mb-0.5 text-xs uppercase tracking-wider text-muted">Location</p>
                   <p className="text-sm text-secondary">{profile.location}</p>
                 </div>
               </GlassCard>
             )}
 
-            {/* Social links */}
-            <div className="flex gap-3 flex-wrap">
-              {socials.GitFork && (
+            <div className="flex flex-wrap gap-3">
+              {socials.github && (
                 <a
-                  href={socials.GitFork}
+                  href={socials.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 glass rounded-xl text-secondary hover:text-primary hover:border-accent transition-all"
+                  aria-label="GitHub"
+                  onClick={() => trackEvent('github_click', { location: 'contact_section' })}
+                  className="glass rounded-xl p-3 text-secondary transition-all hover:border-accent hover:text-primary"
                 >
-                  <GitFork size={20} />
+                  <GitHubIcon width={20} height={20} />
                 </a>
               )}
               {socials.linkedin && (
@@ -202,9 +208,11 @@ export default function ContactSection({ profile }: ContactSectionProps) {
                   href={socials.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 glass rounded-xl text-secondary hover:text-primary hover:border-blue-400 transition-all"
+                  aria-label="LinkedIn"
+                  onClick={() => trackEvent('linkedin_click', { location: 'contact_section' })}
+                  className="glass rounded-xl p-3 text-secondary transition-all hover:border-blue-400 hover:text-primary"
                 >
-                  <Globe size={20} />
+                  <LinkedInIcon width={20} height={20} />
                 </a>
               )}
               {socials.twitter && (
@@ -212,39 +220,52 @@ export default function ContactSection({ profile }: ContactSectionProps) {
                   href={socials.twitter}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 glass rounded-xl text-secondary hover:text-primary hover:border-sky-400 transition-all"
+                  aria-label="X"
+                  onClick={() => trackEvent('x_click', { location: 'contact_section' })}
+                  className="glass rounded-xl p-3 text-secondary transition-all hover:border-sky-400 hover:text-primary"
                 >
-                  <X size={20} />
+                  <XIcon width={20} height={20} />
+                </a>
+              )}
+              {socials.instagram && (
+                <a
+                  href={socials.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  onClick={() => trackEvent('instagram_click', { location: 'contact_section' })}
+                  className="glass rounded-xl p-3 text-secondary transition-all hover:border-pink-400 hover:text-primary"
+                >
+                  <InstagramIcon width={20} height={20} />
                 </a>
               )}
             </div>
           </div>
         </AnimatedSection>
 
-        {/* Form */}
         <AnimatedSection className="lg:col-span-3" direction="right">
           <GlassCard hover={false} className="p-8">
             {status === 'success' ? (
-              <div className="text-center py-8">
-                <div className="w-16 h-16 gradient-bg rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="py-8 text-center">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full gradient-bg">
                   <Send size={28} className="text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-primary mb-2">Message Sent!</h3>
-                <p className="text-secondary text-sm">
-                  Thanks for reaching out. I&apos;ll get back to you shortly.
+                <h3 className="mb-2 text-xl font-bold text-primary">Message Sent</h3>
+                <p className="text-sm text-secondary">
+                  Thanks for reaching out. Expect a reply shortly.
                 </p>
                 <button
                   onClick={() => setStatus('idle')}
-                  className="mt-6 text-sm text-accent hover:text-accent-muted transition-colors"
+                  className="mt-6 text-sm text-accent transition-colors hover:text-accent-muted"
                 >
                   Send another message
                 </button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="grid sm:grid-cols-2 gap-5">
+                <div className="grid gap-5 sm:grid-cols-2">
                   <div>
-                    <label className="block text-xs text-secondary mb-1.5 font-medium">
+                    <label className="mb-1.5 block text-xs font-medium text-secondary">
                       Name *
                     </label>
                     <input
@@ -252,11 +273,11 @@ export default function ContactSection({ profile }: ContactSectionProps) {
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
                       placeholder="John Doe"
-                      className="w-full glass rounded-xl px-4 py-3 text-sm text-primary placeholder-slate-600 focus:outline-none focus:border-accent transition-colors"
+                      className="w-full rounded-xl px-4 py-3 text-sm text-primary glass placeholder-slate-600 transition-colors focus:border-accent focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs text-secondary mb-1.5 font-medium">
+                    <label className="mb-1.5 block text-xs font-medium text-secondary">
                       Email *
                     </label>
                     <input
@@ -265,24 +286,24 @@ export default function ContactSection({ profile }: ContactSectionProps) {
                       value={form.email}
                       onChange={(e) => setForm({ ...form, email: e.target.value })}
                       placeholder="john@example.com"
-                      className="w-full glass rounded-xl px-4 py-3 text-sm text-primary placeholder-slate-600 focus:outline-none focus:border-accent transition-colors"
+                      className="w-full rounded-xl px-4 py-3 text-sm text-primary glass placeholder-slate-600 transition-colors focus:border-accent focus:outline-none"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs text-secondary mb-1.5 font-medium">Phone</label>
+                  <label className="mb-1.5 block text-xs font-medium text-secondary">Phone</label>
                   <input
                     type="tel"
                     value={form.phone}
                     onChange={(e) => setForm({ ...form, phone: e.target.value })}
                     placeholder="+91 7594919014"
-                    className="w-full glass rounded-xl px-4 py-3 text-sm text-primary placeholder-slate-600 focus:outline-none focus:border-accent transition-colors"
+                    className="w-full rounded-xl px-4 py-3 text-sm text-primary glass placeholder-slate-600 transition-colors focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs text-secondary mb-1.5 font-medium">
+                  <label className="mb-1.5 block text-xs font-medium text-secondary">
                     Subject *
                   </label>
                   <input
@@ -290,12 +311,12 @@ export default function ContactSection({ profile }: ContactSectionProps) {
                     value={form.subject}
                     onChange={(e) => setForm({ ...form, subject: e.target.value })}
                     placeholder="Project inquiry"
-                    className="w-full glass rounded-xl px-4 py-3 text-sm text-primary placeholder-slate-600 focus:outline-none focus:border-accent transition-colors"
+                    className="w-full rounded-xl px-4 py-3 text-sm text-primary glass placeholder-slate-600 transition-colors focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs text-secondary mb-1.5 font-medium">
+                  <label className="mb-1.5 block text-xs font-medium text-secondary">
                     Message *
                   </label>
                   <textarea
@@ -303,23 +324,23 @@ export default function ContactSection({ profile }: ContactSectionProps) {
                     rows={5}
                     value={form.message}
                     onChange={(e) => setForm({ ...form, message: e.target.value })}
-                    placeholder="Tell me about your project..."
-                    className="w-full glass rounded-xl px-4 py-3 text-sm text-primary placeholder-slate-600 focus:outline-none focus:border-accent transition-colors resize-none"
+                    placeholder="Tell me about your project, goals, and timeline."
+                    className="w-full resize-none rounded-xl px-4 py-3 text-sm text-primary glass placeholder-slate-600 transition-colors focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 {status === 'error' && (
-                  <p className="text-red-600 dark:text-red-400 text-xs">{errorMsg}</p>
+                  <p className="text-xs text-red-600 dark:text-red-400">{errorMsg}</p>
                 )}
 
                 <button
                   type="submit"
                   disabled={status === 'loading'}
-                  className="w-full gradient-bg py-3 rounded-xl text-white font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-90 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-accent"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white gradient-bg shadow-lg shadow-accent transition-all hover:-translate-y-0.5 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {status === 'loading' ? (
                     <>
-                      <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
                       Sending...
                     </>
                   ) : (
@@ -336,5 +357,3 @@ export default function ContactSection({ profile }: ContactSectionProps) {
     </section>
   );
 }
-
-

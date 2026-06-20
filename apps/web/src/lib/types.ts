@@ -9,6 +9,7 @@ export type ExperienceType = 'WORK' | 'INTERNSHIP' | 'FREELANCE' | 'LEADERSHIP';
 export interface Profile {
   id: string;
   name: string;
+  shortName?: string;
   title: string;
   bio: string;
   headline?: string;
@@ -18,7 +19,16 @@ export interface Profile {
   location?: string;
   avatarUrl?: string;
   resumeUrl?: string;
-  socialLinks?: string;
+  websiteUrl?: string;
+  githubUrl?: string;
+  linkedinUrl?: string;
+  twitterUrl?: string;
+  instagramUrl?: string;
+  whatsappUrl?: string;
+  currentCompany?: string;
+  currentRole?: string;
+  alumniOf?: string;
+  socialLinks?: SocialLinks | Record<string, string> | string;
   isPublished: boolean;
 }
 
@@ -26,6 +36,8 @@ export interface SocialLinks {
   github?: string;
   linkedin?: string;
   twitter?: string;
+  instagram?: string;
+  whatsapp?: string;
   website?: string;
   [key: string]: string | undefined;
 }
@@ -53,6 +65,20 @@ export interface Project {
   coverImageUrl?: string;
   demoUrl?: string;
   githubUrl?: string;
+  role?: string;
+  clientName?: string;
+  duration?: string;
+  status?: string;
+  industry?: string;
+  challenge?: string;
+  approach?: string;
+  outcome?: string;
+  metrics?: string;
+  stackSummary?: string;
+  gallery?: string[];
+  relatedServiceSlugs?: string[];
+  featured?: boolean;
+  order?: number;
   seoTitle?: string;
   seoDescription?: string;
   isPublished: boolean;
@@ -126,7 +152,13 @@ export interface BlogPost {
   summary: string;
   content: string;
   coverImageUrl?: string;
+  coverImageAlt?: string;
   readTime?: number;
+  category?: string;
+  series?: string;
+  canonicalUrl?: string;
+  featured?: boolean;
+  order?: number;
   isPublished: boolean;
   publishedAt?: string;
   seoTitle?: string;
@@ -160,6 +192,31 @@ export interface Award {
   year: number;
   iconUrl?: string;
   url?: string;
+  order: number;
+  isPublished: boolean;
+}
+
+export interface Certification {
+  id: string;
+  name: string;
+  issuer: string;
+  credentialId?: string;
+  issueDate?: string;
+  expiryDate?: string;
+  url?: string;
+  description?: string;
+  order: number;
+  isPublished: boolean;
+}
+
+export interface Talk {
+  id: string;
+  title: string;
+  eventName: string;
+  eventDate?: string;
+  location?: string;
+  url?: string;
+  description?: string;
   order: number;
   isPublished: boolean;
 }
