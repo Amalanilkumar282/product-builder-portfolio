@@ -120,21 +120,23 @@ export default function ProfilePage() {
         <div className="lg:col-span-2 space-y-6">
           <AdminCard title="Basic Information">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs text-secondary mb-1.5 font-medium">First Name</label>
+              <div className="md:col-span-2">
+                <label className="block text-xs text-secondary mb-1.5 font-medium">Full Name</label>
                 <input
                   type="text"
-                  value={formData.firstName || ''}
-                  onChange={(e) => handleChange('firstName', e.target.value)}
+                  value={formData.name || ''}
+                  onChange={(e) => handleChange('name', e.target.value)}
+                  placeholder="Amal Anilkumar"
                   className="w-full glass rounded-xl px-4 py-3 text-sm text-primary focus:outline-none focus:border-accent transition-colors"
                 />
               </div>
-              <div>
-                <label className="block text-xs text-secondary mb-1.5 font-medium">Last Name</label>
+              <div className="md:col-span-2">
+                <label className="block text-xs text-secondary mb-1.5 font-medium">Short Name / Alias</label>
                 <input
                   type="text"
-                  value={formData.lastName || ''}
-                  onChange={(e) => handleChange('lastName', e.target.value)}
+                  value={formData.shortName || ''}
+                  onChange={(e) => handleChange('shortName', e.target.value)}
+                  placeholder="Amal A"
                   className="w-full glass rounded-xl px-4 py-3 text-sm text-primary focus:outline-none focus:border-accent transition-colors"
                 />
               </div>
@@ -240,6 +242,43 @@ export default function ProfilePage() {
                   value={formData.resumeUrl || ''}
                   onChange={(e) => handleChange('resumeUrl', e.target.value)}
                   placeholder="https://example.com/resume.pdf"
+                  className="w-full glass rounded-xl px-4 py-3 text-sm text-primary focus:outline-none focus:border-accent transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-secondary mb-1.5 font-medium">Website URL</label>
+                <input
+                  type="url"
+                  value={formData.websiteUrl || ''}
+                  onChange={(e) => handleChange('websiteUrl', e.target.value)}
+                  placeholder="https://amalanilkumar.com"
+                  className="w-full glass rounded-xl px-4 py-3 text-sm text-primary focus:outline-none focus:border-accent transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-secondary mb-1.5 font-medium">Current Company</label>
+                <input
+                  type="text"
+                  value={formData.currentCompany || ''}
+                  onChange={(e) => handleChange('currentCompany', e.target.value)}
+                  className="w-full glass rounded-xl px-4 py-3 text-sm text-primary focus:outline-none focus:border-accent transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-secondary mb-1.5 font-medium">Current Role</label>
+                <input
+                  type="text"
+                  value={formData.currentRole || ''}
+                  onChange={(e) => handleChange('currentRole', e.target.value)}
+                  className="w-full glass rounded-xl px-4 py-3 text-sm text-primary focus:outline-none focus:border-accent transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-secondary mb-1.5 font-medium">Alma Mater</label>
+                <input
+                  type="text"
+                  value={formData.alumniOf || ''}
+                  onChange={(e) => handleChange('alumniOf', e.target.value)}
                   className="w-full glass rounded-xl px-4 py-3 text-sm text-primary focus:outline-none focus:border-accent transition-colors"
                 />
               </div>

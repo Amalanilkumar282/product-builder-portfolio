@@ -1,0 +1,71 @@
+-- AlterTable
+ALTER TABLE "Profile"
+ADD COLUMN IF NOT EXISTS "shortName" TEXT,
+ADD COLUMN IF NOT EXISTS "websiteUrl" TEXT,
+ADD COLUMN IF NOT EXISTS "githubUrl" TEXT,
+ADD COLUMN IF NOT EXISTS "linkedinUrl" TEXT,
+ADD COLUMN IF NOT EXISTS "twitterUrl" TEXT,
+ADD COLUMN IF NOT EXISTS "instagramUrl" TEXT,
+ADD COLUMN IF NOT EXISTS "whatsappUrl" TEXT,
+ADD COLUMN IF NOT EXISTS "currentCompany" TEXT,
+ADD COLUMN IF NOT EXISTS "currentRole" TEXT,
+ADD COLUMN IF NOT EXISTS "alumniOf" TEXT;
+
+-- AlterTable
+ALTER TABLE "Project"
+ADD COLUMN IF NOT EXISTS "role" TEXT,
+ADD COLUMN IF NOT EXISTS "clientName" TEXT,
+ADD COLUMN IF NOT EXISTS "duration" TEXT,
+ADD COLUMN IF NOT EXISTS "status" TEXT,
+ADD COLUMN IF NOT EXISTS "industry" TEXT,
+ADD COLUMN IF NOT EXISTS "challenge" TEXT,
+ADD COLUMN IF NOT EXISTS "approach" TEXT,
+ADD COLUMN IF NOT EXISTS "outcome" TEXT,
+ADD COLUMN IF NOT EXISTS "metrics" TEXT,
+ADD COLUMN IF NOT EXISTS "stackSummary" TEXT,
+ADD COLUMN IF NOT EXISTS "gallery" JSONB NOT NULL DEFAULT '[]'::jsonb,
+ADD COLUMN IF NOT EXISTS "relatedServiceSlugs" JSONB NOT NULL DEFAULT '[]'::jsonb,
+ADD COLUMN IF NOT EXISTS "featured" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN IF NOT EXISTS "order" INTEGER NOT NULL DEFAULT 0;
+
+-- AlterTable
+ALTER TABLE "BlogPost"
+ADD COLUMN IF NOT EXISTS "coverImageAlt" TEXT,
+ADD COLUMN IF NOT EXISTS "category" TEXT,
+ADD COLUMN IF NOT EXISTS "series" TEXT,
+ADD COLUMN IF NOT EXISTS "canonicalUrl" TEXT,
+ADD COLUMN IF NOT EXISTS "featured" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN IF NOT EXISTS "order" INTEGER NOT NULL DEFAULT 0;
+
+-- CreateTable
+CREATE TABLE IF NOT EXISTS "Certification" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "issuer" TEXT NOT NULL,
+    "credentialId" TEXT,
+    "issueDate" TIMESTAMP(3),
+    "expiryDate" TIMESTAMP(3),
+    "url" TEXT,
+    "description" TEXT,
+    "order" INTEGER NOT NULL DEFAULT 0,
+    "isPublished" BOOLEAN NOT NULL DEFAULT true,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    CONSTRAINT "Certification_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE IF NOT EXISTS "Talk" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "eventName" TEXT NOT NULL,
+    "eventDate" TIMESTAMP(3),
+    "location" TEXT,
+    "url" TEXT,
+    "description" TEXT,
+    "order" INTEGER NOT NULL DEFAULT 0,
+    "isPublished" BOOLEAN NOT NULL DEFAULT true,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    CONSTRAINT "Talk_pkey" PRIMARY KEY ("id")
+);

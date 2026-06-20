@@ -53,44 +53,68 @@ model Service {
   isPublished    Boolean  @default(false)
   seoTitle       String?
   seoDescription String?
-  tags           Tag[]
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+  tags           Tag[]    @relation("ServiceToTag")
 }
 
 model Project {
-  id             String   @id @default(uuid())
-  title          String
-  slug           String   @unique
-  summary        String
-  content        String   @db.Text
-  coverImageUrl  String?
-  demoUrl        String?
-  githubUrl      String?
-  isPublished    Boolean  @default(false)
-  seoTitle       String?
-  seoDescription String?
-  tags           Tag[]
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id                    String   @id @default(uuid())
+  title                 String
+  slug                  String   @unique
+  summary               String
+  content               String   @db.Text
+  coverImageUrl         String?
+  demoUrl               String?
+  githubUrl             String?
+  role                  String?
+  clientName            String?
+  duration              String?
+  status                String?
+  industry              String?
+  challenge             String?  @db.Text
+  approach              String?  @db.Text
+  outcome               String?  @db.Text
+  metrics               String?  @db.Text
+  stackSummary          String?
+  gallery               Json     @default("[]")
+  relatedServiceSlugs   Json     @default("[]")
+  featured              Boolean  @default(false)
+  order                 Int      @default(0)
+  isPublished           Boolean  @default(false)
+  seoTitle              String?
+  seoDescription        String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  tags                  Tag[]    @relation("ProjectToTag")
 }
 
 model Profile {
-  id          String   @id @default(uuid())
-  name        String
-  title       String
-  bio         String   @db.Text
-  headline    String
-  avatarUrl   String?
-  resumeUrl   String?
+  id             String   @id @default(uuid())
+  name           String
+  shortName      String?
+  title          String
+  bio            String   @db.Text
+  headline       String
+  avatarUrl      String?
+  resumeUrl      String?
   email          String
   alternateEmail String?
-  phone       String?
+  phone          String?
   location       String?
+  websiteUrl     String?
+  githubUrl      String?
+  linkedinUrl    String?
+  twitterUrl     String?
+  instagramUrl   String?
+  whatsappUrl    String?
+  currentCompany String?
+  currentRole    String?
+  alumniOf       String?
   socialLinks    Json     @default("{}")
-  isPublished Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isPublished    Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 model Skill {
@@ -153,10 +177,10 @@ model Tag {
   id        String     @id @default(uuid())
   name      String
   slug      String     @unique
-  projects  Project[]
-  services  Service[]
-  blogPosts BlogPost[]
   createdAt DateTime   @default(now())
+  blogPosts BlogPost[] @relation("BlogPostToTag")
+  projects  Project[]  @relation("ProjectToTag")
+  services  Service[]  @relation("ServiceToTag")
 }
 
 model BlogPost {
@@ -166,14 +190,49 @@ model BlogPost {
   summary        String
   content        String    @db.Text
   coverImageUrl  String?
+  coverImageAlt  String?
   readTime       Int       @default(0)
+  category       String?
+  series         String?
+  canonicalUrl   String?
+  featured       Boolean   @default(false)
+  order          Int       @default(0)
   isPublished    Boolean   @default(false)
   publishedAt    DateTime?
   seoTitle       String?
   seoDescription String?
-  tags           Tag[]
+  tags           Tag[]     @relation("BlogPostToTag")
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
+}
+
+model Certification {
+  id           String   @id @default(uuid())
+  name         String
+  issuer       String
+  credentialId String?
+  issueDate    DateTime?
+  expiryDate   DateTime?
+  url          String?
+  description  String?  @db.Text
+  order        Int      @default(0)
+  isPublished  Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Talk {
+  id          String   @id @default(uuid())
+  title       String
+  eventName   String
+  eventDate   DateTime?
+  location    String?
+  url         String?
+  description String?  @db.Text
+  order       Int      @default(0)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model ContactInquiry {
