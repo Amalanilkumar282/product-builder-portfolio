@@ -1,101 +1,95 @@
-﻿import Link from 'next/link';
-import { GitFork, Globe, X, Mail, Code2, Phone, MessageCircle } from 'lucide-react';
-import type { SocialLinks } from '@/lib/types';
+'use client';
+
+import Link from 'next/link';
+import { Code2, Mail, MessageCircle, Phone } from 'lucide-react';
+import { trackEvent } from '@/lib/analytics';
+import { GitHubIcon, InstagramIcon, LinkedInIcon, XIcon } from '@/components/icons/SocialIcons';
+import { CANONICAL_NAME, DEFAULT_BIO, parseSocialLinks } from '@/lib/site';
+import type { Profile } from '@/lib/types';
 
 const DEFAULT_CONTACT_PHONE = process.env.NEXT_PUBLIC_CONTACT_PHONE ?? '+917594919014';
-const DEFAULT_CONTACT_PHONE_RAW = process.env.NEXT_PUBLIC_CONTACT_PHONE ?? '917594919014';
 
-function getContactPhone(): { display: string; raw: string } {
-  const raw = DEFAULT_CONTACT_PHONE_RAW.replace(/[^0-9]/g, '');
-  if (raw.length === 10 && !DEFAULT_CONTACT_PHONE.startsWith('91')) {
-    return { display: `+91 ${raw}`, raw: `91${raw}` };
+function getContactPhone(phone?: string): { display: string; raw: string } {
+  const source = phone ?? DEFAULT_CONTACT_PHONE;
+  const digits = source.replace(/[^0-9]/g, '');
+
+  if (digits.length === 10 && !source.startsWith('+91') && !digits.startsWith('91')) {
+    return { display: `+91 ${digits}`, raw: `91${digits}` };
   }
+
+  const raw = digits.startsWith('91') ? digits : `91${digits}`;
   return {
-    display: DEFAULT_CONTACT_PHONE.startsWith('+') ? DEFAULT_CONTACT_PHONE : `+${raw}`,
-    raw: raw.startsWith('91') ? raw : `91${raw}`,
+    display: source.startsWith('+') ? source : `+${raw}`,
+    raw,
   };
 }
 
-const phoneRaw = getContactPhone().raw;
-const waUrl = `https://wa.me/${phoneRaw}`;
-const telUrl = `tel:+${phoneRaw}`;
-
 const quickLinks = [
-  { href: '/#services', label: 'Services' },
-  { href: '/#projects', label: 'Projects' },
-  { href: '/#skills', label: 'Skills' },
+  { href: '/about', label: 'About' },
+  { href: '/projects', label: 'Projects' },
+  { href: '/services', label: 'Services' },
   { href: '/blog', label: 'Blog' },
-  { href: '/#contact', label: 'Contact' },
+  { href: '/open-source', label: 'Open Source' },
+  { href: '/contact', label: 'Contact' },
 ];
 
 interface FooterProps {
-  profile?: {
-    name: string;
-    bio?: string;
-    email: string;
-    socialLinks?: string;
-  } | null;
+  profile?: Pick<Profile, 'name' | 'bio' | 'email' | 'phone' | 'socialLinks'> | null;
 }
 
 export default function Footer({ profile }: FooterProps) {
   const year = new Date().getFullYear();
-  const name = profile?.name ?? 'Amal Anilkumar';
-  const bio = profile?.bio ?? 'Passionate about a world where tech and nature thrive together.';
+  const name = profile?.name ?? CANONICAL_NAME;
+  const bio = profile?.bio ?? DEFAULT_BIO;
   const email = profile?.email ?? '';
-  const socials: SocialLinks = (() => {
-    try {
-      return profile?.socialLinks ? JSON.parse(profile.socialLinks) : {};
-    } catch {
-      return {};
-    }
-  })();
+  const socials = parseSocialLinks(profile?.socialLinks);
+  const phone = getContactPhone(profile?.phone);
+  const waUrl = socials.whatsapp ?? `https://wa.me/${phone.raw}`;
+  const telUrl = `tel:+${phone.raw}`;
 
   return (
-    <footer className="relative border-t border-default mt-24">
-      {/* Gradient top line */}
-      <div className="absolute top-0 left-0 right-0 h-px gradient-bg opacity-50" />
+    <footer className="relative mt-24 border-t border-default">
+      <div className="absolute left-0 right-0 top-0 h-px gradient-bg opacity-50" />
 
-      <div className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-3 gap-12">
-        {/* Brand */}
+      <div className="mx-auto grid max-w-7xl gap-12 px-6 py-16 md:grid-cols-3">
         <div>
-          <Link href="/" className="flex items-center gap-2 mb-4">
-            <div className="w-8 h-8 gradient-bg rounded-lg flex items-center justify-center">
+          <Link href="/" className="mb-4 flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg gradient-bg">
               <Code2 size={16} className="text-white" />
             </div>
             <span className="font-bold gradient-text">{name}</span>
           </Link>
-          <p className="text-sm text-muted leading-relaxed max-w-xs">{bio}</p>
+          <p className="max-w-xs text-sm leading-relaxed text-muted">{bio}</p>
         </div>
 
-        {/* Quick links */}
         <div>
-          <h3 className="text-sm font-semibold text-secondary mb-4 uppercase tracking-widest">
+          <h3 className="mb-4 text-sm font-semibold uppercase tracking-widest text-secondary">
             Navigation
           </h3>
           <ul className="space-y-2">
-            {quickLinks.map((l) => (
-              <li key={l.href}>
+            {quickLinks.map((link) => (
+              <li key={link.href}>
                 <Link
-                  href={l.href}
-                  className="text-sm text-muted hover:text-secondary transition-colors"
+                  href={link.href}
+                  className="text-sm text-muted transition-colors hover:text-secondary"
                 >
-                  {l.label}
+                  {link.label}
                 </Link>
               </li>
             ))}
           </ul>
         </div>
 
-        {/* Social + contact */}
         <div>
-          <h3 className="text-sm font-semibold text-secondary mb-4 uppercase tracking-widest">
+          <h3 className="mb-4 text-sm font-semibold uppercase tracking-widest text-secondary">
             Connect
           </h3>
-          <div className="flex flex-wrap gap-3 mb-4">
+          <div className="mb-4 flex flex-wrap gap-3">
             {email && (
               <a
                 href={`mailto:${email}`}
-                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-accent transition-all"
+                onClick={() => trackEvent('email_click', { location: 'footer' })}
+                className="glass rounded-xl p-2.5 text-secondary transition-all hover:border-accent hover:text-primary"
                 aria-label="Email"
               >
                 <Mail size={18} />
@@ -105,27 +99,30 @@ export default function Footer({ profile }: FooterProps) {
               href={waUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2.5 glass rounded-xl text-secondary hover:text-green-500 hover:border-green-400 transition-all"
+              onClick={() => trackEvent('whatsapp_click', { location: 'footer' })}
+              className="glass rounded-xl p-2.5 text-secondary transition-all hover:border-green-400 hover:text-green-500"
               aria-label="WhatsApp"
             >
               <MessageCircle size={18} />
             </a>
             <a
               href={telUrl}
-              className="p-2.5 glass rounded-xl text-secondary hover:text-accent hover:border-accent transition-all"
+              onClick={() => trackEvent('call_click', { location: 'footer' })}
+              className="glass rounded-xl p-2.5 text-secondary transition-all hover:border-accent hover:text-accent"
               aria-label="Call"
             >
               <Phone size={18} />
             </a>
-            {socials.GitFork && (
+            {socials.github && (
               <a
-                href={socials.GitFork}
+                href={socials.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-accent transition-all"
-                aria-label="GitFork"
+                onClick={() => trackEvent('github_click', { location: 'footer' })}
+                className="glass rounded-xl p-2.5 text-secondary transition-all hover:border-accent hover:text-primary"
+                aria-label="GitHub"
               >
-                <GitFork size={18} />
+                <GitHubIcon width={18} height={18} />
               </a>
             )}
             {socials.linkedin && (
@@ -133,10 +130,11 @@ export default function Footer({ profile }: FooterProps) {
                 href={socials.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-blue-400 transition-all"
+                onClick={() => trackEvent('linkedin_click', { location: 'footer' })}
+                className="glass rounded-xl p-2.5 text-secondary transition-all hover:border-blue-400 hover:text-primary"
                 aria-label="LinkedIn"
               >
-                <Globe size={18} />
+                <LinkedInIcon width={18} height={18} />
               </a>
             )}
             {socials.twitter && (
@@ -144,16 +142,33 @@ export default function Footer({ profile }: FooterProps) {
                 href={socials.twitter}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-sky-400 transition-all"
-                aria-label="Twitter"
+                onClick={() => trackEvent('x_click', { location: 'footer' })}
+                className="glass rounded-xl p-2.5 text-secondary transition-all hover:border-sky-400 hover:text-primary"
+                aria-label="X"
               >
-                <X size={18} />
+                <XIcon width={18} height={18} />
+              </a>
+            )}
+            {socials.instagram && (
+              <a
+                href={socials.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackEvent('instagram_click', { location: 'footer' })}
+                className="glass rounded-xl p-2.5 text-secondary transition-all hover:border-pink-400 hover:text-primary"
+                aria-label="Instagram"
+              >
+                <InstagramIcon width={18} height={18} />
               </a>
             )}
           </div>
           {email && (
             <p className="text-sm text-muted">
-              <a href={`mailto:${email}`} className="hover:text-accent transition-colors">
+              <a
+                href={`mailto:${email}`}
+                onClick={() => trackEvent('email_click', { location: 'footer_text' })}
+                className="transition-colors hover:text-accent"
+              >
                 {email}
               </a>
             </p>
@@ -162,10 +177,8 @@ export default function Footer({ profile }: FooterProps) {
       </div>
 
       <div className="border-t border-default py-6 text-center text-xs text-muted">
-        © {year} {name}. Built with Next.js & NestJS.
+        © {year} {name}. Built with Next.js and NestJS.
       </div>
     </footer>
   );
 }
-
-

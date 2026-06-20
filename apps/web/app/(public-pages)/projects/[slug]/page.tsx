@@ -3,11 +3,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ExternalLink, GitFork, ArrowLeft, Calendar } from 'lucide-react';
-import { fetchProject, fetchProjects } from '@/lib/api';
+import { fetchProject, fetchProjects, fetchServices } from '@/lib/api';
 import AnimatedSection from '@/components/ui/AnimatedSection';
 import Badge from '@/components/ui/Badge';
 import { formatDate } from '@/lib/utils';
-import { JsonLd, buildProjectSchema, buildBreadcrumbSchema } from '@/lib/jsonld';
+import MarkdownContent from '@/components/content/MarkdownContent';
+import { JsonLd, buildProjectSchema, buildBreadcrumbSchema } from '@/lib/entity-jsonld';
+import { SITE_URL } from '@/lib/site';
 
 export async function generateStaticParams() {
   const projects = await fetchProjects();
@@ -22,7 +24,6 @@ export async function generateMetadata({
   const { slug } = await params;
   const project = await fetchProject(slug);
   if (!project) return {};
-  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3001';
   const ogImage = project.coverImageUrl ?? `${SITE_URL}/og?title=${encodeURIComponent(project.title)}&subtitle=${encodeURIComponent(project.summary ?? '')}&type=project`;
   return {
     title: project.seoTitle ?? project.title,
@@ -39,10 +40,22 @@ export default async function ProjectDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const project = await fetchProject(slug);
+  const [project, services, projects] = await Promise.all([
+    fetchProject(slug),
+    fetchServices(),
+    fetchProjects(),
+  ]);
   if (!project) notFound();
 
-  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3001';
+  const relatedProjects = projects
+    .filter((item) => item.slug !== project.slug)
+    .filter((item) => item.tags.some((tag) => project.tags.some((projectTag) => projectTag.slug === tag.slug)))
+    .slice(0, 3);
+  const relatedServices = services
+    .filter((service) =>
+      service.tags.some((tag) => project.tags.some((projectTag) => projectTag.slug === tag.slug)),
+    )
+    .slice(0, 3);
 
   return (
     <div className="min-h-screen pt-24 pb-20">
@@ -98,6 +111,15 @@ export default async function ProjectDetailPage({
 
           <p className="text-secondary text-lg mb-6">{project.summary}</p>
 
+          <div className="glass rounded-2xl p-5 mb-8 border border-accent">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent mb-2">
+              AI-Readable Summary
+            </p>
+            <p className="text-sm text-secondary leading-relaxed">
+              {project.title} is a project by Amal Anilkumar. It focuses on {project.industry ?? 'software product development'} using {project.stackSummary ?? 'a modern TypeScript stack'}. This page documents the build context, technical approach, and outcome.
+            </p>
+          </div>
+
           <div className="flex flex-wrap items-center gap-4 mb-8">
             {project.demoUrl && (
               <a
@@ -125,14 +147,54 @@ export default async function ProjectDetailPage({
           </div>
         </AnimatedSection>
 
-        {/* Content */}
         <AnimatedSection delay={0.1}>
           <div className="glass rounded-2xl p-8 md:p-10">
-            <div className="prose dark:prose-invert prose-slate max-w-none prose-headings:font-bold prose-a:text-purple-400 prose-a:no-underline hover:prose-a:underline prose-code:text-purple-300 prose-pre:bg-elevated prose-pre:border prose-pre:border-default">
-              {project.content}
-            </div>
+            <MarkdownContent className="prose dark:prose-invert prose-slate max-w-none prose-headings:font-bold prose-a:text-purple-400 prose-a:no-underline hover:prose-a:underline prose-code:text-purple-300 prose-pre:bg-elevated prose-pre:border prose-pre:border-default" content={project.content} />
           </div>
         </AnimatedSection>
+
+        {(relatedServices.length > 0 || relatedProjects.length > 0) && (
+          <AnimatedSection delay={0.15} className="mt-10 grid gap-6 md:grid-cols-2">
+            {relatedServices.length > 0 && (
+              <div className="glass rounded-2xl p-6">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent mb-4">
+                  Related Services
+                </p>
+                <div className="grid gap-3">
+                  {relatedServices.map((service) => (
+                    <a
+                      key={service.id}
+                      href={`/services/${service.slug}`}
+                      className="rounded-xl border border-default px-4 py-3 hover:border-accent transition-colors"
+                    >
+                      <p className="text-sm font-semibold text-primary">{service.title}</p>
+                      <p className="text-sm text-secondary">{service.description}</p>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+            {relatedProjects.length > 0 && (
+              <div className="glass rounded-2xl p-6">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent mb-4">
+                  Related Work
+                </p>
+                <div className="grid gap-3">
+                  {relatedProjects.map((item) => (
+                    <a
+                      key={item.id}
+                      href={`/projects/${item.slug}`}
+                      className="rounded-xl border border-default px-4 py-3 hover:border-accent transition-colors"
+                    >
+                      <p className="text-sm font-semibold text-primary">{item.title}</p>
+                      <p className="text-sm text-secondary">{item.summary}</p>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+          </AnimatedSection>
+        )}
       </div>
     </div>
   );

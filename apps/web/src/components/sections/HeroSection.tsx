@@ -3,23 +3,18 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowDown, Download, GitFork, ExternalLink, X, Mail } from 'lucide-react';
-import type { Profile, SocialLinks } from '@/lib/types';
+import { ArrowDown, Download, Mail } from 'lucide-react';
+import { trackEvent } from '@/lib/analytics';
+import { GitHubIcon, InstagramIcon, LinkedInIcon, XIcon } from '@/components/icons/SocialIcons';
+import { CANONICAL_NAME, DEFAULT_TITLE, parseSocialLinks } from '@/lib/site';
+import type { Profile } from '@/lib/types';
 
 interface HeroSectionProps {
   profile: Profile | null;
 }
 
 export default function HeroSection({ profile }: HeroSectionProps) {
-  const socials: SocialLinks = (() => {
-    try {
-      return profile?.socialLinks ? JSON.parse(profile.socialLinks) : {};
-    } catch {
-      return {};
-    }
-  })();
-
-  const firstName = profile?.name?.split(' ')[0] ?? 'Amal';
+  const socials = parseSocialLinks(profile?.socialLinks);
 
   return (
     <section
@@ -61,7 +56,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
             className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] text-primary mb-4"
           >
             Hi, I&apos;m{' '}
-            <span className="gradient-text">{profile?.name ?? 'Amal Anilkumar'}</span>
+            <span className="gradient-text">{profile?.name ?? CANONICAL_NAME}</span>
           </motion.h1>
 
           <motion.p
@@ -70,7 +65,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
             transition={{ duration: 0.55, delay: 0.2 }}
             className="text-xl sm:text-2xl font-medium text-secondary mb-2"
           >
-            {profile?.title ?? 'Full-Stack & Mobile Engineer'}
+            {profile?.title ?? DEFAULT_TITLE}
             {profile?.location && (
               <span className="text-base ml-3 text-muted">📍 {profile.location}</span>
             )}
@@ -118,6 +113,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
               <a
                 href={profile.resumeUrl}
                 download
+                onClick={() => trackEvent('resume_click', { location: 'hero' })}
                 className="glass px-6 py-3 rounded-xl text-secondary font-semibold text-sm flex items-center gap-2 hover:border-accent hover:text-primary hover:-translate-y-0.5 transition-all"
               >
                 <Download size={15} /> Resume
@@ -145,9 +141,11 @@ export default function HeroSection({ profile }: HeroSectionProps) {
                 href={socials.github}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="GitHub"
+                onClick={() => trackEvent('github_click', { location: 'hero' })}
                 className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-accent transition-all"
               >
-                <GitFork size={18} />
+                <GitHubIcon width={18} height={18} />
               </a>
             )}
             {socials.linkedin && (
@@ -155,9 +153,11 @@ export default function HeroSection({ profile }: HeroSectionProps) {
                 href={socials.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                onClick={() => trackEvent('linkedin_click', { location: 'hero' })}
                 className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-blue-400 transition-all"
               >
-                <ExternalLink size={18} />
+                <LinkedInIcon width={18} height={18} />
               </a>
             )}
             {socials.twitter && (
@@ -165,9 +165,23 @@ export default function HeroSection({ profile }: HeroSectionProps) {
                 href={socials.twitter}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="X"
+                onClick={() => trackEvent('x_click', { location: 'hero' })}
                 className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-sky-400 transition-all"
               >
-                <X size={18} />
+                <XIcon width={18} height={18} />
+              </a>
+            )}
+            {socials.instagram && (
+              <a
+                href={socials.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                onClick={() => trackEvent('instagram_click', { location: 'hero' })}
+                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-pink-400 transition-all"
+              >
+                <InstagramIcon width={18} height={18} />
               </a>
             )}
           </motion.div>

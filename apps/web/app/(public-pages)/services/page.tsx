@@ -6,6 +6,7 @@ import GlassCard from '@/components/ui/GlassCard';
 import AnimatedSection from '@/components/ui/AnimatedSection';
 import SectionHeader from '@/components/ui/SectionHeader';
 import Badge from '@/components/ui/Badge';
+import { JsonLd, buildCollectionPageSchema } from '@/lib/entity-jsonld';
 
 export const metadata: Metadata = {
   title: 'Services',
@@ -17,6 +18,13 @@ export default async function ServicesPage() {
 
   return (
     <div className="min-h-screen pt-24 pb-20">
+      <JsonLd
+        data={buildCollectionPageSchema({
+          path: '/services',
+          title: 'Services',
+          description: 'Client services offered by Amal Anilkumar across full-stack product development, backend systems, and AI integrations.',
+        })}
+      />
       <div className="max-w-7xl mx-auto px-6">
         <AnimatedSection className="mb-4">
           <Link

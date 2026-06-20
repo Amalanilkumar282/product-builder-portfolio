@@ -8,6 +8,7 @@ import AnimatedSection from '@/components/ui/AnimatedSection';
 import SectionHeader from '@/components/ui/SectionHeader';
 import Badge from '@/components/ui/Badge';
 import { formatDate } from '@/lib/utils';
+import { JsonLd, buildCollectionPageSchema } from '@/lib/entity-jsonld';
 
 export const metadata: Metadata = {
   title: 'Blog',
@@ -19,6 +20,13 @@ export default async function BlogPage() {
 
   return (
     <div className="min-h-screen pt-24 pb-20">
+      <JsonLd
+        data={buildCollectionPageSchema({
+          path: '/blog',
+          title: 'Blog',
+          description: 'Technical articles, engineering notes, product lessons, and architecture write-ups by Amal Anilkumar.',
+        })}
+      />
       <div className="max-w-7xl mx-auto px-6">
         <AnimatedSection className="mb-4">
           <Link
