@@ -23,6 +23,9 @@ import AchievementsSection from '@/components/sections/AchievementsSection';
 import TestimonialsSection from '@/components/sections/TestimonialsSection';
 import BlogSection from '@/components/sections/BlogSection';
 import ContactSection from '@/components/sections/ContactSection';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import { JsonLd, buildPersonSchema, buildWebSiteSchema } from '@/lib/jsonld';
 
 export const metadata: Metadata = {
   title: 'Amal A \u2014 Product Builder \u0026 Full-Stack Engineer',
@@ -55,20 +58,29 @@ export default async function HomePage() {
     fetchAwards(),
   ]);
 
+  const ownerName = 'Amal A';
+
   return (
     <>
-      <HeroSection profile={profile} />
-      <StatsBar />
-      <ServicesSection services={services} />
-      <ProjectsSection projects={projects} />
-      <SkillsSection skills={skills} />
-      <TechStackSection techStack={techStack} />
-      <ExperienceSection experience={experience} />
-      <EducationSection education={education} />
-      <AchievementsSection awards={awards} />
-      <TestimonialsSection testimonials={testimonials} />
-      <BlogSection posts={blogPosts} />
-      <ContactSection profile={profile} />
+      {profile && (
+        <JsonLd data={[buildWebSiteSchema(), buildPersonSchema({ name: profile.name, bio: profile.bio, email: profile.email, avatarUrl: profile.avatarUrl, sameAs: ['https://github.com/Amalanilkumar282', 'https://www.linkedin.com/in/amal-a-99360b31b/'] })]} />
+      )}
+      <Navbar ownerName={profile?.name ?? ownerName} />
+      <main>
+        <HeroSection profile={profile} />
+        <StatsBar />
+        <ServicesSection services={services} />
+        <ProjectsSection projects={projects} />
+        <SkillsSection skills={skills} />
+        <TechStackSection techStack={techStack} />
+        <ExperienceSection experience={experience} />
+        <EducationSection education={education} />
+        <AchievementsSection awards={awards} />
+        <TestimonialsSection testimonials={testimonials} />
+        <BlogSection posts={blogPosts} />
+        <ContactSection profile={profile} />
+      </main>
+      <Footer profile={profile} />
     </>
   );
 }
