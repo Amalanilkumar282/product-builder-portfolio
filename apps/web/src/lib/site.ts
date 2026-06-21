@@ -13,8 +13,8 @@ export const DEFAULT_SOCIALS: SocialLinks = {
   website: SITE_URL,
   github: 'https://github.com/Amalanilkumar282',
   linkedin: 'https://www.linkedin.com/in/amal-a-99360b31b/',
-  twitter: 'https://x.com/amal_anilkumar',
-  instagram: 'https://www.instagram.com/amal_anilkumar/',
+  twitter: 'https://x.com/amal_anilkumar_',
+  instagram: 'https://www.instagram.com/amal_anilkumar._',
   whatsapp: 'https://wa.me/917594919014',
 };
 
