@@ -15,7 +15,7 @@ async function bootstrap() {
 
   // CORS — configured from environment
   const allowedOrigins = (
-    process.env.ALLOWED_ORIGINS ?? 'http://localhost:3001'
+    process.env.ALLOWED_ORIGINS ?? 'http://localhost:3001,https://amalanilkumar.com,https://www.amalanilkumar.com'
   )
     .split(',')
     .map((o) => o.trim());
