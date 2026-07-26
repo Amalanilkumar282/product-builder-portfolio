@@ -6,6 +6,7 @@ import { JsonLd, buildCollectionPageSchema, buildPersonSchema } from '@/lib/enti
 export const metadata: Metadata = {
   title: 'Experience',
   description: 'Work history, internships, leadership roles, and engineering experience of Amal Anilkumar.',
+  alternates: { canonical: '/experience' },
 };
 
 export default async function ExperiencePage() {

@@ -2,6 +2,11 @@ import type { MetadataRoute } from 'next';
 import { fetchProjects, fetchServices, fetchBlogPosts } from '@/lib/api';
 import { SITE_URL } from '@/lib/site';
 
+// Refresh the sitemap itself every 5 minutes so newly published content is
+// discoverable even if the on-demand revalidation webhook (see app/api/revalidate)
+// is ever missed.
+export const revalidate = 300;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [projects, services, blogPosts] = await Promise.all([
     fetchProjects(),

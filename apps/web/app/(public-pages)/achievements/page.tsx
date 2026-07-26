@@ -6,6 +6,7 @@ import { JsonLd, buildCollectionPageSchema } from '@/lib/entity-jsonld';
 export const metadata: Metadata = {
   title: 'Achievements',
   description: 'Awards, recognitions, and milestone achievements of Amal Anilkumar.',
+  alternates: { canonical: '/achievements' },
 };
 
 export default async function AchievementsPage() {

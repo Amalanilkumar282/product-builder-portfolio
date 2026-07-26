@@ -6,6 +6,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
+import { notifySeoIndexing } from '../common/utils/seo-notify.util';
 
 @Injectable()
 export class ServiceService {
@@ -20,7 +21,7 @@ export class ServiceService {
     if (existing)
       throw new BadRequestException('Service with this slug already exists');
 
-    return this.prisma.service.create({
+    const service = await this.prisma.service.create({
       data: {
         ...rest,
         tags: tagIds?.length
@@ -29,6 +30,9 @@ export class ServiceService {
       },
       include: { tags: true },
     });
+
+    if (service.isPublished) notifySeoIndexing('service', `/services/${service.slug}`);
+    return service;
   }
 
   findAll() {
@@ -60,7 +64,7 @@ export class ServiceService {
       }
     }
 
-    return this.prisma.service.update({
+    const service = await this.prisma.service.update({
       where: { id },
       data: {
         ...rest,
@@ -71,6 +75,9 @@ export class ServiceService {
       },
       include: { tags: true },
     });
+
+    if (service.isPublished) notifySeoIndexing('service', `/services/${service.slug}`);
+    return service;
   }
 
   async remove(id: string) {

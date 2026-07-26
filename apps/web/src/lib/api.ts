@@ -41,20 +41,20 @@ export function fetchProfile(): Promise<Profile | null> {
 
 // ─── Services ──────────────────────────────────────────
 export async function fetchServices(): Promise<Service[]> {
-  return (await safeFetch<Service[]>(`${API_URL}/services`, { next: { revalidate: 60 } })) ?? [];
+  return (await safeFetch<Service[]>(`${API_URL}/services`, { next: { revalidate: 60, tags: ['service'] } })) ?? [];
 }
 
 export function fetchService(slug: string): Promise<Service | null> {
-  return safeFetch<Service>(`${API_URL}/services/${slug}`, { next: { revalidate: 60 } });
+  return safeFetch<Service>(`${API_URL}/services/${slug}`, { next: { revalidate: 60, tags: ['service'] } });
 }
 
 // ─── Projects ──────────────────────────────────────────
 export async function fetchProjects(): Promise<Project[]> {
-  return (await safeFetch<Project[]>(`${API_URL}/projects`, { next: { revalidate: 60 } })) ?? [];
+  return (await safeFetch<Project[]>(`${API_URL}/projects`, { next: { revalidate: 60, tags: ['project'] } })) ?? [];
 }
 
 export function fetchProject(slug: string): Promise<Project | null> {
-  return safeFetch<Project>(`${API_URL}/projects/${slug}`, { next: { revalidate: 60 } });
+  return safeFetch<Project>(`${API_URL}/projects/${slug}`, { next: { revalidate: 60, tags: ['project'] } });
 }
 
 // ─── Skills ────────────────────────────────────────────
@@ -84,11 +84,11 @@ export async function fetchTechStack(): Promise<TechStack[]> {
 
 // ─── Blog ──────────────────────────────────────────────
 export async function fetchBlogPosts(): Promise<BlogPost[]> {
-  return (await safeFetch<BlogPost[]>(`${API_URL}/blog`, { next: { revalidate: 60 } })) ?? [];
+  return (await safeFetch<BlogPost[]>(`${API_URL}/blog`, { next: { revalidate: 60, tags: ['blog'] } })) ?? [];
 }
 
 export function fetchBlogPost(slug: string): Promise<BlogPost | null> {
-  return safeFetch<BlogPost>(`${API_URL}/blog/${slug}`, { next: { revalidate: 60 } });
+  return safeFetch<BlogPost>(`${API_URL}/blog/${slug}`, { next: { revalidate: 60, tags: ['blog'] } });
 }
 
 // ─── Contact ───────────────────────────────────────────

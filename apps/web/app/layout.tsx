@@ -73,6 +73,9 @@ export const metadata: Metadata = {
     canonical: '/',
     types: { 'application/rss+xml': `${SITE_URL}/feed.xml` },
   },
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION,
+  },
   robots: {
     index: true,
     follow: true,

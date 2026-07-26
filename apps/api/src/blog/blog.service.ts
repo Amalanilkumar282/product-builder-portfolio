@@ -6,6 +6,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateBlogPostDto } from './dto/create-blog-post.dto';
 import { UpdateBlogPostDto } from './dto/update-blog-post.dto';
+import { notifySeoIndexing } from '../common/utils/seo-notify.util';
 
 @Injectable()
 export class BlogService {
@@ -20,7 +21,7 @@ export class BlogService {
     if (existing)
       throw new BadRequestException('Blog post with this slug already exists');
 
-    return this.prisma.blogPost.create({
+    const post = await this.prisma.blogPost.create({
       data: {
         ...rest,
         publishedAt: publishedAt ? new Date(publishedAt) : null,
@@ -30,6 +31,9 @@ export class BlogService {
       },
       include: { tags: true },
     });
+
+    if (post.isPublished) notifySeoIndexing('blog', `/blog/${post.slug}`);
+    return post;
   }
 
   findAll() {
@@ -64,7 +68,7 @@ export class BlogService {
       }
     }
 
-    return this.prisma.blogPost.update({
+    const post = await this.prisma.blogPost.update({
       where: { id },
       data: {
         ...rest,
@@ -81,6 +85,9 @@ export class BlogService {
       },
       include: { tags: true },
     });
+
+    if (post.isPublished) notifySeoIndexing('blog', `/blog/${post.slug}`);
+    return post;
   }
 
   async remove(id: string) {
