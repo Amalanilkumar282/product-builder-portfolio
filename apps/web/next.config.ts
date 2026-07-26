@@ -9,10 +9,20 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "images.unsplash.com" },
     ],
   },
-  // NOTE: canonical domain (www vs non-www) redirect is handled entirely by
-  // Vercel's Domains settings (Project > Settings > Domains > Primary Domain).
-  // Do NOT also redirect here — having both Vercel and this config redirect
-  // in opposite directions causes an infinite redirect loop (ERR_TOO_MANY_REDIRECTS).
+  async redirects() {
+    // Enforce a single canonical domain (non-www) so Google never splits
+    // ranking signals between amalanilkumar.com and www.amalanilkumar.com.
+    // This is a code-level backup; the primary domain should also be set
+    // in the hosting provider's  dashboard.
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.amalanilkumar.com" }],
+        destination: "https://amalanilkumar.com/:path*",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
