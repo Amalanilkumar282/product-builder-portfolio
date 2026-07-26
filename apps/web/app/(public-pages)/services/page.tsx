@@ -11,6 +11,7 @@ import { JsonLd, buildCollectionPageSchema } from '@/lib/entity-jsonld';
 export const metadata: Metadata = {
   title: 'Services',
   description: 'Professional full-stack development services tailored to your product goals.',
+  alternates: { canonical: '/services' },
 };
 
 export default async function ServicesPage() {

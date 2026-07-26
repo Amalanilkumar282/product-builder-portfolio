@@ -18,6 +18,7 @@ import { CANONICAL_NAME, DEFAULT_BIO, DEFAULT_LOCATION, DEFAULT_TITLE } from '@/
 export const metadata: Metadata = {
   title: 'About',
   description: 'About Amal Anilkumar, a full-stack and AI product engineer based in Kerala, India.',
+  alternates: { canonical: '/about' },
 };
 
 export default async function AboutPage() {

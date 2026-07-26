@@ -12,6 +12,7 @@ import { JsonLd, buildCollectionPageSchema, buildProjectListSchema } from '@/lib
 export const metadata: Metadata = {
   title: 'Projects',
   description: 'A showcase of products, tools, and experiments I have built.',
+  alternates: { canonical: '/projects' },
 };
 
 export default async function ProjectsPage() {

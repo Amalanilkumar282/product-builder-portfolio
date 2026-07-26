@@ -5,6 +5,7 @@ import { JsonLd, buildCollectionPageSchema } from '@/lib/entity-jsonld';
 export const metadata: Metadata = {
   title: 'Certifications',
   description: 'Certifications, learning milestones, and formal credentials of Amal Anilkumar.',
+  alternates: { canonical: '/certifications' },
 };
 
 export default async function CertificationsPage() {

@@ -6,6 +6,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
+import { notifySeoIndexing } from '../common/utils/seo-notify.util';
 
 @Injectable()
 export class ProjectService {
@@ -22,7 +23,7 @@ export class ProjectService {
     if (existing)
       throw new BadRequestException('Project with this slug already exists');
 
-    return this.prisma.project.create({
+    const project = await this.prisma.project.create({
       data: {
         ...rest,
         tags: tagIds?.length
@@ -31,6 +32,9 @@ export class ProjectService {
       },
       include: { tags: true },
     });
+
+    if (project.isPublished) notifySeoIndexing('project', `/projects/${project.slug}`);
+    return project;
   }
 
   findAll() {
@@ -62,7 +66,7 @@ export class ProjectService {
       }
     }
 
-    return this.prisma.project.update({
+    const project = await this.prisma.project.update({
       where: { id },
       data: {
         ...rest,
@@ -73,6 +77,9 @@ export class ProjectService {
       },
       include: { tags: true },
     });
+
+    if (project.isPublished) notifySeoIndexing('project', `/projects/${project.slug}`);
+    return project;
   }
 
   async remove(id: string) {

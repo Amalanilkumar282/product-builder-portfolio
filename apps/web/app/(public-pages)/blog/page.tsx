@@ -13,6 +13,7 @@ import { JsonLd, buildCollectionPageSchema } from '@/lib/entity-jsonld';
 export const metadata: Metadata = {
   title: 'Blog',
   description: 'Thoughts on software engineering, product design, and the digital world.',
+  alternates: { canonical: '/blog' },
 };
 
 export default async function BlogPage() {

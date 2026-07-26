@@ -7,6 +7,7 @@ import { GitHubIcon } from '@/components/icons/SocialIcons';
 export const metadata: Metadata = {
   title: 'Open Source',
   description: 'Open-source projects, public repositories, and build notes from Amal Anilkumar.',
+  alternates: { canonical: '/open-source' },
 };
 
 export default async function OpenSourcePage() {

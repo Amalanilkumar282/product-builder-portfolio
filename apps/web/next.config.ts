@@ -9,6 +9,20 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "images.unsplash.com" },
     ],
   },
+  async redirects() {
+    // Enforce a single canonical domain (non-www) so Google never splits
+    // ranking signals between amalanilkumar.com and www.amalanilkumar.com.
+    // This is a code-level backup; the primary domain should also be set
+    // in the hosting provider's dashboard.
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.amalanilkumar.com" }],
+        destination: "https://amalanilkumar.com/:path*",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

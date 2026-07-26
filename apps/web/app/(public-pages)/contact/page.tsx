@@ -6,6 +6,7 @@ import { JsonLd, buildContactPageSchema } from '@/lib/entity-jsonld';
 export const metadata: Metadata = {
   title: 'Contact',
   description: 'Get in touch to discuss your project or collaboration opportunity.',
+  alternates: { canonical: '/contact' },
 };
 
 export default async function ContactPage() {
