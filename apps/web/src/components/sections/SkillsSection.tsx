@@ -1,6 +1,7 @@
 ﻿'use client';
 
-import { motion } from 'framer-motion';
+import { useRef } from 'react';
+import { motion, useScroll } from 'framer-motion';
 import SectionHeader from '@/components/ui/SectionHeader';
 import AnimatedSection from '@/components/ui/AnimatedSection';
 import SectionConnector from '@/components/ui/SectionConnector';
@@ -27,9 +28,36 @@ function groupBy<T>(arr: T[], key: keyof T): Record<string, T[]> {
 export default function SkillsSection({ skills }: SkillsSectionProps) {
   if (skills.length === 0) return null;
   const grouped = groupBy(skills, 'category');
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start end', 'end start'] });
 
   return (
-    <section id="skills" className="max-w-7xl mx-auto px-6 py-24">
+    <section
+      id="skills"
+      ref={sectionRef}
+      className="relative isolate max-w-7xl mx-auto px-6 py-24"
+    >
+      {/* Ambient 3D backdrop — scroll-reactive, blended behind the content rather
+          than boxed as a separate widget. */}
+      <div
+        className="pointer-events-none absolute inset-x-0 -top-16 -z-10 h-[30rem] opacity-80 sm:h-[34rem] [mask-image:linear-gradient(to_bottom,black,black_50%,transparent)]"
+        aria-hidden="true"
+      >
+        <SceneCanvas
+          className="h-full w-full"
+          cameraPosition={[0, 1.6, 5.6]}
+          fallback={
+            <div className="flex h-full w-full items-center justify-center bg-[radial-gradient(ellipse_at_center,var(--bg-gradient-purple)_0%,transparent_65%)]">
+              <p className="text-xs uppercase tracking-widest text-muted">
+                {skills.length} skills across {Object.keys(grouped).length} disciplines
+              </p>
+            </div>
+          }
+        >
+          <OrbitField count={skills.length} scrollProgress={scrollYProgress} />
+        </SceneCanvas>
+      </div>
+
       <SectionConnector />
 
       <AnimatedSection>
@@ -40,23 +68,7 @@ export default function SkillsSection({ skills }: SkillsSectionProps) {
         />
       </AnimatedSection>
 
-      <AnimatedSection className="mb-12" delay={0.05}>
-        <SceneCanvas
-          className="h-64 sm:h-72 rounded-2xl glass overflow-hidden"
-          cameraPosition={[0, 1.4, 5.2]}
-          fallback={
-            <div className="h-64 sm:h-72 rounded-2xl glass grid-bg flex items-center justify-center">
-              <p className="text-xs uppercase tracking-widest text-muted">
-                {skills.length} skills across {Object.keys(grouped).length} disciplines
-              </p>
-            </div>
-          }
-        >
-          <OrbitField count={skills.length} />
-        </SceneCanvas>
-      </AnimatedSection>
-
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
         {Object.entries(grouped).map(([category, categorySkills], i) => (
           <AnimatedSection key={category} delay={i * 0.1}>
             <Tilt3D maxTilt={5} className="rounded-2xl h-full">

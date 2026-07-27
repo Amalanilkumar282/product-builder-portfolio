@@ -209,6 +209,10 @@ body {
   .trace-node {
     animation: node-pulse 2.4s ease-out infinite;
   }
+
+  .ambient-pulse {
+    animation: ambient-pulse 16s ease-in-out infinite;
+  }
 }
 
 @keyframes trace-flow {
@@ -219,6 +223,10 @@ body {
   0%   { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.45); }
   70%  { box-shadow: 0 0 0 8px rgba(168, 85, 247, 0); }
   100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0); }
+}
+@keyframes ambient-pulse {
+  0%, 100% { transform: scale(1);     opacity: 0.55; }
+  50%      { transform: scale(1.12);  opacity: 0.85; }
 }
 
 
