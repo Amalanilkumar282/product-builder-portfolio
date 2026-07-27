@@ -5,6 +5,7 @@ import { Mail, MapPin, MessageCircle, Phone, Send } from 'lucide-react';
 import AnimatedSection from '@/components/ui/AnimatedSection';
 import GlassCard from '@/components/ui/GlassCard';
 import SectionHeader from '@/components/ui/SectionHeader';
+import SectionConnector from '@/components/ui/SectionConnector';
 import { trackEvent } from '@/lib/analytics';
 import { GitHubIcon, InstagramIcon, LinkedInIcon, XIcon } from '@/components/icons/SocialIcons';
 import { submitContact } from '@/lib/api';
@@ -70,7 +71,7 @@ export default function ContactSection({ profile }: ContactSectionProps) {
 
   return (
     <section id="contact" className="mx-auto max-w-7xl px-6 py-24">
-      <div className="mb-24 h-px w-full gradient-bg opacity-20" />
+      <SectionConnector className="mb-24" />
 
       <AnimatedSection>
         <SectionHeader

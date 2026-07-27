@@ -3,6 +3,7 @@ import { ArrowRight, Layers } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
 import GlassCard from '@/components/ui/GlassCard';
 import AnimatedSection from '@/components/ui/AnimatedSection';
+import SectionConnector from '@/components/ui/SectionConnector';
 import Badge from '@/components/ui/Badge';
 import type { Service } from '@/lib/types';
 
@@ -15,6 +16,8 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
 
   return (
     <section id="services" className="max-w-7xl mx-auto px-6 py-24">
+      <SectionConnector />
+
       <AnimatedSection>
         <SectionHeader
           label="What I Build For Clients"
@@ -26,7 +29,7 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {services.slice(0, 6).map((service, i) => (
           <AnimatedSection key={service.id} delay={i * 0.08}>
-            <GlassCard className="h-full group">
+            <GlassCard className="h-full group" tilt>
               <div className="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <Layers size={18} className="text-white" />
               </div>

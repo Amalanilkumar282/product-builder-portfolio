@@ -3,6 +3,7 @@ import { Star, Quote } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
 import GlassCard from '@/components/ui/GlassCard';
 import AnimatedSection from '@/components/ui/AnimatedSection';
+import SectionConnector from '@/components/ui/SectionConnector';
 import type { Testimonial } from '@/lib/types';
 
 interface TestimonialsSectionProps {
@@ -14,7 +15,7 @@ export default function TestimonialsSection({ testimonials }: TestimonialsSectio
 
   return (
     <section id="testimonials" className="max-w-7xl mx-auto px-6 py-24">
-      <div className="w-full h-px gradient-bg opacity-20 mb-24" />
+      <SectionConnector />
 
       <AnimatedSection>
         <SectionHeader
@@ -28,7 +29,7 @@ export default function TestimonialsSection({ testimonials }: TestimonialsSectio
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {testimonials.map((t, i) => (
           <AnimatedSection key={t.id} delay={i * 0.1}>
-            <GlassCard className="h-full flex flex-col">
+            <GlassCard className="h-full flex flex-col" tilt>
               {/* Quote icon */}
               <Quote size={28} className="text-accent opacity-40 mb-4 shrink-0" />
 

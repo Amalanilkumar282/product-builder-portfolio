@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Geist_Mono, Inter, Plus_Jakarta_Sans } from 'next/font/google';
 import GoogleAnalytics from '@/components/analytics/GoogleAnalytics';
 import ThemeProvider from '@/components/layout/ThemeProvider';
+import { MotionPreferenceProvider } from '@/lib/motion-preferences';
 import { CANONICAL_NAME, DEFAULT_BIO, DEFAULT_TITLE, SITE_URL } from '@/lib/site';
 import './globals.css';
 
@@ -99,7 +100,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body
         className={`${inter.variable} ${plusJakarta.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <MotionPreferenceProvider>{children}</MotionPreferenceProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

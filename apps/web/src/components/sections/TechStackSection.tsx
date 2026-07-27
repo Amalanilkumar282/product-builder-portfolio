@@ -2,6 +2,9 @@
 import Image from 'next/image';
 import SectionHeader from '@/components/ui/SectionHeader';
 import AnimatedSection from '@/components/ui/AnimatedSection';
+import SectionConnector from '@/components/ui/SectionConnector';
+import SceneCanvas from '@/components/3d/SceneCanvas';
+import OrbitField from '@/components/3d/OrbitField';
 import type { TechStack } from '@/lib/types';
 
 interface TechStackSectionProps {
@@ -25,7 +28,7 @@ export default function TechStackSection({ techStack }: TechStackSectionProps) {
 
   return (
     <section id="tech-stack" className="max-w-7xl mx-auto px-6 py-24">
-      <div className="w-full h-px gradient-bg opacity-20 mb-24" />
+      <SectionConnector />
 
       <AnimatedSection>
         <SectionHeader
@@ -33,6 +36,22 @@ export default function TechStackSection({ techStack }: TechStackSectionProps) {
           title="Tech Stack"
           subtitle="The ecosystem I rely on to build robust, scalable products."
         />
+      </AnimatedSection>
+
+      <AnimatedSection className="mb-12" delay={0.05}>
+        <SceneCanvas
+          className="h-56 sm:h-64 rounded-2xl glass overflow-hidden"
+          cameraPosition={[0, 1.2, 4.8]}
+          fallback={
+            <div className="h-56 sm:h-64 rounded-2xl glass grid-bg flex items-center justify-center">
+              <p className="text-xs uppercase tracking-widest text-muted">
+                {techStack.length} tools & platforms
+              </p>
+            </div>
+          }
+        >
+          <OrbitField count={techStack.length} />
+        </SceneCanvas>
       </AnimatedSection>
 
       <div className="space-y-10">

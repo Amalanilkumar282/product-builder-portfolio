@@ -6,14 +6,15 @@ import { usePathname } from 'next/navigation';
 import { Menu, X, Sun, Moon, Code2 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useActiveSection } from '@/hooks/useActiveSection';
 import { cn } from '@/lib/utils';
 
 const navLinks = [
-  { href: '/#services', label: 'Services' },
-  { href: '/#projects', label: 'Projects' },
-  { href: '/#skills', label: 'Skills' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/#contact', label: 'Contact' },
+  { href: '/#services', label: 'Services', id: 'services' },
+  { href: '/#projects', label: 'Projects', id: 'projects' },
+  { href: '/#skills', label: 'Skills', id: 'skills' },
+  { href: '/blog', label: 'Blog', id: null },
+  { href: '/#contact', label: 'Contact', id: 'contact' },
 ];
 
 interface NavbarProps {
@@ -26,6 +27,8 @@ export default function Navbar({ ownerName = 'Amal Anilkumar' }: NavbarProps) {
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
   const pathname = usePathname();
+  const sectionIds = navLinks.map((l) => l.id).filter((id): id is string => Boolean(id));
+  const activeId = useActiveSection(pathname === '/' ? sectionIds : []);
 
   useEffect(() => {
     setTimeout(() => setMounted(true), 0);
@@ -60,9 +63,19 @@ export default function Navbar({ ownerName = 'Amal Anilkumar' }: NavbarProps) {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm text-secondary hover:text-primary transition-colors hover:text-primary dark:hover:text-primary"
+              className={cn(
+                'relative text-sm text-secondary transition-colors hover:text-primary dark:hover:text-primary',
+                link.id && activeId === link.id && 'text-primary',
+              )}
             >
               {link.label}
+              {link.id && activeId === link.id && (
+                <motion.span
+                  layoutId="nav-active-indicator"
+                  className="absolute -bottom-1.5 left-0 right-0 h-0.5 rounded-full gradient-bg"
+                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                />
+              )}
             </Link>
           ))}
 

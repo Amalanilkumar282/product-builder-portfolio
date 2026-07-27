@@ -3,6 +3,8 @@ import Image from 'next/image';
 import { ArrowRight, ExternalLink, GitFork } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
 import AnimatedSection from '@/components/ui/AnimatedSection';
+import SectionConnector from '@/components/ui/SectionConnector';
+import Tilt3D from '@/components/ui/Tilt3D';
 import Badge from '@/components/ui/Badge';
 import type { Project } from '@/lib/types';
 
@@ -16,7 +18,7 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
   return (
     <section id="projects" className="max-w-7xl mx-auto px-6 py-24">
       {/* Subtle divider */}
-      <div className="w-full h-px gradient-bg opacity-20 mb-24" />
+      <SectionConnector />
 
       <AnimatedSection>
         <SectionHeader
@@ -29,6 +31,7 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
       <div className="grid md:grid-cols-2 gap-8">
         {projects.slice(0, 4).map((project, i) => (
           <AnimatedSection key={project.id} delay={i * 0.1}>
+            <Tilt3D maxTilt={5} className="rounded-2xl">
             <div className="group relative rounded-2xl overflow-hidden glass hover:border-accent hover:shadow-xl hover:shadow-accent transition-all duration-300 hover:-translate-y-1">
               {/* Cover image */}
               <div className="relative h-52 overflow-hidden">
@@ -98,6 +101,7 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
                 </div>
               </div>
             </div>
+            </Tilt3D>
           </AnimatedSection>
         ))}
       </div>

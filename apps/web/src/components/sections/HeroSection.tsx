@@ -1,11 +1,14 @@
 ﻿'use client';
 
-import { motion } from 'framer-motion';
+import { useRef } from 'react';
+import { motion, useScroll } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowDown, Download, Mail } from 'lucide-react';
 import { trackEvent } from '@/lib/analytics';
 import { GitHubIcon, InstagramIcon, LinkedInIcon, XIcon } from '@/components/icons/SocialIcons';
+import SceneCanvas from '@/components/3d/SceneCanvas';
+import SignalCore from '@/components/3d/SignalCore';
 import { CANONICAL_NAME, DEFAULT_TITLE, parseSocialLinks } from '@/lib/site';
 import type { Profile } from '@/lib/types';
 
@@ -15,9 +18,12 @@ interface HeroSectionProps {
 
 export default function HeroSection({ profile }: HeroSectionProps) {
   const socials = parseSocialLinks(profile?.socialLinks);
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start start', 'end start'] });
 
   return (
     <section
+      ref={sectionRef}
       id="hero"
       className="relative min-h-screen flex items-center overflow-hidden pt-16"
     >
@@ -195,8 +201,15 @@ export default function HeroSection({ profile }: HeroSectionProps) {
           className="flex justify-center lg:justify-end"
         >
           <div className="relative">
-            {/* Outer glow ring */}
-            <div className="absolute -inset-4 gradient-bg rounded-full blur-3xl opacity-15" />
+            {/* Signal Core: interactive 3D lattice, static glow fallback when
+                3D is disabled/unsupported/reduced-motion — same footprint. */}
+            <SceneCanvas
+              className="absolute -inset-20 sm:-inset-28"
+              cameraPosition={[0, 0, 6.5]}
+              fallback={<div className="absolute -inset-4 gradient-bg rounded-full blur-3xl opacity-15" />}
+            >
+              <SignalCore scrollProgress={scrollYProgress} />
+            </SceneCanvas>
 
             {/* Avatar */}
             <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-2 border-accent glow-purple">

@@ -3,6 +3,10 @@
 import { motion } from 'framer-motion';
 import SectionHeader from '@/components/ui/SectionHeader';
 import AnimatedSection from '@/components/ui/AnimatedSection';
+import SectionConnector from '@/components/ui/SectionConnector';
+import Tilt3D from '@/components/ui/Tilt3D';
+import SceneCanvas from '@/components/3d/SceneCanvas';
+import OrbitField from '@/components/3d/OrbitField';
 import type { Skill } from '@/lib/types';
 
 interface SkillsSectionProps {
@@ -26,7 +30,7 @@ export default function SkillsSection({ skills }: SkillsSectionProps) {
 
   return (
     <section id="skills" className="max-w-7xl mx-auto px-6 py-24">
-      <div className="w-full h-px gradient-bg opacity-20 mb-24" />
+      <SectionConnector />
 
       <AnimatedSection>
         <SectionHeader
@@ -36,10 +40,27 @@ export default function SkillsSection({ skills }: SkillsSectionProps) {
         />
       </AnimatedSection>
 
+      <AnimatedSection className="mb-12" delay={0.05}>
+        <SceneCanvas
+          className="h-64 sm:h-72 rounded-2xl glass overflow-hidden"
+          cameraPosition={[0, 1.4, 5.2]}
+          fallback={
+            <div className="h-64 sm:h-72 rounded-2xl glass grid-bg flex items-center justify-center">
+              <p className="text-xs uppercase tracking-widest text-muted">
+                {skills.length} skills across {Object.keys(grouped).length} disciplines
+              </p>
+            </div>
+          }
+        >
+          <OrbitField count={skills.length} />
+        </SceneCanvas>
+      </AnimatedSection>
+
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {Object.entries(grouped).map(([category, categorySkills], i) => (
           <AnimatedSection key={category} delay={i * 0.1}>
-            <div className="glass rounded-2xl p-6 hover:border-accent transition-all">
+            <Tilt3D maxTilt={5} className="rounded-2xl h-full">
+            <div className="glass rounded-2xl p-6 hover:border-accent transition-all h-full">
               <h3 className="text-sm font-semibold uppercase tracking-widest text-accent mb-5">
                 {category}
               </h3>
@@ -63,6 +84,7 @@ export default function SkillsSection({ skills }: SkillsSectionProps) {
                 ))}
               </div>
             </div>
+            </Tilt3D>
           </AnimatedSection>
         ))}
       </div>

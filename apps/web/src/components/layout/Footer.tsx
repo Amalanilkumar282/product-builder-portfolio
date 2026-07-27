@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Code2, Mail, MessageCircle, Phone } from 'lucide-react';
 import { trackEvent } from '@/lib/analytics';
 import { GitHubIcon, InstagramIcon, LinkedInIcon, XIcon } from '@/components/icons/SocialIcons';
+import MotionPreferenceToggle from '@/components/ui/MotionPreferenceToggle';
 import { CANONICAL_NAME, DEFAULT_BIO, parseSocialLinks } from '@/lib/site';
 import type { Profile } from '@/lib/types';
 
@@ -176,8 +177,13 @@ export default function Footer({ profile }: FooterProps) {
         </div>
       </div>
 
-      <div className="border-t border-default py-6 text-center text-xs text-muted">
-        © {year} {name}. Built with Next.js and NestJS.
+      <div className="border-t border-default py-6">
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-6 text-center text-xs text-muted sm:flex-row sm:justify-between sm:text-left">
+          <p>
+            © {year} {name}. Built with Next.js and NestJS.
+          </p>
+          <MotionPreferenceToggle />
+        </div>
       </div>
     </footer>
   );
