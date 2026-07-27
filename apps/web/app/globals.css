@@ -193,4 +193,41 @@ body {
   color: var(--selection-text);
 }
 
+/* ─── 3D / depth utilities ("Living Blueprint" interaction system) ─── */
+@layer utilities {
+  .perspective-1000 { perspective: 1000px; }
+  .perspective-1600 { perspective: 1600px; }
+  .preserve-3d      { transform-style: preserve-3d; }
+  .backface-hidden  { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+
+  .trace-line {
+    position: relative;
+    background: linear-gradient(90deg, transparent, var(--border-accent) 45%, var(--border-accent) 55%, transparent);
+    background-size: 220% 100%;
+    animation: trace-flow 5s linear infinite;
+  }
+  .trace-node {
+    animation: node-pulse 2.4s ease-out infinite;
+  }
+
+  .ambient-pulse {
+    animation: ambient-pulse 16s ease-in-out infinite;
+  }
+}
+
+@keyframes trace-flow {
+  0%   { background-position: 120% 0; }
+  100% { background-position: -120% 0; }
+}
+@keyframes node-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.45); }
+  70%  { box-shadow: 0 0 0 8px rgba(168, 85, 247, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0); }
+}
+@keyframes ambient-pulse {
+  0%, 100% { transform: scale(1);     opacity: 0.55; }
+  50%      { transform: scale(1.12);  opacity: 0.85; }
+}
+
+
 

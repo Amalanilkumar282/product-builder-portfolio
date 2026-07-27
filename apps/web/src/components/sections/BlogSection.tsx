@@ -4,6 +4,7 @@ import { ArrowRight, Clock, Calendar } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
 import GlassCard from '@/components/ui/GlassCard';
 import AnimatedSection from '@/components/ui/AnimatedSection';
+import SectionConnector from '@/components/ui/SectionConnector';
 import Badge from '@/components/ui/Badge';
 import { formatDate } from '@/lib/utils';
 import type { BlogPost } from '@/lib/types';
@@ -17,7 +18,7 @@ export default function BlogSection({ posts }: BlogSectionProps) {
 
   return (
     <section id="blog" className="max-w-7xl mx-auto px-6 py-24">
-      <div className="w-full h-px gradient-bg opacity-20 mb-24" />
+      <SectionConnector />
 
       <AnimatedSection>
         <SectionHeader
@@ -30,7 +31,7 @@ export default function BlogSection({ posts }: BlogSectionProps) {
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {posts.slice(0, 3).map((post, i) => (
           <AnimatedSection key={post.id} delay={i * 0.1}>
-            <GlassCard className="h-full flex flex-col p-0 overflow-hidden">
+            <GlassCard className="h-full flex flex-col p-0 overflow-hidden" tilt>
               {/* Cover */}
               {post.coverImageUrl && (
                 <div className="relative h-44 overflow-hidden">

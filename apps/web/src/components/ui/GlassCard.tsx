@@ -1,10 +1,14 @@
 ﻿import { cn } from '@/lib/utils';
+import Tilt3D from '@/components/ui/Tilt3D';
 
 interface GlassCardProps {
   children: React.ReactNode;
   className?: string;
   hover?: boolean;
   gradient?: boolean;
+  /** Opt-in pointer-reactive 3D tilt + glare sheen. Defaults to off — fully
+   * backwards-compatible with every existing usage of this component. */
+  tilt?: boolean;
 }
 
 export default function GlassCard({
@@ -12,8 +16,9 @@ export default function GlassCard({
   className = '',
   hover = true,
   gradient = false,
+  tilt = false,
 }: GlassCardProps) {
-  return (
+  const card = (
     <div
       className={cn(
         'rounded-2xl glass p-6 transition-all duration-300',
@@ -24,6 +29,14 @@ export default function GlassCard({
     >
       {children}
     </div>
+  );
+
+  if (!tilt) return card;
+
+  return (
+    <Tilt3D className={cn('rounded-2xl', className)} maxTilt={6}>
+      {card}
+    </Tilt3D>
   );
 }
 

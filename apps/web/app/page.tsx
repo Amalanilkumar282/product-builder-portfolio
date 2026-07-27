@@ -14,6 +14,7 @@ import {
 } from '@/lib/api';
 import HeroSection from '@/components/sections/HeroSection';
 import StatsBar from '@/components/ui/StatsBar';
+import PageAmbientBackground from '@/components/ui/PageAmbientBackground';
 import ServicesSection from '@/components/sections/ServicesSection';
 import ProjectsSection from '@/components/sections/ProjectsSection';
 import SkillsSection from '@/components/sections/SkillsSection';
@@ -118,6 +119,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <PageAmbientBackground />
       <JsonLd
         data={[
           buildWebSiteSchema(),

@@ -1,5 +1,6 @@
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import PageAmbientBackground from '@/components/ui/PageAmbientBackground';
 import { fetchProfile } from '@/lib/api';
 import {
   JsonLd,
@@ -14,6 +15,7 @@ export default async function PublicPagesLayout({ children }: { children: React.
 
   return (
     <>
+      <PageAmbientBackground />
       <JsonLd
         data={[
           buildWebSiteSchema(),

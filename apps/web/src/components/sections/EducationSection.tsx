@@ -3,6 +3,7 @@ import { GraduationCap, Award } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
 import GlassCard from '@/components/ui/GlassCard';
 import AnimatedSection from '@/components/ui/AnimatedSection';
+import SectionConnector from '@/components/ui/SectionConnector';
 import { formatDateRange } from '@/lib/utils';
 import type { Education } from '@/lib/types';
 
@@ -18,7 +19,7 @@ export default function EducationSection({ education }: EducationSectionProps) {
 
   return (
     <section id="education" className="max-w-7xl mx-auto px-6 py-24">
-      <div className="w-full h-px gradient-bg opacity-20 mb-24" />
+      <SectionConnector />
 
       <AnimatedSection>
         <SectionHeader label="Background" title="Education" />
@@ -28,7 +29,7 @@ export default function EducationSection({ education }: EducationSectionProps) {
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
         {degrees.map((edu, i) => (
           <AnimatedSection key={edu.id} delay={i * 0.1}>
-            <GlassCard className="h-full">
+            <GlassCard className="h-full" tilt>
               <div className="flex items-center gap-3 mb-4">
                 {edu.logoUrl ? (
                   <Image

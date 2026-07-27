@@ -1,7 +1,10 @@
 ﻿import Image from 'next/image';
-import { MapPin, Calendar, Briefcase, GraduationCap, Code2, Users } from 'lucide-react';
+import { MapPin, Calendar, Briefcase, GraduationCap, Code2, Users, type LucideIcon } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
 import AnimatedSection from '@/components/ui/AnimatedSection';
+import SectionConnector from '@/components/ui/SectionConnector';
+import TimelineSpine from '@/components/ui/TimelineSpine';
+import Tilt3D from '@/components/ui/Tilt3D';
 import { formatDateRange } from '@/lib/utils';
 import type { Experience, ExperienceType } from '@/lib/types';
 
@@ -11,7 +14,7 @@ interface ExperienceSectionProps {
 
 const TYPE_CONFIG: Record<
   ExperienceType,
-  { label: string; className: string; Icon: React.ElementType }
+  { label: string; className: string; Icon: LucideIcon }
 > = {
   WORK: {
     label: 'Full-Time',
@@ -45,7 +48,7 @@ export default function ExperienceSection({ experience }: ExperienceSectionProps
 
   const renderTimeline = (items: Experience[]) => (
     <div className="relative">
-      <div className="absolute left-6 md:left-8 top-0 bottom-0 w-px gradient-bg opacity-30" />
+      <TimelineSpine className="absolute left-6 md:left-8 top-0 bottom-0 w-px" />
       <div className="space-y-8">
         {items.map((exp, i) => {
           const typeConfig = TYPE_CONFIG[exp.experienceType ?? 'WORK'];
@@ -53,8 +56,9 @@ export default function ExperienceSection({ experience }: ExperienceSectionProps
           return (
             <AnimatedSection key={exp.id} delay={i * 0.1} direction="left">
               <div className="relative pl-16 md:pl-20">
-                <div className="absolute left-3 md:left-5 top-5 w-5 h-5 rounded-full gradient-bg border-2 border-slate-950 glow-purple" />
-                <div className="glass rounded-2xl p-6 hover:border-accent hover:shadow-lg hover:shadow-accent transition-all">
+                <div className="trace-node absolute left-3 md:left-5 top-5 w-5 h-5 rounded-full gradient-bg border-2 border-slate-950 glow-purple" />
+                <Tilt3D maxTilt={4} className="rounded-2xl">
+                  <div className="glass rounded-2xl p-6 hover:border-accent hover:shadow-lg hover:shadow-accent transition-all">
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
                     <div className="flex items-center gap-3">
                       {exp.logoUrl ? (
@@ -90,6 +94,7 @@ export default function ExperienceSection({ experience }: ExperienceSectionProps
                   </div>
                   <p className="text-sm text-secondary leading-relaxed">{exp.description}</p>
                 </div>
+                </Tilt3D>
               </div>
             </AnimatedSection>
           );
@@ -100,7 +105,7 @@ export default function ExperienceSection({ experience }: ExperienceSectionProps
 
   return (
     <section id="experience" className="max-w-7xl mx-auto px-6 py-24">
-      <div className="w-full h-px gradient-bg opacity-20 mb-24" />
+      <SectionConnector />
 
       <AnimatedSection>
         <SectionHeader
