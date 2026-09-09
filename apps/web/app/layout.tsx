@@ -95,6 +95,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="preconnect" href="https://res.cloudinary.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/*
+          Scroll-reveal animations are server-rendered by Framer Motion with an
+          inline `opacity:0`, and only become visible once the client bundle has
+          hydrated. Crawlers that do not execute JavaScript — GPTBot, ClaudeBot,
+          PerplexityBot and CCBot among them, all of which robots.txt explicitly
+          welcomes — would otherwise parse a page whose body content is entirely
+          transparent. This reveals that content when scripting is unavailable;
+          when JS runs, the animations play exactly as before.
+        */}
+        <noscript>
+          <style>{`[style*="opacity:0"],[style*="opacity: 0"]{opacity:1!important;transform:none!important}`}</style>
+        </noscript>
         <GoogleAnalytics />
       </head>
       <body

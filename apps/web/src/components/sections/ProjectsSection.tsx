@@ -40,6 +40,7 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
                     src={project.coverImageUrl}
                     alt={project.title}
                     fill
+                    sizes="(max-width: 768px) 100vw, 600px"
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 ) : (

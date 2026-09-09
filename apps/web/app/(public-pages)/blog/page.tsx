@@ -11,9 +11,17 @@ import { formatDate } from '@/lib/utils';
 import { JsonLd, buildCollectionPageSchema } from '@/lib/entity-jsonld';
 
 export const metadata: Metadata = {
-  title: 'Blog',
-  description: 'Thoughts on software engineering, product design, and the digital world.',
+  title: { absolute: 'Engineering Blog | Amal Anilkumar' },
+  description:
+    'Practical write-ups on full-stack engineering, AI integration, and product design by Amal Anilkumar — how real Next.js, NestJS, and TypeScript systems get built and shipped.',
   alternates: { canonical: '/blog' },
+  openGraph: {
+    type: 'website',
+    url: '/blog',
+    title: 'Engineering Blog | Amal Anilkumar',
+    description:
+      'Practical write-ups on full-stack engineering, AI integration, and product design — how real Next.js and NestJS systems get built.',
+  },
 };
 
 export default async function BlogPage() {
@@ -60,6 +68,7 @@ export default async function BlogPage() {
                         src={post.coverImageUrl}
                         alt={post.title}
                         fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
                         className="object-cover hover:scale-105 transition-transform duration-500"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent" />

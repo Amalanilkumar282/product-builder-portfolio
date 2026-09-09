@@ -15,21 +15,47 @@ import type {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 
+// The old 5s budget was shorter than a cold start on the API host, so a single
+// slow response silently produced an empty page. Every public page is a Server
+// Component rendered from these calls, so an empty result is not a degraded
+// page — it is a page with no indexable content at all.
+const FETCH_TIMEOUT_MS = 15_000;
+
+/** True while `next build` is prerendering pages, false at request time. */
+function isBuildTimeRender(): boolean {
+  return process.env.NEXT_PHASE === 'phase-production-build';
+}
+
 async function safeFetch<T>(url: string, options?: RequestInit): Promise<T | null> {
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
-    
-    const res = await fetch(url, { 
+    const res = await fetch(url, {
       ...options,
-      signal: controller.signal 
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     });
-    
-    clearTimeout(timeoutId);
-    
-    if (!res.ok) return null;
-    return res.json() as Promise<T>;
-  } catch {
+
+    if (!res.ok) {
+      throw new Error(`${res.status} ${res.statusText}`);
+    }
+
+    return (await res.json()) as T;
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+
+    // Failing loudly at build time is deliberate. Swallowing the error here
+    // would prerender pages with no content and bake that empty HTML into the
+    // deployment, where crawlers index it as a thin or empty page — a failed
+    // build is far cheaper to recover from than a deindexed site.
+    if (isBuildTimeRender()) {
+      throw new Error(
+        `Content fetch failed during build: ${url} (${reason}). ` +
+          'Refusing to prerender a page with no content — check that the API is ' +
+          'reachable and NEXT_PUBLIC_API_URL is set for this environment.',
+      );
+    }
+
+    // At request time (including ISR revalidation) degrade gracefully: Next.js
+    // keeps serving the last good render rather than erroring the page.
+    console.error(`[api] fetch failed: ${url} (${reason})`);
     return null;
   }
 }

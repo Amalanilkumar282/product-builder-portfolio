@@ -9,9 +9,17 @@ import Badge from '@/components/ui/Badge';
 import { JsonLd, buildCollectionPageSchema } from '@/lib/entity-jsonld';
 
 export const metadata: Metadata = {
-  title: 'Services',
-  description: 'Professional full-stack development services tailored to your product goals.',
+  title: { absolute: 'Full-Stack & AI Development Services | Amal Anilkumar' },
+  description:
+    'Hire Amal Anilkumar for full-stack web development, backend and API architecture, AI/ML integration, and mobile app builds — from scoping through deployment and handover.',
   alternates: { canonical: '/services' },
+  openGraph: {
+    type: 'website',
+    url: '/services',
+    title: 'Full-Stack & AI Development Services | Amal Anilkumar',
+    description:
+      'Full-stack web development, backend and API architecture, AI/ML integration, and mobile app builds — from scoping through deployment.',
+  },
 };
 
 export default async function ServicesPage() {

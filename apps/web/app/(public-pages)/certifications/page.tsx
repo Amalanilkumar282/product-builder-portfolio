@@ -3,9 +3,17 @@ import { fetchEducation } from '@/lib/api';
 import { JsonLd, buildCollectionPageSchema } from '@/lib/entity-jsonld';
 
 export const metadata: Metadata = {
-  title: 'Certifications',
-  description: 'Certifications, learning milestones, and formal credentials of Amal Anilkumar.',
+  title: { absolute: 'Certifications & Credentials | Amal Anilkumar' },
+  description:
+    'Professional certifications, formal credentials, and learning milestones completed by Amal Anilkumar in software engineering, cloud, and AI/ML.',
   alternates: { canonical: '/certifications' },
+  openGraph: {
+    type: 'profile',
+    url: '/certifications',
+    title: 'Certifications & Credentials | Amal Anilkumar',
+    description:
+      'Professional certifications, formal credentials, and learning milestones in software engineering, cloud, and AI/ML.',
+  },
 };
 
 export default async function CertificationsPage() {

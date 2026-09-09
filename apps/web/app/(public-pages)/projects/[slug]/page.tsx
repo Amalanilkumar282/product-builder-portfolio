@@ -9,7 +9,7 @@ import Badge from '@/components/ui/Badge';
 import { formatDate } from '@/lib/utils';
 import MarkdownContent from '@/components/content/MarkdownContent';
 import { JsonLd, buildProjectSchema, buildBreadcrumbSchema } from '@/lib/entity-jsonld';
-import { SITE_URL } from '@/lib/site';
+import { SITE_URL, buildPageTitle } from '@/lib/site';
 
 export async function generateStaticParams() {
   const projects = await fetchProjects();
@@ -25,12 +25,24 @@ export async function generateMetadata({
   const project = await fetchProject(slug);
   if (!project) return {};
   const ogImage = project.coverImageUrl ?? `${SITE_URL}/og?title=${encodeURIComponent(project.title)}&subtitle=${encodeURIComponent(project.summary ?? '')}&type=project`;
+  // `absolute` bypasses the root layout's "%s | Amal Anilkumar" template, which
+  // would otherwise brand a seoTitle that already ends in a brand suffix.
+  const title = buildPageTitle(project.seoTitle ?? project.title);
+  const description = project.seoDescription ?? project.summary;
+  const url = `${SITE_URL}/projects/${slug}`;
+
   return {
-    title: project.seoTitle ?? project.title,
-    description: project.seoDescription ?? project.summary,
-    alternates: { canonical: `${SITE_URL}/projects/${slug}` },
-    openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },
-    twitter: { card: 'summary_large_image', images: [ogImage] },
+    title: { absolute: title },
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: 'article',
+      url,
+      title,
+      description,
+      images: [{ url: ogImage, width: 1200, height: 630, alt: project.title }],
+    },
+    twitter: { card: 'summary_large_image', title, description, images: [ogImage] },
   };
 }
 
@@ -86,6 +98,7 @@ export default async function ProjectDetailPage({
                 src={project.coverImageUrl}
                 alt={project.title}
                 fill
+                sizes="(max-width: 896px) 100vw, 848px"
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent" />

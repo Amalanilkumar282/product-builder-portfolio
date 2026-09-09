@@ -16,9 +16,17 @@ import { JsonLd, buildPersonSchema, buildProfilePageSchema } from '@/lib/entity-
 import { CANONICAL_NAME, DEFAULT_BIO, DEFAULT_LOCATION, DEFAULT_TITLE } from '@/lib/site';
 
 export const metadata: Metadata = {
-  title: 'About',
-  description: 'About Amal Anilkumar, a full-stack and AI product engineer based in Kerala, India.',
+  title: { absolute: 'About Amal Anilkumar — Full-Stack & AI Engineer' },
+  description:
+    'Amal Anilkumar is a full-stack and AI product engineer in Kerala, India, building production web apps, internal tools, and AI-powered backend systems with Next.js and NestJS.',
   alternates: { canonical: '/about' },
+  openGraph: {
+    type: 'profile',
+    url: '/about',
+    title: 'About Amal Anilkumar — Full-Stack & AI Engineer',
+    description:
+      'Full-stack and AI product engineer in Kerala, India, building production web apps, internal tools, and AI-powered backend systems.',
+  },
 };
 
 export default async function AboutPage() {

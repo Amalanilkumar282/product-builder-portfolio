@@ -94,3 +94,64 @@ export function toAbsoluteUrl(path: string): string {
 
   return `${SITE_URL}${path.startsWith('/') ? path : `/${path}`}`;
 }
+
+// ─── SEO title helpers ─────────────────────────────────
+//
+// DB-authored `seoTitle` values already carry a brand suffix (e.g.
+// "EasyML — No-Code ML Platform | Amal A"), and the root layout's metadata
+// template appends the brand again. That produced double-branded titles of
+// 70-80 characters that Google truncates ("... | Amal A | Amal Anilkumar").
+// These helpers normalise on a single brand — CANONICAL_NAME — and drop the
+// suffix entirely when the page title is already long enough to fill the SERP.
+
+/** Roughly the width Google renders before truncating a title. */
+const TITLE_BUDGET = 60;
+const BRAND_SUFFIX = ` | ${CANONICAL_NAME}`;
+
+/** Brand variants that may already be baked into DB-authored titles. */
+const BRAND_VARIANTS = [CANONICAL_NAME, CANONICAL_SHORT_NAME, SITE_DOMAIN];
+
+/**
+ * Removes any trailing " | Brand" / " - Brand" / " — Brand" segments from a
+ * title so the brand is applied exactly once, by us.
+ */
+const TITLE_SEPARATORS = ['|', '—', '–', '-'];
+
+export function stripBrandSuffix(title: string): string {
+  let result = title.trim();
+  let changed = true;
+
+  // Loop so "Title | Amal A | Amal Anilkumar" collapses all the way down.
+  while (changed) {
+    changed = false;
+
+    for (const separator of TITLE_SEPARATORS) {
+      const index = result.lastIndexOf(separator);
+      // index <= 0 means there is no separator, or the title *starts* with one
+      // — in either case there is no brand tail to strip.
+      if (index <= 0) continue;
+
+      const tail = result.slice(index + separator.length).trim();
+      const isBrand = BRAND_VARIANTS.some(
+        (brand) => brand.toLowerCase() === tail.toLowerCase(),
+      );
+
+      if (isBrand) {
+        result = result.slice(0, index).trim();
+        changed = true;
+      }
+    }
+  }
+
+  return result || title.trim();
+}
+
+/**
+ * Builds a page <title> as a Next.js `absolute` value: the brand is appended
+ * only when it fits inside the SERP budget, so long post/project titles are
+ * shown in full instead of being cut off mid-brand.
+ */
+export function buildPageTitle(rawTitle: string): string {
+  const clean = stripBrandSuffix(rawTitle);
+  return clean.length + BRAND_SUFFIX.length <= TITLE_BUDGET ? `${clean}${BRAND_SUFFIX}` : clean;
+}

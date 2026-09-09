@@ -25,12 +25,19 @@ function getContactPhone(phone?: string): { display: string; raw: string } {
   };
 }
 
+// Every indexable route is linked from here. /experience, /achievements and
+// /certifications were previously in sitemap.xml but had no internal link
+// anywhere on the site — orphaned pages that crawlers reach rarely and rank
+// poorly, because no internal link equity flows into them.
 const quickLinks = [
   { href: '/about', label: 'About' },
   { href: '/projects', label: 'Projects' },
   { href: '/services', label: 'Services' },
   { href: '/blog', label: 'Blog' },
   { href: '/open-source', label: 'Open Source' },
+  { href: '/experience', label: 'Experience' },
+  { href: '/achievements', label: 'Achievements' },
+  { href: '/certifications', label: 'Certifications' },
   { href: '/contact', label: 'Contact' },
 ];
 

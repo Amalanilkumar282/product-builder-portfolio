@@ -4,9 +4,17 @@ import ExperienceSection from '@/components/sections/ExperienceSection';
 import { JsonLd, buildCollectionPageSchema, buildPersonSchema } from '@/lib/entity-jsonld';
 
 export const metadata: Metadata = {
-  title: 'Experience',
-  description: 'Work history, internships, leadership roles, and engineering experience of Amal Anilkumar.',
+  title: { absolute: 'Experience — Amal Anilkumar, Full-Stack Engineer' },
+  description:
+    'The work history of Amal Anilkumar: engineering roles, internships, and leadership positions, with the products shipped and the technologies used in each.',
   alternates: { canonical: '/experience' },
+  openGraph: {
+    type: 'profile',
+    url: '/experience',
+    title: 'Experience — Amal Anilkumar, Full-Stack Engineer',
+    description:
+      'Engineering roles, internships, and leadership positions, with the products shipped and technologies used in each.',
+  },
 };
 
 export default async function ExperiencePage() {

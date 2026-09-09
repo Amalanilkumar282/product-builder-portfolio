@@ -4,9 +4,17 @@ import AchievementsSection from '@/components/sections/AchievementsSection';
 import { JsonLd, buildCollectionPageSchema } from '@/lib/entity-jsonld';
 
 export const metadata: Metadata = {
-  title: 'Achievements',
-  description: 'Awards, recognitions, and milestone achievements of Amal Anilkumar.',
+  title: { absolute: 'Awards & Achievements | Amal Anilkumar' },
+  description:
+    'Hackathon wins, awards, recognitions, and milestone achievements earned by Amal Anilkumar across software engineering, AI, and product work.',
   alternates: { canonical: '/achievements' },
+  openGraph: {
+    type: 'profile',
+    url: '/achievements',
+    title: 'Awards & Achievements | Amal Anilkumar',
+    description:
+      'Hackathon wins, awards, recognitions, and milestone achievements across software engineering, AI, and product work.',
+  },
 };
 
 export default async function AchievementsPage() {

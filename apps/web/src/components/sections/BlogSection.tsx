@@ -39,6 +39,7 @@ export default function BlogSection({ posts }: BlogSectionProps) {
                     src={post.coverImageUrl}
                     alt={post.title}
                     fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent" />

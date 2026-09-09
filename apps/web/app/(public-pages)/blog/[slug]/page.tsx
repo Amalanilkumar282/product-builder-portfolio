@@ -13,7 +13,7 @@ import {
   buildBlogPostSchema,
   buildBreadcrumbSchema,
 } from '@/lib/entity-jsonld';
-import { SITE_URL } from '@/lib/site';
+import { CANONICAL_NAME, SITE_URL, buildPageTitle } from '@/lib/site';
 
 export async function generateStaticParams() {
   const posts = await fetchBlogPosts();
@@ -29,17 +29,27 @@ export async function generateMetadata({
   const post = await fetchBlogPost(slug);
   if (!post) return {};
   const ogImage = post.coverImageUrl ?? `${SITE_URL}/og?title=${encodeURIComponent(post.title)}&subtitle=${encodeURIComponent(post.summary ?? '')}&type=blog`;
+  // `absolute` bypasses the root layout's "%s | Amal Anilkumar" template, which
+  // pushed already-long post titles past the length Google renders.
+  const title = buildPageTitle(post.seoTitle ?? post.title);
+  const description = post.seoDescription ?? post.summary;
+  const url = `${SITE_URL}/blog/${slug}`;
+
   return {
-    title: post.seoTitle ?? post.title,
-    description: post.seoDescription ?? post.summary,
-    alternates: { canonical: `${SITE_URL}/blog/${slug}` },
+    title: { absolute: title },
+    description,
+    alternates: { canonical: url },
     openGraph: {
       type: 'article',
+      url,
+      title,
+      description,
       publishedTime: post.publishedAt,
       modifiedTime: post.updatedAt,
-      images: [{ url: ogImage, width: 1200, height: 630 }],
+      authors: [CANONICAL_NAME],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: post.title }],
     },
-    twitter: { card: 'summary_large_image', images: [ogImage] },
+    twitter: { card: 'summary_large_image', title, description, images: [ogImage] },
   };
 }
 
@@ -90,6 +100,7 @@ export default async function BlogPostPage({
                 src={post.coverImageUrl}
                 alt={post.title}
                 fill
+                sizes="(max-width: 768px) 100vw, 720px"
                 className="object-cover"
                 priority
               />

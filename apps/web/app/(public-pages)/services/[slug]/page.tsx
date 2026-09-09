@@ -14,7 +14,7 @@ import {
   buildBreadcrumbSchema,
   buildFaqSchema,
 } from '@/lib/entity-jsonld';
-import { SITE_URL } from '@/lib/site';
+import { SITE_URL, buildPageTitle } from '@/lib/site';
 
 export async function generateStaticParams() {
   const services = await fetchServices();
@@ -30,12 +30,24 @@ export async function generateMetadata({
   const service = await fetchService(slug);
   if (!service) return {};
   const ogImage = `${SITE_URL}/og?title=${encodeURIComponent(service.title)}&subtitle=${encodeURIComponent(service.description ?? '')}&type=service`;
+  // `absolute` bypasses the root layout's "%s | Amal Anilkumar" template, which
+  // would otherwise brand a seoTitle that already ends in a brand suffix.
+  const title = buildPageTitle(service.seoTitle ?? service.title);
+  const description = service.seoDescription ?? service.description;
+  const url = `${SITE_URL}/services/${slug}`;
+
   return {
-    title: service.seoTitle ?? service.title,
-    description: service.seoDescription ?? service.description,
-    alternates: { canonical: `${SITE_URL}/services/${slug}` },
-    openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },
-    twitter: { card: 'summary_large_image', images: [ogImage] },
+    title: { absolute: title },
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: 'website',
+      url,
+      title,
+      description,
+      images: [{ url: ogImage, width: 1200, height: 630, alt: service.title }],
+    },
+    twitter: { card: 'summary_large_image', title, description, images: [ogImage] },
   };
 }
 

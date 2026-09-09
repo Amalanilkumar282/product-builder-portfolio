@@ -10,9 +10,17 @@ import Badge from '@/components/ui/Badge';
 import { JsonLd, buildCollectionPageSchema, buildProjectListSchema } from '@/lib/entity-jsonld';
 
 export const metadata: Metadata = {
-  title: 'Projects',
-  description: 'A showcase of products, tools, and experiments I have built.',
+  title: { absolute: 'Projects by Amal Anilkumar — Full-Stack & AI Builds' },
+  description:
+    'Case studies of web apps, AI tools, and internal platforms built by Amal Anilkumar with Next.js, NestJS, TypeScript, and Python — with the stack and outcome for each build.',
   alternates: { canonical: '/projects' },
+  openGraph: {
+    type: 'website',
+    url: '/projects',
+    title: 'Projects by Amal Anilkumar — Full-Stack & AI Builds',
+    description:
+      'Case studies of web apps, AI tools, and internal platforms built with Next.js, NestJS, TypeScript, and Python.',
+  },
 };
 
 export default async function ProjectsPage() {
@@ -63,6 +71,7 @@ export default async function ProjectsPage() {
                         src={project.coverImageUrl}
                         alt={project.title}
                         fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px"
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     ) : (

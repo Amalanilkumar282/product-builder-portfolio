@@ -5,9 +5,17 @@ import { JsonLd, buildOpenSourceCollectionSchema } from '@/lib/entity-jsonld';
 import { GitHubIcon } from '@/components/icons/SocialIcons';
 
 export const metadata: Metadata = {
-  title: 'Open Source',
-  description: 'Open-source projects, public repositories, and build notes from Amal Anilkumar.',
+  title: { absolute: 'Open Source Projects | Amal Anilkumar' },
+  description:
+    'Public repositories and open-source work by Amal Anilkumar — source code, build notes, and the stack behind each project, all available on GitHub.',
   alternates: { canonical: '/open-source' },
+  openGraph: {
+    type: 'website',
+    url: '/open-source',
+    title: 'Open Source Projects | Amal Anilkumar',
+    description:
+      'Public repositories and open-source work — source code, build notes, and the stack behind each project.',
+  },
 };
 
 export default async function OpenSourcePage() {

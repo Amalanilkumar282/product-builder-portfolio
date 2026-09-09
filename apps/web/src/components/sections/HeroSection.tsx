@@ -43,65 +43,56 @@ export default function HeroSection({ profile }: HeroSectionProps) {
       <div className="relative z-10 max-w-7xl mx-auto px-6 w-full grid lg:grid-cols-2 gap-16 items-center py-20">
         {/* —— Left: text —— */}
         <div>
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-6"
-          >
+          {/* Above-the-fold entrance animations are CSS (see .hero-rise in
+              globals.css) rather than Framer Motion: they run on first paint
+              instead of waiting for the client bundle to hydrate, which keeps
+              the hero — and the LCP element with it — out of the JS critical
+              path. Below-the-fold reveals still use Framer Motion. */}
+          <div className="mb-6 hero-rise">
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium text-accent-muted border border-accent bg-accent-light">
               <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
               Available for Projects
             </span>
-          </motion.div>
+          </div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.1 }}
-            className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] text-primary mb-4"
+          {/* The role lives *inside* the h1 so the page's primary heading
+              carries the actual positioning ("Amal Anilkumar — Full-Stack and
+              AI Product Engineer") rather than just a greeting. The role is a
+              block-level span styled exactly like the old <p>, so the rendered
+              layout is unchanged. */}
+          <h1
+            style={{ '--hero-delay': '0.1s' } as React.CSSProperties}
+            className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] text-primary mb-2 hero-rise-lcp"
           >
             Hi, I&apos;m{' '}
             <span className="gradient-text">{profile?.name ?? CANONICAL_NAME}</span>
-          </motion.h1>
+            <span className="block text-xl sm:text-2xl font-medium text-secondary mt-4 leading-normal">
+              {profile?.title ?? DEFAULT_TITLE}
+              {profile?.location && (
+                <span className="text-base ml-3 text-muted">📍 {profile.location}</span>
+              )}
+            </span>
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.2 }}
-            className="text-xl sm:text-2xl font-medium text-secondary mb-2"
-          >
-            {profile?.title ?? DEFAULT_TITLE}
-            {profile?.location && (
-              <span className="text-base ml-3 text-muted">📍 {profile.location}</span>
-            )}
-          </motion.p>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.25 }}
-            className="text-sm font-medium tracking-widest text-accent uppercase mb-6"
+          <p
+            style={{ '--hero-delay': '0.25s' } as React.CSSProperties}
+            className="text-sm font-medium tracking-widest text-accent uppercase mb-6 hero-rise"
           >
             Product Builder · Full-Stack Engineer · Problem Solver
-          </motion.p>
+          </p>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.3 }}
-            className="text-secondary text-base md:text-lg max-w-xl mb-10 leading-relaxed"
+          <p
+            style={{ '--hero-delay': '0.3s' } as React.CSSProperties}
+            className="text-secondary text-base md:text-lg max-w-xl mb-10 leading-relaxed hero-rise"
           >
             {profile?.bio ??
               'Passionate about a world where tech and nature thrive together.'}
-          </motion.p>
+          </p>
 
           {/* CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.4 }}
-            className="flex flex-wrap gap-4 mb-10"
+          <div
+            style={{ '--hero-delay': '0.4s' } as React.CSSProperties}
+            className="flex flex-wrap gap-4 mb-10 hero-rise"
           >
             <Link
               href="#contact"
@@ -125,14 +116,12 @@ export default function HeroSection({ profile }: HeroSectionProps) {
                 <Download size={15} /> Resume
               </a>
             )}
-          </motion.div>
+          </div>
 
           {/* Social icons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.5 }}
-            className="flex flex-wrap gap-3"
+          <div
+            style={{ '--hero-delay': '0.5s' } as React.CSSProperties}
+            className="flex flex-wrap gap-3 hero-rise"
           >
             {profile?.email && (
               <a
@@ -190,15 +179,13 @@ export default function HeroSection({ profile }: HeroSectionProps) {
                 <InstagramIcon width={18} height={18} />
               </a>
             )}
-          </motion.div>
+          </div>
         </div>
 
         {/* —— Right: avatar —— */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.85 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="flex justify-center lg:justify-end"
+        <div
+          style={{ '--hero-delay': '0.2s' } as React.CSSProperties}
+          className="flex justify-center lg:justify-end hero-pop"
         >
           <div className="relative">
             {/* Signal Core: interactive 3D lattice, static glow fallback when
@@ -214,7 +201,17 @@ export default function HeroSection({ profile }: HeroSectionProps) {
             {/* Avatar */}
             <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-2 border-accent glow-purple">
               {profile?.avatarUrl ? (
-                <Image src={profile.avatarUrl} alt={profile.name} fill className="object-cover" />
+                <Image
+                  src={profile.avatarUrl}
+                  alt={`${profile.name} — ${profile.title ?? DEFAULT_TITLE}`}
+                  fill
+                  // Above the fold and the largest paint candidate on the
+                  // homepage: preload it and cap the request at its rendered
+                  // size (w-64 mobile / md:w-80) instead of the 100vw default.
+                  priority
+                  sizes="(max-width: 768px) 256px, 320px"
+                  className="object-cover"
+                />
               ) : (
                 <div className="w-full h-full gradient-bg flex items-center justify-center text-white text-7xl font-bold select-none">
                   {(profile?.name ?? 'A').charAt(0)}
@@ -242,7 +239,7 @@ export default function HeroSection({ profile }: HeroSectionProps) {
               <span className="text-secondary">Product Builder</span>
             </motion.div>
           </div>
-        </motion.div>
+        </div>
       </div>
 
       {/* Scroll indicator */}

@@ -4,9 +4,17 @@ import ContactSection from '@/components/sections/ContactSection';
 import { JsonLd, buildContactPageSchema } from '@/lib/entity-jsonld';
 
 export const metadata: Metadata = {
-  title: 'Contact',
-  description: 'Get in touch to discuss your project or collaboration opportunity.',
+  title: { absolute: 'Contact Amal Anilkumar — Hire a Full-Stack Engineer' },
+  description:
+    'Get in touch with Amal Anilkumar to scope a web app, AI integration, or backend build. Based in Kerala, India and available for remote freelance and contract work.',
   alternates: { canonical: '/contact' },
+  openGraph: {
+    type: 'website',
+    url: '/contact',
+    title: 'Contact Amal Anilkumar — Hire a Full-Stack Engineer',
+    description:
+      'Scope a web app, AI integration, or backend build. Based in Kerala, India and available for remote freelance and contract work.',
+  },
 };
 
 export default async function ContactPage() {

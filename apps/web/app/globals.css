@@ -231,3 +231,56 @@ body {
 
 
 
+
+/* ── Above-the-fold entrance animation ──────────────────────────────────────
+   The hero used Framer Motion mount animations, which meant the largest
+   contentful element (the h1) was server-rendered at opacity:0 and only became
+   visible after React had downloaded, parsed and hydrated the client bundle —
+   pushing LCP out by however long hydration took on the device.
+
+   These are pure CSS, so they start on first paint with no JS involved.
+   `.hero-rise` still fades; `.hero-rise-lcp` (used on the h1) animates the
+   transform only and never drops below full opacity, so the LCP element is
+   painted at its final opacity immediately. */
+@keyframes hero-rise {
+  from { opacity: 0; transform: translate3d(0, 16px, 0); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes hero-rise-lcp {
+  from { transform: translate3d(0, 12px, 0); }
+  to   { transform: none; }
+}
+
+.hero-rise {
+  animation: hero-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) var(--hero-delay, 0s) both;
+}
+
+.hero-rise-lcp {
+  opacity: 1;
+  animation: hero-rise-lcp 0.55s cubic-bezier(0.22, 1, 0.36, 1) var(--hero-delay, 0s) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-rise,
+  .hero-rise-lcp {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Hero avatar wrapper — same reasoning as .hero-rise, with the original
+   scale-in easing preserved. Holds the LCP image on the homepage. */
+@keyframes hero-pop {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: none; }
+}
+
+.hero-pop {
+  animation: hero-pop 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--hero-delay, 0s) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-pop { animation: none; opacity: 1; transform: none; }
+}
