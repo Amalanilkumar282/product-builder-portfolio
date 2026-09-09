@@ -17,9 +17,24 @@ export function JsonLd({ data }: { data: Record<string, unknown> | Record<string
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+      dangerouslySetInnerHTML={{ __html: serializeJsonLd(data) }}
     />
   );
+}
+
+/**
+ * Serializes structured data for embedding in a <script> block.
+ *
+ * All of this content is authored in the DB, so a title or summary containing
+ * "</script>" (or a "<" that a parser treats as markup) would terminate the
+ * block early and invalidate every schema on the page — silently costing rich
+ * results. `JSON.stringify` does not escape those characters, so we do:
+ * the \uXXXX form is valid JSON and parses back to the original string.
+ */
+function serializeJsonLd(data: unknown): string {
+  return JSON.stringify(data)
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e');
 }
 
 function personId() {

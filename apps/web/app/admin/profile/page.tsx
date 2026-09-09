@@ -105,19 +105,35 @@ export default function ProfilePage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Avatar Upload */}
         <AdminCard title="Profile Picture">
           <ImageUpload
-            entityType="profile"
+            target="profile_avatar"
             entityId={profile.id}
-            currentImageUrl={profile.avatarUrl}
+            currentUrl={profile.avatarUrl}
             onUploadSuccess={(url) => handleChange('avatarUrl', url)}
           />
         </AdminCard>
 
+        {/* Résumé — uploaded to Cloudinary as a PDF and written straight to
+            Profile.resumeUrl. The hero and about page render a download button
+            only when this column is populated. */}
+        <AdminCard title="Résumé (PDF)">
+          <ImageUpload
+            kind="document"
+            target="profile_resume"
+            entityId={profile.id}
+            currentUrl={formData.resumeUrl}
+            onUploadSuccess={(url) => handleChange('resumeUrl', url)}
+          />
+          <p className="mt-3 text-xs text-muted">
+            Uploading replaces the current file everywhere it is linked. PDF, up to 8 MB.
+          </p>
+        </AdminCard>
+
         {/* Basic Info */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="space-y-6 lg:col-span-3 xl:col-span-2">
           <AdminCard title="Basic Information">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="md:col-span-2">
@@ -236,7 +252,7 @@ export default function ProfilePage() {
                 />
               </div>
               <div>
-                <label className="block text-xs text-secondary mb-1.5 font-medium">Resume URL</label>
+                <label className="block text-xs text-secondary mb-1.5 font-medium">Résumé URL (set automatically by the upload above)</label>
                 <input
                   type="url"
                   value={formData.resumeUrl || ''}

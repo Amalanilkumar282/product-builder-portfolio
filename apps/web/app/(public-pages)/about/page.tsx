@@ -1,37 +1,61 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import Image from 'next/image';
 import {
   fetchAwards,
   fetchEducation,
   fetchExperience,
   fetchProfile,
   fetchProjects,
+  fetchSkills,
+  fetchTechStack,
 } from '@/lib/api';
-import ExperienceSection from '@/components/sections/ExperienceSection';
-import EducationSection from '@/components/sections/EducationSection';
-import AchievementsSection from '@/components/sections/AchievementsSection';
-import ProjectsSection from '@/components/sections/ProjectsSection';
+import TheRecord from '@/components/record/TheRecord';
+import SkillsSection from '@/components/sections/SkillsSection';
+import TechStackSection from '@/components/sections/TechStackSection';
+import Section from '@/components/ui/Section';
+import { ButtonLink, DefinitionList } from '@/components/ui/primitives';
 import { JsonLd, buildPersonSchema, buildProfilePageSchema } from '@/lib/entity-jsonld';
-import { CANONICAL_NAME, DEFAULT_BIO, DEFAULT_LOCATION, DEFAULT_TITLE } from '@/lib/site';
+import {
+  CANONICAL_NAME,
+  DEFAULT_BIO,
+  getProfileBio,
+  getProfileLocation,
+  getProfileTitle,
+} from '@/lib/site';
+import { formatMonthYear } from '@/lib/utils';
 
 export const metadata: Metadata = {
-  title: 'About',
-  description: 'About Amal Anilkumar, a full-stack and AI product engineer based in Kerala, India.',
+  title: { absolute: 'About Amal Anilkumar — Full-Stack & AI Engineer' },
+  description:
+    'Amal Anilkumar is a full-stack and AI product engineer in Kerala, India, building production web apps, internal tools, and AI-powered backend systems with Next.js and NestJS.',
   alternates: { canonical: '/about' },
+  openGraph: {
+    type: 'profile',
+    url: '/about',
+    title: 'About Amal Anilkumar — Full-Stack & AI Engineer',
+    description:
+      'Full-stack and AI product engineer in Kerala, India, building production web apps, internal tools, and AI-powered backend systems.',
+  },
 };
 
 export default async function AboutPage() {
-  const [profile, experience, education, awards, projects] = await Promise.all([
-    fetchProfile(),
-    fetchExperience(),
-    fetchEducation(),
-    fetchAwards(),
-    fetchProjects(),
-  ]);
+  const [profile, experience, education, awards, projects, skills, techStack] =
+    await Promise.all([
+      fetchProfile(),
+      fetchExperience(),
+      fetchEducation(),
+      fetchAwards(),
+      fetchProjects(),
+      fetchSkills(),
+      fetchTechStack(),
+    ]);
+
+  const name = profile?.name?.trim() || CANONICAL_NAME;
+  const current = experience.find((role) => role.isPresent);
+  const degree = education.find((item) => !/certification/i.test(item.degree));
 
   return (
-    <div className="min-h-screen pt-24 pb-20">
+    <>
       <JsonLd
         data={[
           buildProfilePageSchema({
@@ -42,55 +66,95 @@ export default async function AboutPage() {
           buildPersonSchema({ profile, experience, education, awards }),
         ]}
       />
-      <div className="max-w-7xl mx-auto px-6">
-        <section className="glass rounded-[2rem] p-8 md:p-12 border border-accent mb-16">
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent mb-4">
-            About the Engineer
-          </p>
-          <h1 className="text-4xl md:text-6xl font-bold text-primary leading-tight mb-4">
-            {profile?.name ?? CANONICAL_NAME}
-          </h1>
-          <p className="text-lg text-secondary mb-3">
-            {profile?.title ?? DEFAULT_TITLE} · {profile?.location ?? DEFAULT_LOCATION}
-          </p>
-          <p className="max-w-3xl text-secondary text-base md:text-lg leading-relaxed mb-6">
-            {profile?.bio ?? DEFAULT_BIO}
-          </p>
-          <div className="grid md:grid-cols-3 gap-4 text-sm text-secondary">
-            <div className="glass rounded-2xl p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-accent mb-2">Current Focus</p>
-              <p>Scalable product builds, internal tools, admin platforms, and AI-assisted software systems.</p>
-            </div>
-            <div className="glass rounded-2xl p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-accent mb-2">Primary Stack</p>
-              <p>Next.js, NestJS, TypeScript, PostgreSQL, Cloudinary, and modern deployment workflows.</p>
-            </div>
-            <div className="glass rounded-2xl p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-accent mb-2">Work Style</p>
-              <p>Hands-on architecture, shipping-oriented execution, and technical communication built for clients.</p>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-4 mt-8">
-            <Link
-              href="/projects"
-              className="inline-flex items-center gap-2 gradient-bg px-5 py-3 rounded-xl text-white text-sm font-semibold"
-            >
-              View Case Studies <ArrowRight size={16} />
-            </Link>
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 glass px-5 py-3 rounded-xl text-secondary text-sm font-semibold"
-            >
-              Start a Conversation <ArrowRight size={16} />
-            </Link>
-          </div>
-        </section>
 
-        <ExperienceSection experience={experience} />
-        <EducationSection education={education} />
-        <AchievementsSection awards={awards} />
-        <ProjectsSection projects={projects.slice(0, 4)} />
-      </div>
-    </div>
+      <Section
+        id="about"
+        label="About"
+        meta={getProfileLocation(profile)}
+        railExtra={
+          profile?.avatarUrl ? (
+            <Image
+              src={profile.avatarUrl}
+              alt={`Portrait of ${name}`}
+              width={96}
+              height={96}
+              priority
+              sizes="96px"
+              className="rounded-lg border border-rule object-cover"
+            />
+          ) : null
+        }
+        className="pt-[calc(var(--header-h)+3rem)]"
+      >
+        <h1 className="measure text-4xl text-ink md:text-5xl">{name}</h1>
+        <p className="measure mt-3 text-xl text-ink-dim">{getProfileTitle(profile)}</p>
+
+        {profile?.headline && (
+          <p className="measure mt-6 text-lg text-ink">{profile.headline}</p>
+        )}
+        <p className="measure mt-4 text-ink-dim">{getProfileBio(profile)}</p>
+
+        <div className="mt-8 max-w-md">
+          <DefinitionList
+            items={[
+              current && {
+                term: 'Currently',
+                value: `${current.role} at ${current.company}, since ${formatMonthYear(current.startDate)}`,
+              },
+              degree && {
+                term: 'Education',
+                value: `${degree.degree}, ${degree.institution}`,
+              },
+              { term: 'Based in', value: getProfileLocation(profile) },
+              awards.length > 0 && {
+                term: 'Recognition',
+                value: `${awards.length} awards, including ${awards[0].title}`,
+              },
+            ].filter(Boolean) as { term: string; value: string }[]}
+          />
+        </div>
+
+        <div className="mt-8 flex flex-wrap gap-3">
+          <ButtonLink href="/contact" tone="primary">
+            Get in touch
+          </ButtonLink>
+          {profile?.resumeUrl && (
+            <ButtonLink
+              href={profile.resumeUrl}
+              tone="secondary"
+              external
+              download
+              data-analytics="resume_click"
+              data-analytics-location="about"
+            >
+              Download résumé
+            </ButtonLink>
+          )}
+        </div>
+      </Section>
+
+      <Section
+        id="record"
+        label="The record"
+        meta={`${experience.length} roles`}
+        title="The record"
+        wide
+      >
+        <TheRecord
+          experience={experience}
+          awards={awards}
+          education={education}
+          projects={projects}
+        />
+      </Section>
+
+      <Section id="skills" label="Capability" meta={`${skills.length} skills`} title="Skills" wide>
+        <SkillsSection skills={skills} projects={projects} experience={experience} />
+      </Section>
+
+      <Section id="tech-stack" label="Stack" title="Daily tools" wide>
+        <TechStackSection techStack={techStack} />
+      </Section>
+    </>
   );
 }

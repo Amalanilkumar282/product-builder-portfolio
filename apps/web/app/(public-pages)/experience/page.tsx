@@ -1,32 +1,68 @@
 import type { Metadata } from 'next';
-import { fetchExperience, fetchProfile } from '@/lib/api';
-import ExperienceSection from '@/components/sections/ExperienceSection';
+import {
+  fetchAwards,
+  fetchEducation,
+  fetchExperience,
+  fetchProfile,
+  fetchProjects,
+} from '@/lib/api';
+import TheRecord from '@/components/record/TheRecord';
+import Section from '@/components/ui/Section';
 import { JsonLd, buildCollectionPageSchema, buildPersonSchema } from '@/lib/entity-jsonld';
 
 export const metadata: Metadata = {
-  title: 'Experience',
-  description: 'Work history, internships, leadership roles, and engineering experience of Amal Anilkumar.',
+  title: { absolute: 'Experience — Amal Anilkumar, Full-Stack Engineer' },
+  description:
+    'The work history of Amal Anilkumar: engineering roles, internships, and leadership positions, with the products shipped and the technologies used in each.',
   alternates: { canonical: '/experience' },
+  openGraph: {
+    type: 'profile',
+    url: '/experience',
+    title: 'Experience — Amal Anilkumar, Full-Stack Engineer',
+    description:
+      'Engineering roles, internships, and leadership positions, with the products shipped and technologies used in each.',
+  },
 };
 
 export default async function ExperiencePage() {
-  const [profile, experience] = await Promise.all([fetchProfile(), fetchExperience()]);
+  const [profile, experience, awards, education, projects] = await Promise.all([
+    fetchProfile(),
+    fetchExperience(),
+    fetchAwards(),
+    fetchEducation(),
+    fetchProjects(),
+  ]);
 
   return (
-    <div className="min-h-screen pt-24 pb-20">
+    <>
       <JsonLd
         data={[
           buildCollectionPageSchema({
             path: '/experience',
             title: 'Experience',
-            description: 'Professional, freelance, internship, and leadership experience of Amal Anilkumar.',
+            description:
+              'Professional, freelance, internship, and leadership experience of Amal Anilkumar.',
           }),
-          buildPersonSchema({ profile, experience }),
+          buildPersonSchema({ profile, experience, education, awards }),
         ]}
       />
-      <div className="max-w-7xl mx-auto px-6">
-        <ExperienceSection experience={experience} />
-      </div>
-    </div>
+      <Section
+        id="record"
+        label="The record"
+        meta={`${experience.length} roles`}
+        title="The record"
+        as="h1"
+        intro="Every role, internship, leadership post and award on one axis — so what overlapped is visible rather than buried in a list."
+        className="pt-[calc(var(--header-h)+3rem)]"
+        wide
+      >
+        <TheRecord
+          experience={experience}
+          awards={awards}
+          education={education}
+          projects={projects}
+        />
+      </Section>
+    </>
   );
 }

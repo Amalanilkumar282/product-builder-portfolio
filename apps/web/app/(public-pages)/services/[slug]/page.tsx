@@ -1,20 +1,18 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft, MessageSquare } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { fetchService, fetchServices, fetchProjects } from '@/lib/api';
-import AnimatedSection from '@/components/ui/AnimatedSection';
-import Badge from '@/components/ui/Badge';
-import SectionHeader from '@/components/ui/SectionHeader';
 import FaqAccordion from '@/components/ui/FaqAccordion';
 import MarkdownContent from '@/components/content/MarkdownContent';
+import { ButtonLink, Chip, Rule } from '@/components/ui/primitives';
 import {
   JsonLd,
   buildServiceSchema,
   buildBreadcrumbSchema,
   buildFaqSchema,
 } from '@/lib/entity-jsonld';
-import { SITE_URL } from '@/lib/site';
+import { SITE_URL, buildPageTitle } from '@/lib/site';
 
 export async function generateStaticParams() {
   const services = await fetchServices();
@@ -29,17 +27,38 @@ export async function generateMetadata({
   const { slug } = await params;
   const service = await fetchService(slug);
   if (!service) return {};
-  const ogImage = `${SITE_URL}/og?title=${encodeURIComponent(service.title)}&subtitle=${encodeURIComponent(service.description ?? '')}&type=service`;
+
+  const ogImage = `${SITE_URL}/og?title=${encodeURIComponent(
+    service.title,
+  )}&subtitle=${encodeURIComponent(service.description ?? '')}&type=service`;
+  const title = buildPageTitle(service.seoTitle ?? service.title);
+  const description = service.seoDescription ?? service.description;
+  const url = `${SITE_URL}/services/${slug}`;
+
   return {
-    title: service.seoTitle ?? service.title,
-    description: service.seoDescription ?? service.description,
-    alternates: { canonical: `${SITE_URL}/services/${slug}` },
-    openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },
-    twitter: { card: 'summary_large_image', images: [ogImage] },
+    title: { absolute: title },
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: 'website',
+      url,
+      title,
+      description,
+      images: [{ url: ogImage, width: 1200, height: 630, alt: service.title }],
+    },
+    twitter: { card: 'summary_large_image', title, description, images: [ogImage] },
   };
 }
 
-/** Generate service-specific FAQs from service data */
+/**
+ * Service FAQs.
+ *
+ * These are template strings rather than DB content, and they emit a real
+ * FAQPage schema that is already indexed — so the wording is preserved
+ * verbatim rather than rewritten. Note that they contain commitments
+ * (response time, included post-launch support) that live in code and can
+ * only be changed by a deploy.
+ */
 function buildServiceFaqs(service: {
   title: string;
   description: string;
@@ -84,121 +103,91 @@ export default async function ServiceDetailPage({
 
   const faqs = buildServiceFaqs(service);
   const relatedProjects = projects
-    .filter((project) => project.tags.some((tag) => service.tags.some((serviceTag) => serviceTag.slug === tag.slug)))
+    .filter((project) =>
+      project.tags.some((tag) => service.tags.some((serviceTag) => serviceTag.slug === tag.slug)),
+    )
     .slice(0, 3);
 
   return (
-    <div className="min-h-screen pt-24 pb-20">
-      <JsonLd data={[
-        buildServiceSchema(service),
-        buildFaqSchema(faqs),
-        buildBreadcrumbSchema([
-          { name: 'Home', url: SITE_URL },
-          { name: 'Services', url: `${SITE_URL}/services` },
-          { name: service.title, url: `${SITE_URL}/services/${service.slug}` },
-        ]),
-      ]} />
-      <div className="max-w-4xl mx-auto px-6">
-        <AnimatedSection className="mb-8">
-          <Link
-            href="/services"
-            className="inline-flex items-center gap-2 text-sm text-muted hover:text-secondary transition-colors group"
-          >
-            <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
-            All services
-          </Link>
-        </AnimatedSection>
+    <>
+      <JsonLd
+        data={[
+          buildServiceSchema(service),
+          buildFaqSchema(faqs),
+          buildBreadcrumbSchema([
+            { name: 'Home', url: SITE_URL },
+            { name: 'Services', url: `${SITE_URL}/services` },
+            { name: service.title, url: `${SITE_URL}/services/${service.slug}` },
+          ]),
+        ]}
+      />
 
-        <AnimatedSection>
-          {service.tags?.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-4">
-              {service.tags.map((tag) => (
-                <Badge key={tag.id} variant="purple">
-                  {tag.name}
-                </Badge>
-              ))}
-            </div>
-          )}
+      <article className="shell py-[calc(var(--header-h)+3rem)]">
+        <Link
+          href="/services"
+          className="meta inline-flex min-h-11 items-center gap-2 hover:text-verdigris"
+        >
+          <ArrowLeft size={13} aria-hidden="true" /> All services
+        </Link>
 
-          <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4 leading-tight">
-            {service.title}
-          </h1>
-
-          <p className="text-secondary text-lg mb-8">{service.description}</p>
-
-          <div className="glass rounded-2xl p-5 mb-8 border border-accent">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent mb-2">
-              AI-Readable Summary
-            </p>
-            <p className="text-sm text-secondary leading-relaxed">
-              {service.title} is a client-facing service offered by Amal Anilkumar. It is designed for teams that need scalable delivery, strong technical foundations, and direct implementation support from architecture through launch.
-            </p>
-          </div>
-        </AnimatedSection>
-
-        <AnimatedSection delay={0.1}>
-          <div className="glass rounded-2xl p-8 md:p-10 mb-10">
-            <MarkdownContent className="prose dark:prose-invert prose-slate max-w-none prose-headings:font-bold prose-a:text-purple-400 prose-code:text-purple-300" content={service.content} />
-          </div>
-        </AnimatedSection>
-
-        {/* FAQ */}
-        <AnimatedSection delay={0.15}>
-          <div className="mb-10">
-            <SectionHeader
-              label="FAQ"
-              title="Frequently Asked Questions"
-              className="mb-6"
-            />
-            <FaqAccordion items={faqs} />
-          </div>
-        </AnimatedSection>
-
-        {relatedProjects.length > 0 && (
-          <AnimatedSection delay={0.18} className="mb-10">
-            <div className="glass rounded-2xl p-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent mb-4">
-                Related Projects
-              </p>
-              <div className="grid gap-3">
-                {relatedProjects.map((project) => (
-                  <a
-                    key={project.id}
-                    href={`/projects/${project.slug}`}
-                    className="rounded-xl border border-default px-4 py-3 hover:border-accent transition-colors"
-                  >
-                    <p className="text-sm font-semibold text-primary">{project.title}</p>
-                    <p className="text-sm text-secondary">{project.summary}</p>
-                  </a>
-                ))}
+        <div className="rail-grid mt-6">
+          <aside className="lg:sticky lg:top-[calc(var(--header-h)+2rem)] lg:self-start">
+            {service.tags?.length > 0 && (
+              <div>
+                <p className="meta uppercase tracking-[0.14em]">Stack</p>
+                <div className="mt-1.5 flex flex-wrap gap-1">
+                  {service.tags.map((tag) => (
+                    <Chip key={tag.id}>{tag.name}</Chip>
+                  ))}
+                </div>
               </div>
+            )}
+            <div className="mt-5">
+              <ButtonLink href="/contact" tone="primary" className="w-full">
+                Start a project
+              </ButtonLink>
             </div>
-          </AnimatedSection>
-        )}
+          </aside>
 
-        <AnimatedSection delay={0.2}>
-          <div className="glass rounded-2xl p-8 text-center border border-accent">
-            <div className="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center mx-auto mb-4">
-              <MessageSquare size={20} className="text-white" />
+          <div className="min-w-0">
+            <h1 className="measure text-4xl text-ink md:text-5xl">{service.title}</h1>
+            <p className="measure mt-4 text-lg text-ink-dim">{service.description}</p>
+
+            <div className="mt-10">
+              <MarkdownContent content={service.content} />
             </div>
-            <h3 className="text-xl font-bold text-primary mb-2">
-              Interested in this service?
-            </h3>
-            <p className="text-secondary text-sm mb-6">
-              Let&apos;s discuss how I can help you achieve your goals.
-            </p>
-            <Link
-              href="/#contact"
-              className="inline-flex items-center gap-2 gradient-bg px-6 py-3 rounded-xl text-white font-semibold text-sm hover:opacity-90 transition-opacity shadow-lg shadow-accent"
-            >
-              Get in touch
-            </Link>
+
+            <Rule className="mt-12" />
+            <section className="mt-8">
+              <h2 className="text-2xl text-ink">Common questions</h2>
+              <div className="mt-4">
+                <FaqAccordion items={faqs} />
+              </div>
+            </section>
+
+            {relatedProjects.length > 0 && (
+              <section className="mt-10">
+                <h2 className="meta uppercase tracking-[0.14em]">Related work</h2>
+                <ul className="mt-2 divide-y divide-rule border-t border-rule">
+                  {relatedProjects.map((project) => (
+                    <li key={project.id}>
+                      <Link
+                        href={`/projects/${project.slug}`}
+                        className="block py-3 hover:text-verdigris"
+                      >
+                        <span className="block text-sm text-ink">{project.title}</span>
+                        <span className="measure mt-0.5 block text-sm text-ink-dim">
+                          {project.summary}
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
           </div>
-        </AnimatedSection>
-      </div>
-    </div>
+        </div>
+      </article>
+    </>
   );
 }
-
-
-

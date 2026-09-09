@@ -1,107 +1,179 @@
-﻿'use client';
+'use client';
 
-import { useRef } from 'react';
-import { motion, useScroll } from 'framer-motion';
-import SectionHeader from '@/components/ui/SectionHeader';
-import AnimatedSection from '@/components/ui/AnimatedSection';
-import SectionConnector from '@/components/ui/SectionConnector';
-import Tilt3D from '@/components/ui/Tilt3D';
-import SceneCanvas from '@/components/3d/SceneCanvas';
-import OrbitField from '@/components/3d/OrbitField';
-import type { Skill } from '@/lib/types';
+import { useMemo, useState } from 'react';
+import Link from 'next/link';
+import { Chip, EmptyState } from '@/components/ui/primitives';
+import { cn } from '@/lib/utils';
+import type { Experience, Project, Skill } from '@/lib/types';
 
 interface SkillsSectionProps {
   skills: Skill[];
+  projects: Project[];
+  experience: Experience[];
 }
 
-function groupBy<T>(arr: T[], key: keyof T): Record<string, T[]> {
-  return arr.reduce(
-    (acc, item) => {
-      const k = String(item[key]);
-      acc[k] = acc[k] ? [...acc[k], item] : [item];
-      return acc;
-    },
-    {} as Record<string, T[]>,
+/**
+ * Normalises a skill or tag name for matching. "Node.js / Express" and
+ * "Node.js" should link up; so should "React.js" and "React".
+ */
+function normalise(value: string): string[] {
+  return value
+    .toLowerCase()
+    .split(/[/,]/)
+    .map((part) => part.replace(/\.js\b/g, '').replace(/[^a-z0-9+#]/g, '').trim())
+    .filter(Boolean);
+}
+
+export default function SkillsSection({ skills, projects, experience }: SkillsSectionProps) {
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+
+  const categories = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const skill of skills) {
+      counts.set(skill.category, (counts.get(skill.category) ?? 0) + 1);
+    }
+    return [...counts.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+  }, [skills]);
+
+  /*
+   * Links each skill to the work that evidences it, by matching the skill name
+   * against project tags and role descriptions.
+   *
+   * This replaces the proficiency percentage bars. A self-reported "React 90%"
+   * is unverifiable and technical reviewers discount it; naming the projects a
+   * skill actually appears in is both more credible and something a visitor can
+   * click through and check.
+   */
+  const evidence = useMemo(() => {
+    const map = new Map<string, { projects: Project[]; roles: Experience[] }>();
+
+    for (const skill of skills) {
+      const keys = normalise(skill.name);
+      const matchedProjects = projects.filter((project) =>
+        project.tags?.some((tag) =>
+          normalise(tag.name).some((tagKey) =>
+            keys.some((key) => key.length > 2 && (key === tagKey || tagKey.includes(key))),
+          ),
+        ),
+      );
+
+      const haystackRoles = experience.filter((role) => {
+        const text = `${role.role} ${role.description}`.toLowerCase();
+        return keys.some((key) => key.length > 3 && text.includes(key));
+      });
+
+      map.set(skill.id, { projects: matchedProjects, roles: haystackRoles });
+    }
+
+    return map;
+  }, [skills, projects, experience]);
+
+  const visible = useMemo(
+    () => (activeCategory ? skills.filter((s) => s.category === activeCategory) : skills),
+    [skills, activeCategory],
   );
-}
 
-export default function SkillsSection({ skills }: SkillsSectionProps) {
-  if (skills.length === 0) return null;
-  const grouped = groupBy(skills, 'category');
-  const sectionRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start end', 'end start'] });
+  const grouped = useMemo(() => {
+    const groups = new Map<string, Skill[]>();
+    for (const skill of visible) {
+      const list = groups.get(skill.category);
+      if (list) list.push(skill);
+      else groups.set(skill.category, [skill]);
+    }
+    return [...groups.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+  }, [visible]);
+
+  if (skills.length === 0) {
+    return <EmptyState title="No skills published yet" />;
+  }
 
   return (
-    <section
-      id="skills"
-      ref={sectionRef}
-      className="relative isolate max-w-7xl mx-auto px-6 py-24"
-    >
-      {/* Ambient 3D backdrop — scroll-reactive, blended behind the content rather
-          than boxed as a separate widget. */}
+    <div>
       <div
-        className="pointer-events-none absolute inset-x-0 -top-16 -z-10 h-[30rem] opacity-80 sm:h-[34rem] [mask-image:linear-gradient(to_bottom,black,black_50%,transparent)]"
-        aria-hidden="true"
+        className="mb-6 flex flex-wrap gap-1.5"
+        role="group"
+        aria-label="Filter skills by discipline"
       >
-        <SceneCanvas
-          className="h-full w-full"
-          cameraPosition={[0, 1.6, 5.6]}
-          fallback={
-            <div className="flex h-full w-full items-center justify-center bg-[radial-gradient(ellipse_at_center,var(--bg-gradient-purple)_0%,transparent_65%)]">
-              <p className="text-xs uppercase tracking-widest text-muted">
-                {skills.length} skills across {Object.keys(grouped).length} disciplines
-              </p>
-            </div>
-          }
+        <button
+          type="button"
+          onClick={() => setActiveCategory(null)}
+          aria-pressed={activeCategory === null}
+          className={cn(
+            'inline-flex min-h-11 items-center rounded-md border px-3 font-mono text-2xs transition-colors',
+            activeCategory === null
+              ? 'border-verdigris bg-verdigris-soft text-verdigris'
+              : 'border-rule text-ink-faint hover:text-ink-dim',
+          )}
         >
-          <OrbitField count={skills.length} scrollProgress={scrollYProgress} />
-        </SceneCanvas>
-      </div>
-
-      <SectionConnector />
-
-      <AnimatedSection>
-        <SectionHeader
-          label="Expertise"
-          title="Skills & Proficiency"
-          subtitle="Technologies and tools I work with every day."
-        />
-      </AnimatedSection>
-
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-        {Object.entries(grouped).map(([category, categorySkills], i) => (
-          <AnimatedSection key={category} delay={i * 0.1}>
-            <Tilt3D maxTilt={5} className="rounded-2xl h-full">
-            <div className="glass rounded-2xl p-6 hover:border-accent transition-all h-full">
-              <h3 className="text-sm font-semibold uppercase tracking-widest text-accent mb-5">
-                {category}
-              </h3>
-              <div className="space-y-4">
-                {categorySkills.map((skill, j) => (
-                  <div key={skill.id}>
-                    <div className="flex justify-between text-sm mb-1.5">
-                      <span className="text-secondary font-medium">{skill.name}</span>
-                      <span className="text-muted">{skill.proficiency}%</span>
-                    </div>
-                    <div className="h-1.5 rounded-full bg-slate-800 overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${skill.proficiency}%` }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.9, delay: j * 0.05, ease: 'easeOut' }}
-                        className="h-full rounded-full gradient-bg"
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            </Tilt3D>
-          </AnimatedSection>
+          All {skills.length}
+        </button>
+        {categories.map(([category, count]) => (
+          <button
+            key={category}
+            type="button"
+            onClick={() => setActiveCategory(category === activeCategory ? null : category)}
+            aria-pressed={category === activeCategory}
+            className={cn(
+              'inline-flex min-h-11 items-center gap-1.5 rounded-md border px-3 font-mono text-2xs transition-colors',
+              category === activeCategory
+                ? 'border-verdigris bg-verdigris-soft text-verdigris'
+                : 'border-rule text-ink-faint hover:text-ink-dim',
+            )}
+          >
+            {category}
+            <span className="text-ink-faint">{count}</span>
+          </button>
         ))}
       </div>
-    </section>
+
+      <p className="sr-only" aria-live="polite">
+        {visible.length} skills shown{activeCategory ? ` in ${activeCategory}` : ''}.
+      </p>
+
+      <div className="space-y-8">
+        {grouped.map(([category, categorySkills]) => (
+          <div key={category}>
+            <h3 className="meta border-b border-rule pb-2 uppercase tracking-[0.14em]">
+              {category}
+            </h3>
+            <ul className="mt-3 grid gap-x-8 gap-y-3 sm:grid-cols-2 xl:grid-cols-3">
+              {categorySkills.map((skill) => {
+                const found = evidence.get(skill.id);
+                const usedIn = found?.projects ?? [];
+                return (
+                  <li
+                    key={skill.id}
+                    className="flex flex-wrap items-baseline gap-x-2 border-b border-rule/60 pb-2"
+                  >
+                    <span className="text-sm text-ink">{skill.name}</span>
+                    {usedIn.length > 0 ? (
+                      <span className="flex flex-wrap items-baseline gap-1">
+                        {usedIn.slice(0, 2).map((project) => (
+                          <Link
+                            key={project.id}
+                            href={`/projects/${project.slug}`}
+                            className="font-mono text-2xs text-verdigris underline decoration-verdigris/40 underline-offset-2 hover:decoration-verdigris"
+                          >
+                            {project.title.split(/[—–-]/)[0].trim()}
+                          </Link>
+                        ))}
+                        {usedIn.length > 2 && (
+                          <span className="meta">+{usedIn.length - 2}</span>
+                        )}
+                      </span>
+                    ) : (
+                      found &&
+                      found.roles.length > 0 && (
+                        <Chip tone="neutral">{found.roles[0].company}</Chip>
+                      )
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
-
-

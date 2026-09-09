@@ -2,8 +2,27 @@ import { revalidatePath, revalidateTag } from 'next/cache';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// Content tags that map to cache tags used in src/lib/api.ts fetch calls.
-const VALID_TAGS = new Set(['blog', 'project', 'service']);
+// Cache tags used by the `next: { tags }` options in src/lib/api.ts.
+//
+// The first three own public URLs. The rest render on shared pages and
+// previously had no tag at all, which meant an admin edit to a skill, award or
+// the profile could only be waited out — up to five minutes — with no way to
+// push it live.
+const VALID_TAGS = new Set([
+  'blog',
+  'project',
+  'service',
+  'profile',
+  'skill',
+  'experience',
+  'education',
+  'testimonial',
+  'tech-stack',
+  'award',
+  'certification',
+  'talk',
+  'page-section',
+]);
 
 /**
  * On-demand ISR endpoint.

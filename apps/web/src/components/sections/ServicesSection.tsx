@@ -1,74 +1,45 @@
-﻿import Link from 'next/link';
-import { ArrowRight, Layers } from 'lucide-react';
-import SectionHeader from '@/components/ui/SectionHeader';
-import GlassCard from '@/components/ui/GlassCard';
-import AnimatedSection from '@/components/ui/AnimatedSection';
-import SectionConnector from '@/components/ui/SectionConnector';
-import Badge from '@/components/ui/Badge';
+import Link from 'next/link';
+import { Chip, EmptyState } from '@/components/ui/primitives';
 import type { Service } from '@/lib/types';
 
-interface ServicesSectionProps {
-  services: Service[];
-}
-
-export default function ServicesSection({ services }: ServicesSectionProps) {
-  if (services.length === 0) return null;
+export default function ServicesSection({ services }: { services: Service[] }) {
+  if (services.length === 0) {
+    return <EmptyState title="No services listed yet" />;
+  }
 
   return (
-    <section id="services" className="max-w-7xl mx-auto px-6 py-24">
-      <SectionConnector />
-
-      <AnimatedSection>
-        <SectionHeader
-          label="What I Build For Clients"
-          title="Services"
-          subtitle="End-to-end digital products — from idea to production, built to last."
-        />
-      </AnimatedSection>
-
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {services.slice(0, 6).map((service, i) => (
-          <AnimatedSection key={service.id} delay={i * 0.08}>
-            <GlassCard className="h-full group" tilt>
-              <div className="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Layers size={18} className="text-white" />
-              </div>
-              <h3 className="text-lg font-semibold text-primary mb-2">
-                <Link
-                  href={`/services/${service.slug}`}
-                  className="hover:text-accent transition-colors"
-                >
-                  {service.title}
-                </Link>
-              </h3>
-              <p className="text-secondary text-sm leading-relaxed mb-4 line-clamp-3">
-                {service.description}
-              </p>
-              {service.tags?.length > 0 && (
-                <div className="flex flex-wrap gap-1.5">
-                  {service.tags.slice(0, 3).map((tag) => (
-                    <Badge key={tag.id} variant="purple">
-                      {tag.name}
-                    </Badge>
-                  ))}
-                </div>
-              )}
-            </GlassCard>
-          </AnimatedSection>
-        ))}
-      </div>
-
-      {services.length > 6 && (
-        <AnimatedSection className="mt-10 text-center">
+    <ul className="divide-y divide-rule border-y border-rule">
+      {services.map((service, index) => (
+        <li key={service.id} className="group relative">
           <Link
-            href="/services"
-            className="inline-flex items-center gap-2 glass px-6 py-3 rounded-xl text-secondary text-sm font-medium hover:border-accent hover:text-primary transition-all"
+            href={`/services/${service.slug}`}
+            className="flex flex-col gap-2 py-5 sm:flex-row sm:items-baseline sm:gap-6"
           >
-            View all services <ArrowRight size={16} />
+            {/* An index number rather than an icon: it costs nothing, reinforces
+                the record motif, and never needs a colour to mean something. */}
+            <span className="meta w-8 shrink-0 tabular">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+
+            <span className="min-w-0 flex-1">
+              <span className="block text-lg text-ink transition-colors group-hover:text-verdigris">
+                {service.title}
+              </span>
+              <span className="measure mt-1 block text-sm text-ink-dim">
+                {service.description}
+              </span>
+            </span>
+
+            {service.tags && service.tags.length > 0 && (
+              <span className="flex shrink-0 flex-wrap gap-1 sm:max-w-56 sm:justify-end">
+                {service.tags.slice(0, 3).map((tag) => (
+                  <Chip key={tag.id}>{tag.name}</Chip>
+                ))}
+              </span>
+            )}
           </Link>
-        </AnimatedSection>
-      )}
-    </section>
+        </li>
+      ))}
+    </ul>
   );
 }
-

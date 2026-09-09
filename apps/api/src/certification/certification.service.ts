@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { notifySiteDataChange } from '../common/utils/seo-notify.util';
 import { CreateCertificationDto } from './dto/create-certification.dto';
 import { UpdateCertificationDto } from './dto/update-certification.dto';
 
@@ -8,13 +9,13 @@ export class CertificationService {
   constructor(private readonly prisma: PrismaService) {}
 
   create(dto: CreateCertificationDto) {
-    return this.prisma.certification.create({
+    return this.notify(this.prisma.certification.create({
       data: {
         ...dto,
         issueDate: dto.issueDate ? new Date(dto.issueDate) : undefined,
         expiryDate: dto.expiryDate ? new Date(dto.expiryDate) : undefined,
       },
-    });
+    }));
   }
 
   findAll() {
@@ -29,7 +30,7 @@ export class CertificationService {
 
   async update(id: string, dto: UpdateCertificationDto) {
     await this.findOne(id);
-    return this.prisma.certification.update({
+    return this.notify(this.prisma.certification.update({
       where: { id },
       data: {
         ...dto,
@@ -46,12 +47,12 @@ export class CertificationService {
               : null
             : undefined,
       },
-    });
+    }));
   }
 
   async remove(id: string) {
     await this.findOne(id);
-    return this.prisma.certification.delete({ where: { id } });
+    return this.notify(this.prisma.certification.delete({ where: { id } }));
   }
 
   findPublished() {
@@ -59,5 +60,16 @@ export class CertificationService {
       where: { isPublished: true },
       orderBy: { order: 'asc' },
     });
+  }
+
+  /**
+   * Fires an on-demand ISR purge after a mutation. Wrapping the Prisma call
+   * rather than restructuring each method keeps the notification impossible
+   * to forget: every write path already returns through here.
+   */
+  private async notify<T>(work: Promise<T> | T): Promise<T> {
+    const result = await work;
+    notifySiteDataChange('certification');
+    return result;
   }
 }

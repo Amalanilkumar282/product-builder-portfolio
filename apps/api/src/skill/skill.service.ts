@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { notifySiteDataChange } from '../common/utils/seo-notify.util';
 import { CreateSkillDto } from './dto/create-skill.dto';
 import { UpdateSkillDto } from './dto/update-skill.dto';
 
@@ -8,7 +9,7 @@ export class SkillService {
   constructor(private readonly prisma: PrismaService) {}
 
   create(dto: CreateSkillDto) {
-    return this.prisma.skill.create({ data: dto });
+    return this.notify(this.prisma.skill.create({ data: dto }));
   }
 
   findAll() {
@@ -25,12 +26,12 @@ export class SkillService {
 
   async update(id: string, dto: UpdateSkillDto) {
     await this.findOne(id);
-    return this.prisma.skill.update({ where: { id }, data: dto });
+    return this.notify(this.prisma.skill.update({ where: { id }, data: dto }));
   }
 
   async remove(id: string) {
     await this.findOne(id);
-    return this.prisma.skill.delete({ where: { id } });
+    return this.notify(this.prisma.skill.delete({ where: { id } }));
   }
 
   findPublished() {
@@ -38,5 +39,16 @@ export class SkillService {
       where: { isPublished: true },
       orderBy: [{ category: 'asc' }, { order: 'asc' }],
     });
+  }
+
+  /**
+   * Fires an on-demand ISR purge after a mutation. Wrapping the Prisma call
+   * rather than restructuring each method keeps the notification impossible
+   * to forget: every write path already returns through here.
+   */
+  private async notify<T>(work: Promise<T> | T): Promise<T> {
+    const result = await work;
+    notifySiteDataChange('skill');
+    return result;
   }
 }

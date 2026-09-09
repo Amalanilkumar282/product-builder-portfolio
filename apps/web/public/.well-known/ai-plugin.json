@@ -7,10 +7,10 @@
   "auth": { "type": "none" },
   "api": {
     "type": "openapi",
-    "url": "https://amalanilkumar.dev/api/openapi.json",
+    "url": "https://amalanilkumar.com/api/openapi.json",
     "is_user_authenticated": false
   },
-  "logo_url": "https://amalanilkumar.dev/icon-512.png",
-  "contact_email": "amal@amalanilkumar.dev",
-  "legal_info_url": "https://amalanilkumar.dev"
+  "logo_url": "https://amalanilkumar.com/icon",
+  "contact_email": "amalanilkumar282@gmail.com",
+  "legal_info_url": "https://amalanilkumar.com"
 }

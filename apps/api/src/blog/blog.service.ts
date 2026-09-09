@@ -32,7 +32,7 @@ export class BlogService {
       include: { tags: true },
     });
 
-    if (post.isPublished) notifySeoIndexing('blog', `/blog/${post.slug}`);
+    notifySeoIndexing('blog', `/blog/${post.slug}`);
     return post;
   }
 
@@ -86,13 +86,18 @@ export class BlogService {
       include: { tags: true },
     });
 
-    if (post.isPublished) notifySeoIndexing('blog', `/blog/${post.slug}`);
+    notifySeoIndexing('blog', `/blog/${post.slug}`);
     return post;
   }
 
   async remove(id: string) {
-    await this.findOne(id);
-    return this.prisma.blogPost.delete({ where: { id } });
+    const existing = await this.findOne(id);
+    const removed = await this.prisma.blogPost.delete({ where: { id } });
+
+    // Purge after deletion, otherwise the ISR cache keeps serving a
+    // page whose record no longer exists.
+    notifySeoIndexing('blog', `/blog/${existing.slug}`);
+    return removed;
   }
 
   findPublished() {

@@ -1,261 +1,145 @@
-﻿'use client';
-
-import { useRef } from 'react';
-import { motion, useScroll } from 'framer-motion';
-import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowDown, Download, Mail } from 'lucide-react';
-import { trackEvent } from '@/lib/analytics';
-import { GitHubIcon, InstagramIcon, LinkedInIcon, XIcon } from '@/components/icons/SocialIcons';
-import SceneCanvas from '@/components/3d/SceneCanvas';
-import SignalCore from '@/components/3d/SignalCore';
-import { CANONICAL_NAME, DEFAULT_TITLE, parseSocialLinks } from '@/lib/site';
-import type { Profile } from '@/lib/types';
+import { Download, Mail } from 'lucide-react';
+import { ButtonLink } from '@/components/ui/primitives';
+import SocialRow from '@/components/layout/SocialRow';
+import {
+  CANONICAL_NAME,
+  DEFAULT_TITLE,
+  getProfileBio,
+  parseSocialLinks,
+} from '@/lib/site';
+import type { Experience, Profile } from '@/lib/types';
+import { formatMonthYear } from '@/lib/utils';
 
 interface HeroSectionProps {
   profile: Profile | null;
+  experience: Experience[];
 }
 
-export default function HeroSection({ profile }: HeroSectionProps) {
-  const socials = parseSocialLinks(profile?.socialLinks);
-  const sectionRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start start', 'end start'] });
+/**
+ * A server component.
+ *
+ * The previous hero was a 258-line client component that pulled framer-motion
+ * and the whole three.js stack into the homepage's critical path for two
+ * floating badges and a decorative lattice. Everything here renders on the
+ * server; the only motion is a CSS entrance that starts on first paint rather
+ * than waiting for hydration.
+ */
+export default function HeroSection({ profile, experience }: HeroSectionProps) {
+  const socials = parseSocialLinks(profile?.socialLinks, profile);
+  const name = profile?.name?.trim() || CANONICAL_NAME;
+  const title = profile?.title?.trim() || DEFAULT_TITLE;
+  const bio = getProfileBio(profile);
+
+  const current = experience.find((role) => role.isPresent);
 
   return (
     <section
-      ref={sectionRef}
       id="hero"
-      className="relative min-h-screen flex items-center overflow-hidden pt-16"
+      className="shell scroll-mt-[calc(var(--header-h)+2rem)] pb-12 pt-[calc(var(--header-h)+3rem)] md:pb-20 md:pt-[calc(var(--header-h)+5rem)]"
     >
-      {/* Background: animated gradient orbs */}
-      <div className="absolute inset-0 pointer-events-none select-none">
-        <div
-          className="absolute top-[15%] left-[10%] w-[500px] h-[500px] rounded-full bg-accent-light blur-[120px]"
-          style={{ animation: 'float 8s ease-in-out infinite' }}
-        />
-        <div
-          className="absolute bottom-[10%] right-[8%] w-[450px] h-[450px] rounded-full bg-blue-light blur-[120px]"
-          style={{ animation: 'float 10s ease-in-out infinite reverse' }}
-        />
-        <div className="absolute inset-0 grid-bg opacity-40" />
-      </div>
+      <div className="rail-grid">
+        {/* Metadata rail: the "now" panel. Uses Profile and Experience columns
+            that the previous design never rendered at all. */}
+        <div className="rise" style={{ '--delay': '0.05s' } as React.CSSProperties}>
+          {profile?.avatarUrl && (
+            <Image
+              src={profile.avatarUrl}
+              alt={`Portrait of ${name}`}
+              width={88}
+              height={88}
+              priority
+              sizes="88px"
+              className="mb-4 rounded-lg border border-rule object-cover"
+            />
+          )}
+          <p className="meta uppercase tracking-[0.14em] text-verdigris">Now</p>
+          <dl className="mt-2 space-y-2">
+            {current && (
+              <div>
+                <dd className="text-sm text-ink">{current.role}</dd>
+                <dd className="meta">
+                  {current.company} · since {formatMonthYear(current.startDate)}
+                </dd>
+              </div>
+            )}
+            {profile?.location && <dd className="meta">{profile.location}</dd>}
+          </dl>
+        </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 w-full grid lg:grid-cols-2 gap-16 items-center py-20">
-        {/* —— Left: text —— */}
-        <div>
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-6"
+        <div className="min-w-0">
+          <h1
+            className="rise-lcp measure text-4xl text-ink md:text-5xl"
+            style={{ '--delay': '0.1s' } as React.CSSProperties}
           >
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium text-accent-muted border border-accent bg-accent-light">
-              <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
-              Available for Projects
+            {name}
+            <span className="mt-3 block text-xl font-normal text-ink-dim md:text-2xl">
+              {title}
             </span>
-          </motion.div>
+          </h1>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.1 }}
-            className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] text-primary mb-4"
-          >
-            Hi, I&apos;m{' '}
-            <span className="gradient-text">{profile?.name ?? CANONICAL_NAME}</span>
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.2 }}
-            className="text-xl sm:text-2xl font-medium text-secondary mb-2"
-          >
-            {profile?.title ?? DEFAULT_TITLE}
-            {profile?.location && (
-              <span className="text-base ml-3 text-muted">📍 {profile.location}</span>
-            )}
-          </motion.p>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.25 }}
-            className="text-sm font-medium tracking-widest text-accent uppercase mb-6"
-          >
-            Product Builder · Full-Stack Engineer · Problem Solver
-          </motion.p>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.3 }}
-            className="text-secondary text-base md:text-lg max-w-xl mb-10 leading-relaxed"
-          >
-            {profile?.bio ??
-              'Passionate about a world where tech and nature thrive together.'}
-          </motion.p>
-
-          {/* CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.4 }}
-            className="flex flex-wrap gap-4 mb-10"
-          >
-            <Link
-              href="#contact"
-              className="gradient-bg px-6 py-3 rounded-xl text-white font-semibold text-sm shadow-lg shadow-accent hover:opacity-90 hover:-translate-y-0.5 transition-all"
+          {profile?.headline && (
+            <p
+              className="rise measure mt-6 text-lg text-ink"
+              style={{ '--delay': '0.18s' } as React.CSSProperties}
             >
-              Let&apos;s Work Together
-            </Link>
-            <Link
-              href="#projects"
-              className="glass px-6 py-3 rounded-xl text-secondary font-semibold text-sm hover:border-accent hover:text-primary hover:-translate-y-0.5 transition-all"
-            >
-              View My Work
-            </Link>
+              {profile.headline}
+            </p>
+          )}
+
+          <p
+            className="rise measure mt-4 text-ink-dim"
+            style={{ '--delay': '0.24s' } as React.CSSProperties}
+          >
+            {bio}
+          </p>
+
+          <div
+            className="rise mt-8 flex flex-wrap items-center gap-3"
+            style={{ '--delay': '0.3s' } as React.CSSProperties}
+          >
+            <ButtonLink href="#record" tone="primary">
+              Explore the record
+            </ButtonLink>
+            <ButtonLink href="#contact" tone="secondary">
+              Get in touch
+            </ButtonLink>
+            {/* Rendered only when a resume has actually been uploaded through
+                the admin panel — no dead button when the column is empty. */}
             {profile?.resumeUrl && (
-              <a
+              <ButtonLink
                 href={profile.resumeUrl}
+                tone="ghost"
+                external
                 download
-                onClick={() => trackEvent('resume_click', { location: 'hero' })}
-                className="glass px-6 py-3 rounded-xl text-secondary font-semibold text-sm flex items-center gap-2 hover:border-accent hover:text-primary hover:-translate-y-0.5 transition-all"
+                data-analytics="resume_click"
+                data-analytics-location="hero"
               >
-                <Download size={15} /> Resume
-              </a>
+                <Download size={15} aria-hidden="true" /> Résumé
+              </ButtonLink>
             )}
-          </motion.div>
+          </div>
 
-          {/* Social icons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.5 }}
-            className="flex flex-wrap gap-3"
+          <div
+            className="rise mt-6 flex flex-wrap items-center gap-x-5 gap-y-2"
+            style={{ '--delay': '0.36s' } as React.CSSProperties}
           >
             {profile?.email && (
               <a
                 href={`mailto:${profile.email}`}
-                className="flex items-center gap-2 glass px-4 py-2.5 rounded-xl text-secondary text-sm hover:text-primary hover:border-accent transition-all"
+                data-analytics="email_click"
+                data-analytics-location="hero"
+                className="inline-flex min-h-11 items-center gap-2 text-sm text-ink-dim transition-colors hover:text-ink"
               >
-                <Mail size={15} /> {profile.email}
+                <Mail size={15} aria-hidden="true" />
+                {profile.email}
               </a>
             )}
-            {socials.github && (
-              <a
-                href={socials.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="GitHub"
-                onClick={() => trackEvent('github_click', { location: 'hero' })}
-                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-accent transition-all"
-              >
-                <GitHubIcon width={18} height={18} />
-              </a>
-            )}
-            {socials.linkedin && (
-              <a
-                href={socials.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn"
-                onClick={() => trackEvent('linkedin_click', { location: 'hero' })}
-                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-blue-400 transition-all"
-              >
-                <LinkedInIcon width={18} height={18} />
-              </a>
-            )}
-            {socials.twitter && (
-              <a
-                href={socials.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="X"
-                onClick={() => trackEvent('x_click', { location: 'hero' })}
-                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-sky-400 transition-all"
-              >
-                <XIcon width={18} height={18} />
-              </a>
-            )}
-            {socials.instagram && (
-              <a
-                href={socials.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-                onClick={() => trackEvent('instagram_click', { location: 'hero' })}
-                className="p-2.5 glass rounded-xl text-secondary hover:text-primary hover:border-pink-400 transition-all"
-              >
-                <InstagramIcon width={18} height={18} />
-              </a>
-            )}
-          </motion.div>
-        </div>
-
-        {/* —— Right: avatar —— */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.85 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="flex justify-center lg:justify-end"
-        >
-          <div className="relative">
-            {/* Signal Core: interactive 3D lattice, static glow fallback when
-                3D is disabled/unsupported/reduced-motion — same footprint. */}
-            <SceneCanvas
-              className="absolute -inset-20 sm:-inset-28"
-              cameraPosition={[0, 0, 6.5]}
-              fallback={<div className="absolute -inset-4 gradient-bg rounded-full blur-3xl opacity-15" />}
-            >
-              <SignalCore scrollProgress={scrollYProgress} />
-            </SceneCanvas>
-
-            {/* Avatar */}
-            <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-2 border-accent glow-purple">
-              {profile?.avatarUrl ? (
-                <Image src={profile.avatarUrl} alt={profile.name} fill className="object-cover" />
-              ) : (
-                <div className="w-full h-full gradient-bg flex items-center justify-center text-white text-7xl font-bold select-none">
-                  {(profile?.name ?? 'A').charAt(0)}
-                </div>
-              )}
-            </div>
-
-            {/* Floating badge 1 */}
-            <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute -right-6 top-12 glass rounded-xl px-3 py-2 text-xs font-medium whitespace-nowrap shadow-lg"
-            >
-              <span className="text-success">• </span>
-              <span className="text-secondary">Available for Projects</span>
-            </motion.div>
-
-            {/* Floating badge 2 */}
-            <motion.div
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute -left-6 bottom-16 glass rounded-xl px-3 py-2 text-xs font-medium whitespace-nowrap shadow-lg"
-            >
-              <span className="text-accent">⚡ </span>
-              <span className="text-secondary">Product Builder</span>
-            </motion.div>
+            <SocialRow socials={socials} location="hero" />
           </div>
-        </motion.div>
+        </div>
       </div>
 
-      {/* Scroll indicator */}
-      <motion.div
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 text-muted"
-      >
-        <ArrowDown size={22} />
-      </motion.div>
     </section>
   );
 }
-
-
-

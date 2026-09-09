@@ -159,9 +159,9 @@ export default function BlogFormPage() {
               />
             ) : (
               <ImageUpload
-                entityType="project"
+                target="blog_cover"
                 entityId={params.id as string}
-                currentImageUrl={formData.coverImageUrl}
+                currentUrl={formData.coverImageUrl}
                 onUploadSuccess={(url: string) => handleChange('coverImageUrl', url)}
               />
             )}

@@ -1,155 +1,202 @@
-﻿'use client';
+'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Sun, Moon, Code2 } from 'lucide-react';
+import { Menu, Moon, Search, Sun, X } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useActiveSection } from '@/hooks/useActiveSection';
 import { cn } from '@/lib/utils';
+import { CANONICAL_SHORT_NAME } from '@/lib/site';
 
-const navLinks = [
-  { href: '/#services', label: 'Services', id: 'services' },
-  { href: '/#projects', label: 'Projects', id: 'projects' },
-  { href: '/#skills', label: 'Skills', id: 'skills' },
-  { href: '/blog', label: 'Blog', id: null },
-  { href: '/#contact', label: 'Contact', id: 'contact' },
+const NAV_LINKS = [
+  { href: '/projects', label: 'Work' },
+  { href: '/experience', label: 'Record' },
+  { href: '/services', label: 'Services' },
+  { href: '/blog', label: 'Writing' },
+  { href: '/contact', label: 'Contact' },
 ];
 
-interface NavbarProps {
-  ownerName?: string;
-}
-
-export default function Navbar({ ownerName = 'Amal Anilkumar' }: NavbarProps) {
+export default function Navbar({ onOpenSearch }: { onOpenSearch?: () => void }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
   const pathname = usePathname();
-  const sectionIds = navLinks.map((l) => l.id).filter((id): id is string => Boolean(id));
-  const activeId = useActiveSection(pathname === '/' ? sectionIds : []);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => setOpen(false), [pathname]);
 
   useEffect(() => {
-    setTimeout(() => setMounted(true), 0);
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  
+  /*
+   * Escape-to-close, focus restoration and a focus trap. The previous mobile
+   * menu had none of these: focus stayed behind the open panel, Tab walked
+   * into the page underneath, and there was no aria-expanded at all.
+   */
+  useEffect(() => {
+    if (!open) return;
+
+    const panel = panelRef.current;
+    panel?.querySelector<HTMLElement>('a, button')?.focus();
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setOpen(false);
+        toggleRef.current?.focus();
+        return;
+      }
+      if (event.key !== 'Tab' || !panel) return;
+
+      const focusable = panel.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [open]);
 
   return (
-    <header
-      className={cn(
-        'fixed top-0 inset-x-0 z-[999] transition-all duration-300',
-        scrolled
-          ? 'border-b border-default bg-background/80 backdrop-blur-md'
-          : 'bg-background/80 backdrop-blur-md',
-      )}
-    >
-      <nav className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 gradient-bg rounded-lg flex items-center justify-center">
-            <Code2 size={16} className="text-white" />
-          </div>
-          <span className="font-bold text-sm sm:text-base gradient-text">{ownerName}</span>
-        </Link>
+    <>
+      {/* Every page needs a way past the navigation. There was no skip link. */}
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-60 focus:rounded-md focus:border focus:border-verdigris focus:bg-surface focus:px-4 focus:py-2 focus:text-sm focus:text-ink"
+      >
+        Skip to content
+      </a>
 
-        {/* Desktop links */}
-        <div className="hidden md:flex items-center gap-6">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                'relative text-sm text-secondary transition-colors hover:text-primary dark:hover:text-primary',
-                link.id && activeId === link.id && 'text-primary',
-              )}
-            >
-              {link.label}
-              {link.id && activeId === link.id && (
-                <motion.span
-                  layoutId="nav-active-indicator"
-                  className="absolute -bottom-1.5 left-0 right-0 h-0.5 rounded-full gradient-bg"
-                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                />
-              )}
-            </Link>
-          ))}
-
-          {/* Theme toggle */}
-          {mounted && (
-            <button
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              aria-label="Toggle theme"
-              className="p-2 rounded-lg glass hover:bg-white/10 transition-colors text-secondary hover:text-primary"
-            >
-              {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
-            </button>
-          )}
-
-          <Link
-            href="/#contact"
-            className="gradient-bg px-4 py-2 rounded-xl text-sm text-white font-semibold hover:opacity-90 transition-opacity shadow-lg shadow-accent"
-          >
-            Hire Me
-          </Link>
-        </div>
-
-        {/* Mobile: theme + hamburger */}
-        <div className="flex md:hidden items-center gap-2">
-          {mounted && (
-            <button
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              aria-label="Toggle theme"
-              className="p-2 rounded-lg text-secondary"
-            >
-              {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
-            </button>
-          )}
-          <button
-            onClick={() => setOpen(!open)}
-            aria-label="Toggle menu"
-            className="p-2 text-secondary hover:text-primary transition-colors"
-          >
-            {open ? <X size={20} /> : <Menu size={20} />}
-          </button>
-        </div>
-      </nav>
-
-      {/* Mobile menu */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
-            className="md:hidden border-b border-default px-6 pb-4 pt-2 bg-background z-[998] backdrop-blur-md"
-          >
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setOpen(false)}
-                className="block py-3 text-secondary hover:text-primary border-b border-default last:border-0 text-sm transition-colors"
-              >
-                {link.label}
-              </Link>
-            ))}
-            <Link
-              href="/#contact"
-              onClick={() => setOpen(false)}
-              className="block mt-4 gradient-bg text-center px-4 py-2.5 rounded-xl text-sm text-white font-semibold"
-            >
-              Hire Me
-            </Link>
-          </motion.div>
+      <header
+        className={cn(
+          'fixed inset-x-0 top-0 z-50 h-(--header-h) transition-colors duration-200',
+          scrolled ? 'border-b border-rule bg-canvas/85 backdrop-blur-md' : 'bg-transparent',
         )}
-      </AnimatePresence>
-    </header>
+      >
+        <nav
+          aria-label="Primary"
+          className="shell flex h-full items-center justify-between gap-4"
+        >
+          <Link
+            href="/"
+            className="font-mono text-sm font-medium tracking-tight text-ink"
+            aria-label={`${CANONICAL_SHORT_NAME} — home`}
+          >
+            {CANONICAL_SHORT_NAME}
+            <span className="text-verdigris">.</span>
+          </Link>
+
+          <ul className="hidden items-center gap-1 md:flex">
+            {NAV_LINKS.map((link) => {
+              const active = pathname === link.href || pathname.startsWith(`${link.href}/`);
+              return (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    aria-current={active ? 'page' : undefined}
+                    className={cn(
+                      'inline-flex min-h-11 items-center rounded-md px-3 text-sm transition-colors',
+                      active ? 'text-ink' : 'text-ink-dim hover:text-ink',
+                    )}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+
+          <div className="flex items-center gap-1">
+            {onOpenSearch && (
+              <button
+                type="button"
+                onClick={onOpenSearch}
+                aria-label="Search the site"
+                className="inline-flex size-11 items-center justify-center rounded-md text-ink-dim transition-colors hover:bg-raised hover:text-ink"
+              >
+                <Search size={16} aria-hidden="true" />
+              </button>
+            )}
+            <ThemeToggle />
+            <button
+              ref={toggleRef}
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              aria-expanded={open}
+              aria-controls="mobile-nav"
+              aria-label={open ? 'Close menu' : 'Open menu'}
+              className="inline-flex size-11 items-center justify-center rounded-md text-ink-dim transition-colors hover:bg-raised hover:text-ink md:hidden"
+            >
+              {open ? <X size={18} aria-hidden="true" /> : <Menu size={18} aria-hidden="true" />}
+            </button>
+          </div>
+        </nav>
+      </header>
+
+      {open && (
+        <div
+          id="mobile-nav"
+          ref={panelRef}
+          className="fixed inset-x-0 top-(--header-h) z-40 border-b border-rule bg-canvas md:hidden"
+        >
+          <ul className="shell divide-y divide-rule py-2">
+            {NAV_LINKS.map((link) => {
+              const active = pathname === link.href || pathname.startsWith(`${link.href}/`);
+              return (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    aria-current={active ? 'page' : undefined}
+                    className={cn(
+                      'flex min-h-12 items-center text-base',
+                      active ? 'text-verdigris' : 'text-ink',
+                    )}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+    </>
   );
 }
 
+function ThemeToggle() {
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const isDark = resolvedTheme === 'dark';
+
+  return (
+    <button
+      type="button"
+      onClick={() => setTheme(isDark ? 'light' : 'dark')}
+      // Before mount the resolved theme is unknown, so the label would be a
+      // guess; suppressing it until then avoids announcing the wrong action.
+      aria-label={mounted ? `Switch to ${isDark ? 'light' : 'dark'} theme` : 'Toggle theme'}
+      className="inline-flex size-11 items-center justify-center rounded-md text-ink-dim transition-colors hover:bg-raised hover:text-ink"
+    >
+      {mounted && isDark ? (
+        <Sun size={16} aria-hidden="true" />
+      ) : (
+        <Moon size={16} aria-hidden="true" />
+      )}
+    </button>
+  );
+}
