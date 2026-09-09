@@ -21,11 +21,79 @@ class AdminApiError extends Error {
 }
 
 /**
- * Base fetch wrapper with authentication and error handling
+ * Single-flight access-token refresh.
+ *
+ * `authApi.refresh()` existed and the backend correctly rotates the refresh
+ * token on every call (the old one is invalidated server-side the moment a
+ * new one is issued) — but nothing ever called it. The access token expires
+ * after 15 minutes, so any authenticated request made after that point simply
+ * failed with no retry, which reads exactly like "content fetching failed"
+ * while login itself (a fresh token) kept working.
+ *
+ * Because the refresh token is single-use, multiple concurrent 401s (e.g. the
+ * dashboard's five parallel requests) must share ONE refresh call rather than
+ * each firing its own — a second concurrent refresh would be rejected by the
+ * backend since the first one already rotated the stored token. This module-
+ * level promise is what serializes that.
+ */
+let refreshInFlight: Promise<string> | null = null;
+
+async function refreshAccessToken(): Promise<string> {
+  if (refreshInFlight) return refreshInFlight;
+
+  const refreshToken = sessionStorage.getItem('refresh_token');
+  if (!refreshToken) {
+    throw new AdminApiError('No refresh token available. Please login.', 401);
+  }
+
+  refreshInFlight = (async () => {
+    const response = await fetch(`${API_URL}/auth/refresh`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refreshToken }),
+    });
+
+    if (!response.ok) {
+      throw new AdminApiError('Session expired. Please login again.', response.status);
+    }
+
+    const data: { accessToken: string; refreshToken?: string } = await response.json();
+    sessionStorage.setItem('access_token', data.accessToken);
+    // The backend issues a new refresh token on every refresh and invalidates
+    // the old one — it must be persisted or the *next* refresh fails.
+    if (data.refreshToken) {
+      sessionStorage.setItem('refresh_token', data.refreshToken);
+    }
+    return data.accessToken;
+  })();
+
+  try {
+    return await refreshInFlight;
+  } finally {
+    refreshInFlight = null;
+  }
+}
+
+/** Clears the session and sends the user back to login after an unrecoverable 401. */
+function forceReauth(): void {
+  sessionStorage.removeItem('access_token');
+  sessionStorage.removeItem('refresh_token');
+  if (typeof window !== 'undefined' && !window.location.pathname.endsWith('/admin/login')) {
+    window.location.href = '/admin/login';
+  }
+}
+
+/**
+ * Base fetch wrapper with authentication and error handling.
+ *
+ * `isRetry` is internal-only: it marks the single retry made after a
+ * successful token refresh, so a request that still 401s post-refresh fails
+ * cleanly instead of looping.
  */
 async function apiFetch<T>(
   endpoint: string,
-  options: ApiOptions = {}
+  options: ApiOptions = {},
+  isRetry = false,
 ): Promise<T> {
   const { skipAuth = false, ...fetchOptions } = options;
 
@@ -54,6 +122,18 @@ async function apiFetch<T>(
     });
 
     if (!response.ok) {
+      // Transparently refresh and retry once on an expired access token.
+      // Login/refresh calls themselves pass skipAuth and never reach here.
+      if (response.status === 401 && !skipAuth && !isRetry) {
+        try {
+          await refreshAccessToken();
+          return await apiFetch<T>(endpoint, options, true);
+        } catch {
+          forceReauth();
+          throw new AdminApiError('Session expired. Please login again.', 401);
+        }
+      }
+
       const errorData = await response.json().catch(() => ({}));
       throw new AdminApiError(
         errorData.message || `API request failed: ${response.statusText}`,
