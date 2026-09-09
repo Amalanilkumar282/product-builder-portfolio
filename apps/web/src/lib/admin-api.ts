@@ -453,12 +453,38 @@ export const awardsApi = {
 
 // ==================== Upload ====================
 
+/**
+ * Destinations the upload endpoint understands. Previously the API accepted
+ * only `profile` and `project`, which left every other media column in the
+ * schema — resume, gallery, logos, icons, blog covers — with no way to be
+ * populated from the admin panel at all.
+ */
+export type UploadTarget =
+  | 'profile_avatar'
+  | 'profile_resume'
+  | 'project_cover'
+  | 'project_gallery'
+  | 'blog_cover'
+  | 'award_icon'
+  | 'skill_icon'
+  | 'techstack_icon'
+  | 'experience_logo'
+  | 'education_logo'
+  | 'testimonial_avatar'
+  | 'unattached_image'
+  | 'unattached_document';
+
 export const uploadApi = {
+  /**
+   * @param entityId omit for the `unattached_*` targets, which return a URL
+   *   without writing to the database — needed when a file is chosen before
+   *   the owning record has been created.
+   */
   upload: async (
     file: File,
-    entityType: string,
-    entityId: string
-  ): Promise<{ url: string }> => {
+    target: UploadTarget,
+    entityId?: string,
+  ): Promise<{ url: string; publicId: string }> => {
     const token = sessionStorage.getItem('access_token');
     if (!token) {
       throw new AdminApiError('No access token found. Please login.', 401);
@@ -466,14 +492,12 @@ export const uploadApi = {
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('entityType', entityType);
-    formData.append('entityId', entityId);
+    formData.append('target', target);
+    if (entityId) formData.append('entityId', entityId);
 
     const response = await fetch(`${API_URL}/admin/upload`, {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
       body: formData,
     });
 
@@ -482,7 +506,7 @@ export const uploadApi = {
       throw new AdminApiError(
         errorData.message || 'Upload failed',
         response.status,
-        errorData
+        errorData,
       );
     }
 

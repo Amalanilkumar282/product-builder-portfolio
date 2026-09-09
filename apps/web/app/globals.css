@@ -1,286 +1,753 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 
-/* ─── Tailwind v4: class-based dark mode ─── */
+/* ─────────────────────────────────────────────────────────────────────────────
+   THE BUILD LOG — design system
+   ─────────────────────────────────────────────────────────────────────────────
+   Tokens are declared through Tailwind v4's `@theme inline` rather than as a
+   hand-written `@layer utilities` block. That distinction is the whole reason
+   this file was rewritten: hand-authored utility classes cannot have variants
+   generated for them, so in the previous system every `hover:`, `focus:` and
+   `group-hover:` on a semantic colour compiled to nothing at all — roughly 70
+   dead interaction states, including the entire focus ring. `@theme` colours
+   generate the full variant matrix.
+
+   `inline` matters too: it makes the generated utilities reference
+   `var(--token)` instead of copying the literal value, which is what lets the
+   light/dark swap below work through a single class on <html>.
+   ───────────────────────────────────────────────────────────────────────── */
+
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* ─── Design tokens ─── */
 @theme inline {
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-plus-jakarta), var(--font-inter), ui-sans-serif, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  /* Colour ------------------------------------------------------------------
+     Two accents with separate jobs: verdigris carries structure and
+     navigation, copper marks distinction (awards, current role, primary
+     action). Keeping them apart is what stops the page turning into the
+     single-neon-accent look. */
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-raised: var(--raised);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+
+  --color-ink: var(--ink);
+  --color-ink-dim: var(--ink-dim);
+  --color-ink-faint: var(--ink-faint);
+
+  --color-verdigris: var(--verdigris);
+  --color-verdigris-soft: var(--verdigris-soft);
+  --color-copper: var(--copper);
+  --color-copper-soft: var(--copper-soft);
+
+  --color-positive: var(--positive);
+  --color-critical: var(--critical);
+
+  /* Lane colours for the career density map. Declared as real theme colours
+     so the timeline can use `bg-lane-work` and friends with full variants. */
+  --color-lane-work: var(--lane-work);
+  --color-lane-internship: var(--lane-internship);
+  --color-lane-leadership: var(--lane-leadership);
+  --color-lane-award: var(--lane-award);
+
+  /* Type ------------------------------------------------------------------ */
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* A modular scale (base 16px, ratio 1.25) that goes fluid at display sizes.
+     Every size on the site comes from here — the previous system had no scale
+     at all, just ad-hoc Tailwind classes. */
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1.45;
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.5;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.55;
+  --text-base: 1rem;
+  --text-base--line-height: 1.65;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.6;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.45;
+  --text-2xl: clamp(1.375rem, 1.22rem + 0.68vw, 1.5625rem);
+  --text-2xl--line-height: 1.3;
+  --text-3xl: clamp(1.625rem, 1.36rem + 1.15vw, 1.953rem);
+  --text-3xl--line-height: 1.22;
+  --text-4xl: clamp(2rem, 1.52rem + 2.1vw, 2.441rem);
+  --text-4xl--line-height: 1.14;
+  --text-5xl: clamp(2.5rem, 1.6rem + 3.9vw, 3.815rem);
+  --text-5xl--line-height: 1.04;
+
+  /* Radius — deliberately tighter than the old uniform 16px. Sharp corners
+     read as engineered; soft ones read as a template. */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+
+  /* Motion — one shared vocabulary instead of the previous 0.75s-everywhere. */
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+
+  /* Breakpoints. The old system had no xl/2xl at all, so nothing above
+     1024px was ever designed — it was inherited. */
+  --breakpoint-xs: 30rem;
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 105rem;
 }
 
-/* ─── CSS variables for dark/light ─── */
+/* ─── Theme values ──────────────────────────────────────────────────────────
+   `:root` carries the dark palette because dark is the default theme; the
+   selector is scoped to `:root.light` rather than a bare `.light` so a future
+   component class named "light" can never re-scope the entire token set on a
+   subtree. */
+
 :root {
-  --bg-base:    #020617;
-  --bg-surface: rgba(15, 23, 42, 0.6);
-  --bg-elevated: rgba(30, 41, 59, 0.5);
-  --border:     rgba(148, 163, 184, 0.1);
-  --border-accent: rgba(168, 85, 247, 0.25);
-  --text-primary:   #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-muted:     #64748b;
-  
-  --text-accent:    #c084fc; /* purple-400 */
-  --text-accent-muted: #d8b4fe; /* purple-300 */
-  --text-success:   #4ade80; /* green-400 */
+  color-scheme: dark;
 
-  --glow-purple: 0 0 60px rgba(168, 85, 247, 0.18);
-  --glow-blue:   0 0 60px rgba(59, 130, 246, 0.18);
+  --canvas: #101418;
+  --surface: #161c22;
+  --raised: #1a2026;
+  --rule: #262f36;
+  --rule-strong: #38444d;
 
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-hover-bg: rgba(255, 255, 255, 0.05);
-  --grid-line: rgba(255, 255, 255, 0.025);
-  --selection-bg: rgba(168, 85, 247, 0.3);
-  --selection-text: #f1f5f9;
-  --scrollbar-track: rgba(15, 23, 42, 0.5);
-  --scrollbar-thumb-start: #a855f7;
-  --scrollbar-thumb-end: #3b82f6;
-  
-  --bg-gradient-purple: rgba(168, 85, 247, 0.09);
-  --bg-gradient-blue: rgba(59, 130, 246, 0.09);
-  
-  --accent-opacity: 0.1;
-  --accent-opacity-hover: 0.2;
+  --ink: #e8edf0;
+  --ink-dim: #9ba9b4;
+  --ink-faint: #828f99;
+
+  --verdigris: #4fb39a;
+  --verdigris-soft: rgb(79 179 154 / 0.14);
+  --copper: #d98a4f;
+  --copper-soft: rgb(217 138 79 / 0.14);
+
+  --positive: #56b877;
+  --critical: #e06c5a;
+
+  --lane-work: #4fb39a;
+  --lane-internship: #6ea8d8;
+  --lane-leadership: #b08ad0;
+  --lane-award: #d98a4f;
+
+  --selection-bg: rgb(79 179 154 / 0.28);
+  --shadow-raised: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -12px rgb(0 0 0 / 0.6);
 }
 
-.light {
-  --bg-base:    #f8fafc;
-  --bg-surface: rgba(255, 255, 255, 0.7);
-  --bg-elevated: rgba(255, 255, 255, 0.95);
-  --border:     rgba(148, 163, 184, 0.25);
-  --border-accent: rgba(168, 85, 247, 0.4);
-  --text-primary:   #0f172a;
-  --text-secondary: #475569;
-  --text-muted:     #64748b;
-  
-  --text-accent:    #9333ea; /* purple-600 */
-  --text-accent-muted: #a855f7; /* purple-500 */
-  --text-success:   #16a34a; /* green-600 */
+:root.light {
+  color-scheme: light;
 
-  --glow-purple: 0 0 60px rgba(168, 85, 247, 0.25);
-  --glow-blue:   0 0 60px rgba(59, 130, 246, 0.25);
+  --canvas: #f4f5f6;
+  --surface: #ffffff;
+  --raised: #ffffff;
+  --rule: #dfe3e7;
+  --rule-strong: #c2c9d0;
 
-  --glass-bg: rgba(255, 255, 255, 0.6);
-  --glass-border: rgba(148, 163, 184, 0.3);
-  --glass-hover-bg: rgba(255, 255, 255, 0.9);
-  --grid-line: rgba(15, 23, 42, 0.035);
-  --selection-bg: rgba(168, 85, 247, 0.2);
-  --selection-text: #0f172a;
-  --scrollbar-track: rgba(241, 245, 249, 0.8);
-  --scrollbar-thumb-start: #c084fc;
-  --scrollbar-thumb-end: #60a5fa;
+  --ink: #14181c;
+  --ink-dim: #55606a;
+  --ink-faint: #656f79;
 
-  --bg-gradient-purple: rgba(168, 85, 247, 0.06);
-  --bg-gradient-blue: rgba(59, 130, 246, 0.06);
-  
-  --accent-opacity: 0.08;
-  --accent-opacity-hover: 0.15;
+  --verdigris: #1f6b5a;
+  --verdigris-soft: rgb(31 107 90 / 0.1);
+  --copper: #9a4f1b;
+  --copper-soft: rgb(154 79 27 / 0.1);
+
+  --positive: #1f7a41;
+  --critical: #b23b28;
+
+  --lane-work: #1f6b5a;
+  --lane-internship: #2c5f8a;
+  --lane-leadership: #6b4a91;
+  --lane-award: #9a4f1b;
+
+  --selection-bg: rgb(31 107 90 / 0.18);
+  --shadow-raised: 0 1px 2px rgb(16 20 24 / 0.06), 0 8px 24px -14px rgb(16 20 24 / 0.18);
 }
 
-/* ─── Base ─── */
-html { scroll-behavior: smooth; }
+/* ─── Base ───────────────────────────────────────────────────────────────── */
 
-body {
-  background-color: var(--bg-base);
-  color: var(--text-primary);
-  background-image:
-    radial-gradient(ellipse at 15% 10%, var(--bg-gradient-purple) 0%, transparent 55%),
-    radial-gradient(ellipse at 85% 90%, var(--bg-gradient-blue) 0%, transparent 55%);
-  background-attachment: fixed;
-  min-height: 100vh;
-}
-
-/* ─── Custom utilities ─── */
-@layer utilities {
-  .glass {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
+@layer base {
+  * {
+    /* Tailwind's preflight zeroes border-width but leaves border-color at
+       `currentColor`, so any bare `border-b` painted a hairline in the
+       element's text colour. Defaulting it to the rule token fixes a whole
+       class of accidental near-white 1px lines. */
+    border-color: var(--rule);
   }
-  .glass-light {
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(148, 163, 184, 0.2);
+
+  html {
+    /* Offsets hash targets clear of the fixed header. Previously absent, so
+       every /#section landing put the heading underneath the navbar. */
+    scroll-padding-top: calc(var(--header-h) + 1.5rem);
+    -webkit-text-size-adjust: 100%;
   }
-  .gradient-text {
-    background: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+
+  /* Smooth scrolling is opt-out for reduced-motion users — it was
+     unconditional before. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
-  .gradient-bg {
-    background: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%);
+
+  body {
+    background-color: var(--canvas);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    min-height: 100svh;
   }
-  .gradient-border {
-    border: 1px solid transparent;
-    background-image: linear-gradient(var(--bg-base), var(--bg-base)),
-      linear-gradient(135deg, #a855f7, #3b82f6);
-    background-origin: border-box;
-    background-clip: padding-box, border-box;
+
+  /* A single global focus ring. The previous system tried to do this
+     per-component with `focus:border-accent`, which generated no CSS, while
+     `focus:outline-none` *did* generate — so form fields ended up with no
+     visible focus state whatsoever. */
+  :focus-visible {
+    outline: 2px solid var(--verdigris);
+    outline-offset: 2px;
+    border-radius: var(--radius-xs);
   }
-  .glow-purple { box-shadow: var(--glow-purple); }
-  .glow-blue   { box-shadow: var(--glow-blue); }
-  .grid-bg {
-    background-image:
-      linear-gradient(var(--grid-line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-    background-size: 60px 60px;
+
+  /* Only remove the default ring where a custom one is drawn. */
+  :focus:not(:focus-visible) {
+    outline: none;
   }
-  .text-primary   { color: var(--text-primary); }
-  .text-secondary { color: var(--text-secondary); }
-  .text-muted     { color: var(--text-muted); }
-  
-  .glass-hover-bg { background-color: var(--glass-hover-bg); }
-  
-  /* Theme-aware Text Colors */
-  .text-accent { color: var(--text-accent); }
-  .text-accent-muted { color: var(--text-accent-muted); }
-  .text-success { color: var(--text-success); }
-  
-  /* Theme-aware Backgrounds */
-  .bg-accent-light { background-color: rgba(168, 85, 247, var(--accent-opacity)); }
-  .bg-blue-light { background-color: rgba(59, 130, 246, var(--accent-opacity)); }
-  .bg-success { background-color: var(--text-success); }
-  .border-accent { border-color: var(--border-accent); }
-  
-  .hover\:border-accent:hover { border-color: var(--border-accent); }
-  .hover\:bg-accent-hover:hover { background-color: rgba(168, 85, 247, var(--accent-opacity-hover)); }
+
+  ::selection {
+    background: var(--selection-bg);
+    color: var(--ink);
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Numerals that line up in tables and timelines. */
+  time, .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--canvas);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--rule-strong);
+    border: 3px solid var(--canvas);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--ink-faint);
+  }
 }
 
-/* ─── Keyframes ─── */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-18px); }
-}
-@keyframes glow-pulse {
-  0%, 100% { opacity: 0.4; }
-  50%       { opacity: 1; }
-}
-@keyframes gradient-shift {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-@keyframes accordion-down {
-  from { height: 0; }
-  to   { height: var(--radix-accordion-content-height); }
-}
-@keyframes accordion-up {
-  from { height: var(--radix-accordion-content-height); }
-  to   { height: 0; }
-}
+/* ─── Layout primitives ─────────────────────────────────────────────────── */
 
-@layer utilities {
-  .animate-accordion-down { animation: accordion-down 0.25s ease-out; }
-  .animate-accordion-up   { animation: accordion-up   0.25s ease-out; }
-}
+@layer components {
+  /* Height of the fixed header, in one place. It was hardcoded as `pt-24`
+     across 12 page files with no shared constant, so changing the header
+     meant 12 coordinated edits. */
+  :root {
+    --header-h: 3.5rem;
+    --gutter: 1.25rem;
+  }
 
-/* ─── Scrollbar ─── */
-::-webkit-scrollbar       { width: 5px; }
-::-webkit-scrollbar-track { background: var(--scrollbar-track); }
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, var(--scrollbar-thumb-start), var(--scrollbar-thumb-end));
-  border-radius: 3px;
-}
+  @media (min-width: 48rem) {
+    :root {
+      --header-h: 4rem;
+      --gutter: 2rem;
+    }
+  }
 
-/* ─── Selection ─── */
-::selection {
-  background: var(--selection-bg);
-  color: var(--selection-text);
-}
+  @media (min-width: 80rem) {
+    :root {
+      --gutter: 3rem;
+    }
+  }
 
-/* ─── 3D / depth utilities ("Living Blueprint" interaction system) ─── */
-@layer utilities {
-  .perspective-1000 { perspective: 1000px; }
-  .perspective-1600 { perspective: 1600px; }
-  .preserve-3d      { transform-style: preserve-3d; }
-  .backface-hidden  { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  /*
+   * The spec-sheet grid: a narrow mono metadata rail beside a wide content
+   * column. This replaces the universal centred `max-w-7xl`, which left
+   * 640px of dead gutter on each side of a 2560px display and gave tablets
+   * no layout of their own.
+   */
+  .shell {
+    width: 100%;
+    max-width: 105rem;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
 
-  .trace-line {
+  .rail-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem 2.5rem;
+  }
+
+  @media (min-width: 64rem) {
+    .rail-grid {
+      grid-template-columns: 12rem minmax(0, 1fr);
+    }
+  }
+
+  @media (min-width: 105rem) {
+    .rail-grid {
+      grid-template-columns: 15rem minmax(0, 1fr);
+    }
+  }
+
+  /* Caps the measure for long-form reading without capping full-bleed
+     children like the timeline. */
+  .measure {
+    max-width: 72ch;
+  }
+
+  .surface {
+    background-color: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+  }
+
+  /* The one repeated label treatment: mono, small, dim. Replaces the
+     all-caps letter-spaced "eyebrow" that sat above every heading. */
+  .meta {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    line-height: 1.45;
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Every interactive control clears the 44px touch minimum. Previously
+     exactly one control in the entire app did. */
+  .tap {
     position: relative;
-    background: linear-gradient(90deg, transparent, var(--border-accent) 45%, var(--border-accent) 55%, transparent);
-    background-size: 220% 100%;
-    animation: trace-flow 5s linear infinite;
   }
-  .trace-node {
-    animation: node-pulse 2.4s ease-out infinite;
+  .tap::after {
+    content: "";
+    position: absolute;
+    inset: 50% auto auto 50%;
+    translate: -50% -50%;
+    min-width: 44px;
+    min-height: 44px;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* ─── Long-form typography ───────────────────────────────────────────────────
+   `@tailwindcss/typography` was referenced across five detail pages but was
+   never actually installed, so every `prose` class was inert and all DB-authored
+   markdown rendered with preflight's zeroed margins: no heading scale, no list
+   markers, no link underlines. Authoring it here keeps the article styles on
+   the same scale as the rest of the site and adds no dependency.
+   ───────────────────────────────────────────────────────────────────────── */
+
+@layer components {
+  .prose {
+    color: var(--ink-dim);
+    font-size: var(--text-base);
+    line-height: 1.75;
+    max-width: 72ch;
   }
 
-  .ambient-pulse {
-    animation: ambient-pulse 16s ease-in-out infinite;
+  .prose > * + * {
+    margin-block-start: 1.25em;
+  }
+
+  .prose h2 {
+    margin-block-start: 2.5em;
+    margin-block-end: 0.75em;
+    font-size: var(--text-2xl);
+    color: var(--ink);
+    padding-block-end: 0.4em;
+    border-block-end: 1px solid var(--rule);
+  }
+
+  .prose h3 {
+    margin-block-start: 2em;
+    margin-block-end: 0.5em;
+    font-size: var(--text-xl);
+    color: var(--ink);
+  }
+
+  .prose h4 {
+    margin-block-start: 1.75em;
+    margin-block-end: 0.5em;
+    font-size: var(--text-lg);
+    color: var(--ink);
+  }
+
+  .prose :is(h2, h3, h4):first-child {
+    margin-block-start: 0;
+  }
+
+  .prose strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .prose a {
+    color: var(--verdigris);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+    text-decoration-color: color-mix(in oklab, var(--verdigris) 45%, transparent);
+  }
+
+  .prose a:hover {
+    text-decoration-color: var(--verdigris);
+  }
+
+  .prose :is(ul, ol) {
+    padding-inline-start: 1.5em;
+  }
+
+  .prose ul {
+    list-style: none;
+  }
+
+  .prose ul > li {
+    position: relative;
+    padding-inline-start: 0.25em;
+  }
+
+  /* A schematic tick rather than a bullet — the one decorative flourish in
+     the article styles, and it carries the same engineering motif as the
+     timeline lane markers. */
+  .prose ul > li::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: -1em;
+    inset-block-start: 0.72em;
+    width: 0.5em;
+    height: 1px;
+    background: var(--verdigris);
+  }
+
+  .prose ol {
+    list-style: decimal;
+  }
+
+  .prose ol > li::marker {
+    color: var(--ink-faint);
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+  }
+
+  .prose li + li {
+    margin-block-start: 0.5em;
+  }
+
+  .prose code {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    color: var(--ink);
+    background: var(--raised);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-xs);
+    padding: 0.15em 0.4em;
+  }
+
+  .prose pre {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    background: var(--raised);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.15rem;
+    overflow-x: auto;
+  }
+
+  .prose pre code {
+    background: none;
+    border: 0;
+    padding: 0;
+    font-size: inherit;
+  }
+
+  .prose blockquote {
+    border-inline-start: 2px solid var(--verdigris);
+    padding-inline-start: 1.25em;
+    color: var(--ink-dim);
+    font-style: normal;
+  }
+
+  .prose hr {
+    border: 0;
+    border-block-start: 1px solid var(--rule);
+    margin-block: 2.5em;
+  }
+
+  .prose :is(img, video) {
+    border-radius: var(--radius-md);
+    border: 1px solid var(--rule);
+  }
+
+  .prose table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+  }
+
+  .prose :is(th, td) {
+    border: 1px solid var(--rule);
+    padding: 0.5em 0.75em;
+    text-align: start;
+  }
+
+  .prose th {
+    color: var(--ink);
+    font-weight: 600;
+    background: var(--raised);
   }
 }
 
-@keyframes trace-flow {
-  0%   { background-position: 120% 0; }
-  100% { background-position: -120% 0; }
-}
-@keyframes node-pulse {
-  0%   { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.45); }
-  70%  { box-shadow: 0 0 0 8px rgba(168, 85, 247, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0); }
-}
-@keyframes ambient-pulse {
-  0%, 100% { transform: scale(1);     opacity: 0.55; }
-  50%      { transform: scale(1.12);  opacity: 0.85; }
-}
+/* ─── Motion ─────────────────────────────────────────────────────────────────
+   Scroll reveals are CSS, not Framer Motion. The previous `AnimatedSection`
+   server-rendered ~30 homepage elements at `opacity: 0` and only revealed them
+   after hydration — which needed a `<noscript>` substring hack to stay
+   crawlable and forced framer-motion into the shared bundle on every route.
+   ───────────────────────────────────────────────────────────────────────── */
 
+@layer utilities {
+  .reveal {
+    animation: reveal-in 0.6s var(--ease-out-quint) both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 22%;
+  }
 
+  /* Browsers without scroll-driven animations get the content immediately
+     rather than a broken never-revealed state. */
+  @supports not (animation-timeline: view()) {
+    .reveal {
+      animation: none;
+    }
+  }
 
+  .rise {
+    animation: reveal-in 0.55s var(--ease-out-quint) var(--delay, 0s) both;
+  }
 
-/* ── Above-the-fold entrance animation ──────────────────────────────────────
-   The hero used Framer Motion mount animations, which meant the largest
-   contentful element (the h1) was server-rendered at opacity:0 and only became
-   visible after React had downloaded, parsed and hydrated the client bundle —
-   pushing LCP out by however long hydration took on the device.
-
-   These are pure CSS, so they start on first paint with no JS involved.
-   `.hero-rise` still fades; `.hero-rise-lcp` (used on the h1) animates the
-   transform only and never drops below full opacity, so the LCP element is
-   painted at its final opacity immediately. */
-@keyframes hero-rise {
-  from { opacity: 0; transform: translate3d(0, 16px, 0); }
-  to   { opacity: 1; transform: none; }
-}
-
-@keyframes hero-rise-lcp {
-  from { transform: translate3d(0, 12px, 0); }
-  to   { transform: none; }
+  /* Transform-only, never dropping opacity — used on the LCP heading so the
+     largest paint lands at full opacity on first frame. */
+  .rise-lcp {
+    opacity: 1;
+    animation: rise-transform 0.55s var(--ease-out-quint) var(--delay, 0s) both;
+  }
 }
 
-.hero-rise {
-  animation: hero-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) var(--hero-delay, 0s) both;
-}
-
-.hero-rise-lcp {
-  opacity: 1;
-  animation: hero-rise-lcp 0.55s cubic-bezier(0.22, 1, 0.36, 1) var(--hero-delay, 0s) both;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-rise,
-  .hero-rise-lcp {
-    animation: none;
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+  to {
     opacity: 1;
     transform: none;
   }
 }
 
-/* Hero avatar wrapper — same reasoning as .hero-rise, with the original
-   scale-in easing preserved. Holds the LCP image on the homepage. */
-@keyframes hero-pop {
-  from { opacity: 0; transform: scale(0.85); }
-  to   { opacity: 1; transform: none; }
+@keyframes rise-transform {
+  from {
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    transform: none;
+  }
 }
 
-.hero-pop {
-  animation: hero-pop 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--hero-delay, 0s) both;
-}
-
+/*
+ * One global reduced-motion gate. Previously five infinite Framer loops and
+ * four CSS keyframe animations ignored the preference entirely, even though
+ * the project shipped its own motion-preference hook.
+ */
 @media (prefers-reduced-motion: reduce) {
-  .hero-pop { animation: none; opacity: 1; transform: none; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal,
+  .rise,
+  .rise-lcp {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/*
+ * The same gate, driven by the site's own persisted toggle rather than the OS
+ * setting, so the control in the footer actually governs every animation
+ * instead of only the six components that remembered to consult the hook.
+ */
+:root[data-motion="reduced"] *,
+:root[data-motion="reduced"] *::before,
+:root[data-motion="reduced"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+:root[data-motion="reduced"] :is(.reveal, .rise, .rise-lcp) {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* ─── Admin compatibility layer ──────────────────────────────────────────────
+   The admin panel shares this stylesheet with the public site and carries
+   roughly 390 usages of the previous visual vocabulary across 14 routes. Those
+   screens are internal tooling, not part of the public revamp, so rather than
+   restyle every one of them the old class names are re-pointed at the new
+   tokens here. The admin therefore inherits the new palette, typography and
+   focus behaviour automatically and stays coherent with the public site.
+
+   These are `@utility` rules, not a plain `@layer utilities` block, which is
+   what lets Tailwind generate `hover:` / `focus:` variants for them — the exact
+   mechanism the old stylesheet lacked, and the reason ~70 interaction states
+   silently compiled to nothing.
+   ───────────────────────────────────────────────────────────────────────── */
+
+@utility glass {
+  background-color: var(--surface);
+  border: 1px solid var(--rule);
+}
+
+@utility glass-light {
+  background-color: var(--raised);
+  border: 1px solid var(--rule);
+}
+
+@utility glass-hover-bg {
+  background-color: var(--raised);
+}
+
+@utility gradient-text {
+  color: var(--verdigris);
+}
+
+@utility gradient-bg {
+  background-color: var(--verdigris);
+  color: var(--canvas);
+}
+
+@utility gradient-border {
+  border: 1px solid var(--verdigris);
+}
+
+@utility glow-purple {
+  box-shadow: var(--shadow-raised);
+}
+
+@utility glow-blue {
+  box-shadow: var(--shadow-raised);
+}
+
+@utility grid-bg {
+  background-image:
+    linear-gradient(var(--rule) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+  background-size: 56px 56px;
+  opacity: 0.35;
+}
+
+@utility text-primary {
+  color: var(--ink);
+}
+
+@utility text-secondary {
+  color: var(--ink-dim);
+}
+
+@utility text-muted {
+  color: var(--ink-faint);
+}
+
+@utility text-accent {
+  color: var(--verdigris);
+}
+
+@utility text-accent-muted {
+  color: var(--verdigris);
+}
+
+@utility text-success {
+  color: var(--positive);
+}
+
+@utility bg-accent-light {
+  background-color: var(--verdigris-soft);
+}
+
+@utility bg-blue-light {
+  background-color: var(--verdigris-soft);
+}
+
+@utility bg-success {
+  background-color: var(--positive);
+}
+
+@utility bg-background {
+  background-color: var(--canvas);
+}
+
+@utility border-accent {
+  border-color: var(--verdigris);
+}
+
+/* `border-default` emitted no CSS at all, so Tailwind's preflight left these
+   borders at `currentColor` — drawing near-white hairlines around every admin
+   input. Pointing it at the rule token fixes that. */
+@utility border-default {
+  border-color: var(--rule);
+}
+
+@utility perspective-1000 {
+  perspective: 1000px;
+}
+
+@utility preserve-3d {
+  transform-style: preserve-3d;
+}
+
+@utility backface-hidden {
+  backface-visibility: hidden;
+}
+
+/* Radix accordion open/close, driven by the measured content height. */
+@keyframes accordion-down {
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
+}
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); }
+  to { height: 0; }
+}
+
+@utility animate-accordion-down {
+  animation: accordion-down 0.22s var(--ease-out-quint);
+}
+@utility animate-accordion-up {
+  animation: accordion-up 0.18s var(--ease-out-quint);
 }

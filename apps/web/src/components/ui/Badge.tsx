@@ -1,31 +1,19 @@
-﻿import { cn } from '@/lib/utils';
+import type { ReactNode } from 'react';
+import { Chip } from './primitives';
 
-interface BadgeProps {
-  children: React.ReactNode;
-  className?: string;
-  variant?: 'purple' | 'blue' | 'slate';
+/**
+ * Kept as a thin alias so the admin panel's existing call sites keep working.
+ * New code should use `Chip` directly.
+ *
+ * The `variant` prop is intentionally ignored: the same tag used to render
+ * purple in Projects and Services but blue in Blog, which read as a bug. One
+ * tag treatment, site-wide.
+ */
+export default function Badge({
+  children,
+}: {
+  children: ReactNode;
+  variant?: string;
+}) {
+  return <Chip>{children}</Chip>;
 }
-
-export default function Badge({ children, className = '', variant = 'purple' }: BadgeProps) {
-  const variants = {
-    purple: 'bg-accent-light text-accent-muted border-accent',
-    blue:   'bg-blue-light text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-500/20',
-    slate:  'bg-slate-200 dark:bg-slate-500/10 text-secondary border-slate-300 dark:border-slate-500/20',
-  };
-
-  return (
-    <span
-      className={cn(
-        'inline-block text-xs font-medium px-2.5 py-1 rounded-full border',
-        variants[variant],
-        className,
-      )}
-    >
-      {children}
-    </span>
-  );
-}
-
-
-
-

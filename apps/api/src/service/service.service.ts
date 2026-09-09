@@ -31,7 +31,7 @@ export class ServiceService {
       include: { tags: true },
     });
 
-    if (service.isPublished) notifySeoIndexing('service', `/services/${service.slug}`);
+    notifySeoIndexing('service', `/services/${service.slug}`);
     return service;
   }
 
@@ -76,13 +76,18 @@ export class ServiceService {
       include: { tags: true },
     });
 
-    if (service.isPublished) notifySeoIndexing('service', `/services/${service.slug}`);
+    notifySeoIndexing('service', `/services/${service.slug}`);
     return service;
   }
 
   async remove(id: string) {
-    await this.findOne(id);
-    return this.prisma.service.delete({ where: { id } });
+    const existing = await this.findOne(id);
+    const removed = await this.prisma.service.delete({ where: { id } });
+
+    // Purge after deletion, otherwise the ISR cache keeps serving a
+    // page whose record no longer exists.
+    notifySeoIndexing('service', `/services/${existing.slug}`);
+    return removed;
   }
 
   findPublished() {

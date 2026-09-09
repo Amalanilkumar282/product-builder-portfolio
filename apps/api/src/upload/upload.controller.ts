@@ -10,29 +10,33 @@ import {
   Body,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags, ApiBearerAuth, ApiConsumes, ApiBody, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiBody,
+  ApiOperation,
+} from '@nestjs/swagger';
+import { IsIn, IsOptional, IsString, IsNotEmpty } from 'class-validator';
+import { memoryStorage } from 'multer';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UploadService } from './upload.service';
-import { memoryStorage } from 'multer';
+import { UPLOAD_TARGET_NAMES, type UploadTargetName } from './upload-targets';
 
-// Import validation decorators
-import { IsString, IsEnum, IsNotEmpty } from 'class-validator';
-
-// Define an enum for allowed entity types
-enum EntityTypeEnum {
-  profile = 'profile',
-  project = 'project',
-}
-
-// DTO for the upload request body
 class UploadRequestDto {
-  @IsEnum(EntityTypeEnum, { message: 'Invalid entity type. Must be "profile" or "project".' })
+  @IsIn(UPLOAD_TARGET_NAMES, {
+    message: `target must be one of: ${UPLOAD_TARGET_NAMES.join(', ')}`,
+  })
   @IsNotEmpty()
-  entityType: EntityTypeEnum;
+  target: UploadTargetName;
 
+  /**
+   * Optional so the admin can upload a cover for a record that does not exist
+   * yet: the form receives the URL back and includes it in the create payload.
+   */
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  entityId: string;
+  entityId?: string;
 }
 
 @ApiTags('admin/upload')
@@ -43,50 +47,48 @@ export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Upload a file and associate it with a profile or project' })
+  @ApiOperation({
+    summary:
+      'Upload an image or PDF to Cloudinary and optionally write its URL onto the owning record',
+  })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
-    description: 'File upload with entity details',
+    description: 'File upload with a destination target',
     schema: {
       type: 'object',
       properties: {
-        file: {
+        file: { type: 'string', format: 'binary' },
+        target: {
           type: 'string',
-          format: 'binary',
-        },
-        entityType: {
-          type: 'string',
-          enum: ['profile', 'project'],
-          description: 'The type of entity to associate the upload with (profile or project).',
-          example: 'profile',
+          enum: UPLOAD_TARGET_NAMES,
+          description:
+            'Where the file belongs. Use unattached_image / unattached_document to receive a URL without writing to the database.',
+          example: 'project_cover',
         },
         entityId: {
           type: 'string',
-          description: 'The ID of the entity (e.g., userId for profile, projectId for project).',
-          example: 'user123', // Replace with actual example ID
+          description:
+            'Id of the owning record. Required for every target except the unattached_* ones.',
         },
       },
-      required: ['file', 'entityType', 'entityId'],
+      required: ['file', 'target'],
     },
   })
   @UseInterceptors(FileInterceptor('file', { storage: memoryStorage() }))
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
-    @Body() uploadRequestDto: UploadRequestDto,
-  ): Promise<{ url: string }> { // Return only the URL
-    const { entityType, entityId } = uploadRequestDto;
-    const imageUrl = await this.uploadService.upload(file, entityType, entityId);
-    return { url: imageUrl };
+    @Body() dto: UploadRequestDto,
+  ): Promise<{ url: string; publicId: string }> {
+    return this.uploadService.upload(file, dto.target, dto.entityId);
   }
 
-  // Keeping existing findAll and remove methods for Media, renamed to avoid conflict
-  @Get('media') // Changed path to /admin/upload/media
+  @Get('media')
   @ApiOperation({ summary: 'List all uploaded media files' })
   findAllMedia() {
     return this.uploadService.findAllMedia();
   }
 
-  @Delete('media/:id') // Changed path to /admin/upload/media/:id
+  @Delete('media/:id')
   @ApiOperation({ summary: 'Delete a media file by ID' })
   removeMedia(@Param('id') id: string) {
     return this.uploadService.removeMedia(id);

@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { fetchProfile } from '@/lib/api';
 import ContactSection from '@/components/sections/ContactSection';
+import Section from '@/components/ui/Section';
+import { getProfileLocation } from '@/lib/site';
 import { JsonLd, buildContactPageSchema } from '@/lib/entity-jsonld';
 
 export const metadata: Metadata = {
@@ -21,9 +23,20 @@ export default async function ContactPage() {
   const profile = await fetchProfile();
 
   return (
-    <div className="min-h-screen pt-16">
+    <>
       <JsonLd data={buildContactPageSchema(profile)} />
-      <ContactSection profile={profile} />
-    </div>
+      <Section
+        id="contact"
+        label="Contact"
+        meta={getProfileLocation(profile)}
+        title="Start a conversation"
+        as="h1"
+        intro="Tell me what you're building and where it's stuck. I read everything that comes in."
+        className="pt-[calc(var(--header-h)+3rem)]"
+        wide
+      >
+        <ContactSection profile={profile} />
+      </Section>
+    </>
   );
 }

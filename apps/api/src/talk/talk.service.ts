@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { notifySiteDataChange } from '../common/utils/seo-notify.util';
 import { CreateTalkDto } from './dto/create-talk.dto';
 import { UpdateTalkDto } from './dto/update-talk.dto';
 
@@ -8,12 +9,12 @@ export class TalkService {
   constructor(private readonly prisma: PrismaService) {}
 
   create(dto: CreateTalkDto) {
-    return this.prisma.talk.create({
+    return this.notify(this.prisma.talk.create({
       data: {
         ...dto,
         eventDate: dto.eventDate ? new Date(dto.eventDate) : undefined,
       },
-    });
+    }));
   }
 
   findAll() {
@@ -28,7 +29,7 @@ export class TalkService {
 
   async update(id: string, dto: UpdateTalkDto) {
     await this.findOne(id);
-    return this.prisma.talk.update({
+    return this.notify(this.prisma.talk.update({
       where: { id },
       data: {
         ...dto,
@@ -39,12 +40,12 @@ export class TalkService {
               : null
             : undefined,
       },
-    });
+    }));
   }
 
   async remove(id: string) {
     await this.findOne(id);
-    return this.prisma.talk.delete({ where: { id } });
+    return this.notify(this.prisma.talk.delete({ where: { id } }));
   }
 
   findPublished() {
@@ -52,5 +53,16 @@ export class TalkService {
       where: { isPublished: true },
       orderBy: { order: 'asc' },
     });
+  }
+
+  /**
+   * Fires an on-demand ISR purge after a mutation. Wrapping the Prisma call
+   * rather than restructuring each method keeps the notification impossible
+   * to forget: every write path already returns through here.
+   */
+  private async notify<T>(work: Promise<T> | T): Promise<T> {
+    const result = await work;
+    notifySiteDataChange('talk');
+    return result;
   }
 }

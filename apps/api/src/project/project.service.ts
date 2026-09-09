@@ -33,7 +33,7 @@ export class ProjectService {
       include: { tags: true },
     });
 
-    if (project.isPublished) notifySeoIndexing('project', `/projects/${project.slug}`);
+    notifySeoIndexing('project', `/projects/${project.slug}`);
     return project;
   }
 
@@ -78,13 +78,18 @@ export class ProjectService {
       include: { tags: true },
     });
 
-    if (project.isPublished) notifySeoIndexing('project', `/projects/${project.slug}`);
+    notifySeoIndexing('project', `/projects/${project.slug}`);
     return project;
   }
 
   async remove(id: string) {
-    await this.findOne(id);
-    return this.prisma.project.delete({ where: { id } });
+    const existing = await this.findOne(id);
+    const removed = await this.prisma.project.delete({ where: { id } });
+
+    // Purge after deletion, otherwise the ISR cache keeps serving a
+    // page whose record no longer exists.
+    notifySeoIndexing('project', `/projects/${existing.slug}`);
+    return removed;
   }
 
   // ---------- PUBLIC METHODS ----------

@@ -28,6 +28,19 @@ export function middleware(request: NextRequest) {
     }
   }
 
+  // ── Keep the admin panel out of search indexes ──────────────────────────
+  // robots.txt disallows /admin, but that only asks a crawler not to *fetch*
+  // the page — a URL discovered elsewhere can still be indexed without being
+  // crawled. Admin pages also inherit `index, follow` from the root layout's
+  // metadata, and app/admin/layout.tsx is a client component so it cannot
+  // export `metadata` to override it. An X-Robots-Tag header is the one
+  // mechanism that works from here and is authoritative.
+  if (pathname.startsWith('/admin')) {
+    const response = NextResponse.next();
+    response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+    return response;
+  }
+
   // Admin routes authenticate client-side in app/admin/layout.tsx; this hook
   // is where an HTTP-only cookie check would go if that moves server-side.
   return NextResponse.next();

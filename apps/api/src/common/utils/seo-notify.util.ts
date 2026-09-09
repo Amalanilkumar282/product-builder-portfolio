@@ -23,7 +23,47 @@ const INDEXNOW_KEY = process.env.INDEXNOW_KEY;
 const GOOGLE_CLIENT_EMAIL = process.env.GOOGLE_INDEXING_CLIENT_EMAIL;
 const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_INDEXING_PRIVATE_KEY?.replace(/\\n/g, '\n');
 
+/** Content that owns a public URL, so a search engine can be pinged about it. */
 export type SeoContentTag = 'blog' | 'project' | 'service';
+
+/**
+ * Content that has no URL of its own but still renders on public pages.
+ * These previously had no cache tag and no notify call at all, so an admin
+ * edit to a skill, award or the profile waited out a 60–300s ISR window with
+ * no way to push it live.
+ */
+export type SiteDataTag =
+  | 'profile'
+  | 'skill'
+  | 'experience'
+  | 'education'
+  | 'testimonial'
+  | 'tech-stack'
+  | 'award'
+  | 'certification'
+  | 'talk'
+  | 'page-section';
+
+export type RevalidateTag = SeoContentTag | SiteDataTag;
+
+/** Public pages each tag appears on, beyond the homepage. */
+const SITE_DATA_PATHS: Record<RevalidateTag, string[]> = {
+  // The three URL-owning types are listed too, because a media upload can
+  // change one of them without the caller knowing the affected slug.
+  blog: ['/', '/blog'],
+  project: ['/', '/projects'],
+  service: ['/', '/services'],
+  profile: ['/', '/about', '/contact'],
+  skill: ['/', '/about'],
+  experience: ['/', '/experience', '/about'],
+  education: ['/', '/about', '/certifications'],
+  testimonial: ['/'],
+  'tech-stack': ['/', '/about'],
+  award: ['/', '/achievements'],
+  certification: ['/certifications'],
+  talk: ['/about'],
+  'page-section': ['/'],
+};
 
 /**
  * Notify all indexing channels that a piece of content changed.
@@ -33,7 +73,7 @@ export type SeoContentTag = 'blog' | 'project' | 'service';
 export function notifySeoIndexing(tag: SeoContentTag, path: string): void {
   const url = `${WEB_URL}${path}`;
 
-  void revalidateWeb(tag, path).catch((err) =>
+  void revalidateWeb(tag, [path, `/${tag}`, '/']).catch((err) =>
     logger.warn(`Revalidate webhook failed for ${url}: ${err.message}`),
   );
   void pingIndexNow(url).catch((err) => logger.warn(`IndexNow ping failed for ${url}: ${err.message}`));
@@ -42,7 +82,22 @@ export function notifySeoIndexing(tag: SeoContentTag, path: string): void {
   );
 }
 
-async function revalidateWeb(tag: SeoContentTag, path: string): Promise<void> {
+/**
+ * Push a cache purge for content that has no URL of its own.
+ *
+ * Deliberately does NOT ping IndexNow or the Google Indexing API: nothing new
+ * became crawlable, so submitting the homepage on every skill edit would be
+ * noise at best and rate-limit pressure at worst.
+ */
+export function notifySiteDataChange(tag: RevalidateTag): void {
+  const paths = SITE_DATA_PATHS[tag] ?? ['/'];
+
+  void revalidateWeb(tag, paths).catch((err) =>
+    logger.warn(`Revalidate webhook failed for tag ${tag}: ${err.message}`),
+  );
+}
+
+async function revalidateWeb(tag: RevalidateTag, paths: string[]): Promise<void> {
   if (!REVALIDATE_SECRET) return;
 
   const res = await fetch(`${WEB_URL}/api/revalidate`, {
@@ -51,7 +106,7 @@ async function revalidateWeb(tag: SeoContentTag, path: string): Promise<void> {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${REVALIDATE_SECRET}`,
     },
-    body: JSON.stringify({ tag, paths: [path, `/${tag}`, '/'] }),
+    body: JSON.stringify({ tag, paths }),
   });
 
   if (!res.ok) throw new Error(`revalidate endpoint returned ${res.status}`);

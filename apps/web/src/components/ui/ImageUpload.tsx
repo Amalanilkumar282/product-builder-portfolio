@@ -1,156 +1,141 @@
-"use client";
+'use client';
 
-import React, { useState } from 'react';
-import { uploadApi } from '@/lib/admin-api';
+import { useId, useRef, useState } from 'react';
+import Image from 'next/image';
+import { uploadApi, type UploadTarget } from '@/lib/admin-api';
 
-interface ImageUploadProps {
-  entityType: 'profile' | 'project';
-  entityId: string;
+interface FileUploadProps {
+  /** Where the file belongs. Drives validation and the DB column written. */
+  target: UploadTarget;
+  /** Omit for the `unattached_*` targets. */
+  entityId?: string;
+  label?: string;
+  currentUrl?: string;
   onUploadSuccess?: (url: string) => void;
-  currentImageUrl?: string;
+  /** PDF instead of an image — used for the résumé. */
+  kind?: 'image' | 'document';
 }
 
-const ImageUpload: React.FC<ImageUploadProps> = ({
-  entityType,
+const MAX_IMAGE_MB = 10;
+const MAX_DOC_MB = 8;
+
+/**
+ * Admin file upload for both images and PDFs.
+ *
+ * Kept at the original filename so existing admin imports keep resolving, but
+ * it is no longer image-only: passing `kind="document"` accepts a PDF, which is
+ * how a résumé is uploaded to Cloudinary and written to `Profile.resumeUrl`.
+ */
+export default function ImageUpload({
+  target,
   entityId,
+  label,
+  currentUrl,
   onUploadSuccess,
-  currentImageUrl,
-}) => {
-  const [file, setFile] = useState<File | null>(null);
+  kind = 'image',
+}: FileUploadProps) {
+  const inputId = useId();
+  const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(currentImageUrl || null);
-  const [progress, setProgress] = useState<number>(0);
+  const [url, setUrl] = useState<string | null>(currentUrl ?? null);
+  const [fileName, setFileName] = useState<string | null>(null);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const selectedFile = event.target.files[0];
-      
-      // Validate file type
-      if (!selectedFile.type.startsWith('image/')) {
-        setError('Please select an image file');
-        return;
-      }
+  const accept = kind === 'document' ? 'application/pdf' : 'image/*';
+  const maxMb = kind === 'document' ? MAX_DOC_MB : MAX_IMAGE_MB;
 
-      // Validate file size (max 5MB)
-      if (selectedFile.size > 5 * 1024 * 1024) {
-        setError('File size must be less than 5MB');
-        return;
-      }
+  async function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
 
-      setFile(selectedFile);
-      setPreviewUrl(URL.createObjectURL(selectedFile));
-      setError(null);
+    setError(null);
+
+    if (kind === 'document' && file.type !== 'application/pdf') {
+      setError('Please choose a PDF file.');
+      return;
     }
-  };
-
-  const handleUpload = async () => {
-    if (!file) {
-      setError('Please select a file to upload.');
+    if (kind === 'image' && !file.type.startsWith('image/')) {
+      setError('Please choose an image file.');
+      return;
+    }
+    if (file.size > maxMb * 1024 * 1024) {
+      setError(`File must be smaller than ${maxMb} MB.`);
       return;
     }
 
     setUploading(true);
-    setError(null);
-    setProgress(0);
-
     try {
-      // Simulate progress
-      const progressInterval = setInterval(() => {
-        setProgress((prev) => Math.min(prev + 10, 90));
-      }, 200);
-
-      const data = await uploadApi.upload(file, entityType, entityId);
-      
-      clearInterval(progressInterval);
-      setProgress(100);
-      
-      setPreviewUrl(data.url);
-      if (onUploadSuccess) {
-        onUploadSuccess(data.url);
-      }
-      
-      // Success feedback
-      setTimeout(() => {
-        setFile(null);
-        setProgress(0);
-      }, 1000);
-    } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred during upload.');
-      console.error('Upload error:', err);
-      setProgress(0);
+      const result = await uploadApi.upload(file, target, entityId);
+      setUrl(result.url);
+      setFileName(file.name);
+      onUploadSuccess?.(result.url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Upload failed.');
     } finally {
       setUploading(false);
+      // Reset so re-picking the same file still fires a change event.
+      if (inputRef.current) inputRef.current.value = '';
     }
-  };
+  }
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* Preview */}
-      {previewUrl && (
-        <div className="relative w-32 h-32 mx-auto">
-          <img
-            src={previewUrl}
-            alt="Preview"
-            className={`w-full h-full object-cover ${
-              entityType === 'profile' ? 'rounded-full' : 'rounded-xl'
-            } border-2 border-default shadow-lg`}
-          />
-        </div>
+    <div>
+      {label && (
+        <label htmlFor={inputId} className="meta mb-1.5 block uppercase tracking-[0.14em]">
+          {label}
+        </label>
       )}
 
-      {/* File Input */}
-      <div className="flex flex-col gap-2">
-        <label className="block">
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="hidden"
-            id={`file-upload-${entityId}`}
+      <div className="flex flex-wrap items-center gap-3">
+        {kind === 'image' && url && (
+          <Image
+            src={url}
+            alt=""
+            width={56}
+            height={56}
+            className="size-14 rounded-md border border-rule object-cover"
           />
-          <div className="glass rounded-xl px-4 py-3 text-sm text-center text-primary border border-default hover:border-accent transition-all cursor-pointer">
-            {file ? file.name : 'Choose Image'}
-          </div>
-        </label>
-
-        {/* Progress Bar */}
-        {uploading && (
-          <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
-            <div
-              className="h-full gradient-bg transition-all duration-300"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
         )}
 
-        {/* Upload Button */}
-        <button
-          onClick={handleUpload}
-          disabled={!file || uploading}
-          className={`w-full px-4 py-3 rounded-xl text-white font-medium text-sm transition-all ${
-            !file || uploading
-              ? 'bg-white/10 text-muted cursor-not-allowed'
-              : 'gradient-bg hover:opacity-90 shadow-lg shadow-accent'
-          }`}
-        >
-          {uploading ? `Uploading... ${progress}%` : 'Upload Image'}
-        </button>
+        <input
+          ref={inputRef}
+          id={inputId}
+          type="file"
+          accept={accept}
+          onChange={handleChange}
+          disabled={uploading}
+          className="block w-full max-w-sm text-sm text-ink-dim file:mr-3 file:min-h-11 file:cursor-pointer file:rounded-md file:border file:border-rule-strong file:bg-raised file:px-3 file:text-sm file:text-ink hover:file:border-verdigris"
+        />
       </div>
 
-      {/* Error Message */}
-      {error && (
-        <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
-          <p className="text-red-500 text-sm">{error}</p>
-        </div>
+      <p role="status" aria-live="polite" className="meta mt-2">
+        {uploading
+          ? 'Uploading…'
+          : error
+            ? ''
+            : url
+              ? kind === 'document'
+                ? `Uploaded${fileName ? `: ${fileName}` : ''}`
+                : 'Uploaded'
+              : `PNG, JPG, WebP or SVG up to ${maxMb} MB`}
+      </p>
+
+      {kind === 'document' && url && (
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-1 inline-flex min-h-11 items-center text-sm text-verdigris underline underline-offset-4"
+        >
+          View current file
+        </a>
       )}
 
-      {/* Info */}
-      <p className="text-xs text-muted text-center">
-        Max size: 5MB • Formats: JPG, PNG, GIF, WebP
-      </p>
+      {error && (
+        <p role="alert" className="mt-1 text-sm text-critical">
+          {error}
+        </p>
+      )}
     </div>
   );
-};
-
-export default ImageUpload;
+}

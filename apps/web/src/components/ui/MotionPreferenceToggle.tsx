@@ -1,35 +1,26 @@
 'use client';
 
-import { Zap, ZapOff } from 'lucide-react';
 import { useMotionPreference } from '@/lib/motion-preferences';
-import { cn } from '@/lib/utils';
 
-interface MotionPreferenceToggleProps {
-  className?: string;
-}
-
-/**
- * User-facing accessibility control letting visitors opt out of (or back
- * into) the site's 3D scenes and rich motion, independent of OS-level
- * `prefers-reduced-motion`. Persisted in localStorage via motion-preferences.
- */
-export default function MotionPreferenceToggle({ className }: MotionPreferenceToggleProps) {
-  const { userPreference, setUserPreference } = useMotionPreference();
-  const isReduced = userPreference === 'reduced';
+export default function MotionPreferenceToggle() {
+  const { userPreference, setUserPreference, prefersReducedMotion } = useMotionPreference();
+  const reduced = userPreference === 'reduced';
 
   return (
     <button
       type="button"
-      onClick={() => setUserPreference(isReduced ? 'auto' : 'reduced')}
-      aria-pressed={isReduced}
-      title={isReduced ? 'Enable rich motion & 3D effects' : 'Reduce motion & 3D effects'}
-      className={cn(
-        'inline-flex items-center gap-2 glass rounded-xl px-3 py-2 text-xs font-medium text-secondary transition-all hover:border-accent hover:text-primary',
-        className,
-      )}
+      onClick={() => setUserPreference(reduced ? 'auto' : 'reduced')}
+      aria-pressed={reduced}
+      className="inline-flex min-h-11 items-center gap-2 rounded-md px-2 font-mono text-2xs text-ink-faint transition-colors hover:text-ink-dim"
     >
-      {isReduced ? <ZapOff size={14} /> : <Zap size={14} />}
-      {isReduced ? 'Motion: Reduced' : 'Motion: Full'}
+      <span
+        aria-hidden="true"
+        className={`size-2 rounded-full ${reduced ? 'bg-ink-faint' : 'bg-verdigris'}`}
+      />
+      {reduced ? 'Motion off' : 'Motion on'}
+      {prefersReducedMotion && !reduced && (
+        <span className="text-ink-faint">(system: reduced)</span>
+      )}
     </button>
   );
 }

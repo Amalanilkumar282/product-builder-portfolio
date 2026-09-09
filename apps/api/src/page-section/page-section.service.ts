@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { PageSectionType } from '@prisma/client';
+import { notifySiteDataChange } from '../common/utils/seo-notify.util';
 import { UpdatePageSectionDto } from './dto/update-page-section.dto';
 
 const DEFAULT_SECTIONS: {
@@ -53,6 +54,15 @@ export class PageSectionService implements OnModuleInit {
       where: { type },
     });
     if (!section) throw new NotFoundException('Page section not found');
-    return this.prisma.pageSection.update({ where: { type }, data: dto });
+
+    const updated = await this.prisma.pageSection.update({
+      where: { type },
+      data: dto,
+    });
+
+    // Enabling, disabling or reordering a section changes the homepage
+    // structure — without this the change waited out a 60s ISR window.
+    notifySiteDataChange('page-section');
+    return updated;
   }
 }

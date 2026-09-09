@@ -11,6 +11,9 @@ import type {
   PageSection,
   ContactPayload,
   Award,
+  Certification,
+  Talk,
+  Tag,
 } from './types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL!;
@@ -62,7 +65,7 @@ async function safeFetch<T>(url: string, options?: RequestInit): Promise<T | nul
 
 // ─── Profile ───────────────────────────────────────────
 export function fetchProfile(): Promise<Profile | null> {
-  return safeFetch<Profile>(`${API_URL}/profile`, { next: { revalidate: 300 } });
+  return safeFetch<Profile>(`${API_URL}/profile`, { next: { revalidate: 120, tags: ['profile'] } });
 }
 
 // ─── Services ──────────────────────────────────────────
@@ -85,27 +88,27 @@ export function fetchProject(slug: string): Promise<Project | null> {
 
 // ─── Skills ────────────────────────────────────────────
 export async function fetchSkills(): Promise<Skill[]> {
-  return (await safeFetch<Skill[]>(`${API_URL}/skills`, { next: { revalidate: 300 } })) ?? [];
+  return (await safeFetch<Skill[]>(`${API_URL}/skills`, { next: { revalidate: 120, tags: ['skill'] } })) ?? [];
 }
 
 // ─── Experience ────────────────────────────────────────
 export async function fetchExperience(): Promise<Experience[]> {
-  return (await safeFetch<Experience[]>(`${API_URL}/experience`, { next: { revalidate: 300 } })) ?? [];
+  return (await safeFetch<Experience[]>(`${API_URL}/experience`, { next: { revalidate: 120, tags: ['experience'] } })) ?? [];
 }
 
 // ─── Education ─────────────────────────────────────────
 export async function fetchEducation(): Promise<Education[]> {
-  return (await safeFetch<Education[]>(`${API_URL}/education`, { next: { revalidate: 300 } })) ?? [];
+  return (await safeFetch<Education[]>(`${API_URL}/education`, { next: { revalidate: 120, tags: ['education'] } })) ?? [];
 }
 
 // ─── Testimonials ──────────────────────────────────────
 export async function fetchTestimonials(): Promise<Testimonial[]> {
-  return (await safeFetch<Testimonial[]>(`${API_URL}/testimonials`, { next: { revalidate: 300 } })) ?? [];
+  return (await safeFetch<Testimonial[]>(`${API_URL}/testimonials`, { next: { revalidate: 120, tags: ['testimonial'] } })) ?? [];
 }
 
 // ─── Tech Stack ────────────────────────────────────────
 export async function fetchTechStack(): Promise<TechStack[]> {
-  return (await safeFetch<TechStack[]>(`${API_URL}/tech-stack`, { next: { revalidate: 300 } })) ?? [];
+  return (await safeFetch<TechStack[]>(`${API_URL}/tech-stack`, { next: { revalidate: 120, tags: ['tech-stack'] } })) ?? [];
 }
 
 // ─── Blog ──────────────────────────────────────────────
@@ -132,12 +135,12 @@ export async function submitContact(data: ContactPayload): Promise<void> {
 
 // ─── Page Sections ─────────────────────────────────────
 export async function fetchPageSections(): Promise<PageSection[]> {
-  return (await safeFetch<PageSection[]>(`${API_URL}/page-sections`, { next: { revalidate: 60 } })) ?? [];
+  return (await safeFetch<PageSection[]>(`${API_URL}/page-sections`, { next: { revalidate: 60, tags: ['page-section'] } })) ?? [];
 }
 
 // ─── Awards ────────────────────────────────────────────
 export async function fetchAwards(): Promise<Award[]> {
-  return (await safeFetch<Award[]>(`${API_URL}/awards`, { next: { revalidate: 300 } })) ?? [];
+  return (await safeFetch<Award[]>(`${API_URL}/awards`, { next: { revalidate: 120, tags: ['award'] } })) ?? [];
 }
 
 // ─── Search ────────────────────────────────────────────
@@ -149,3 +152,32 @@ export function searchContent(query: string) {
 
 
 
+
+// ─── Certifications ────────────────────────────────────
+/**
+ * `GET /certifications` was fully implemented on the API and had no frontend
+ * fetch function at all, so the public certifications page string-matched the
+ * Education table instead.
+ */
+export async function fetchCertifications(): Promise<Certification[]> {
+  return (
+    (await safeFetch<Certification[]>(`${API_URL}/certifications`, {
+      next: { revalidate: 120, tags: ['certification'] },
+    })) ?? []
+  );
+}
+
+// ─── Talks ─────────────────────────────────────────────
+export async function fetchTalks(): Promise<Talk[]> {
+  return (
+    (await safeFetch<Talk[]>(`${API_URL}/talks`, {
+      next: { revalidate: 120, tags: ['talk'] },
+    })) ?? []
+  );
+}
+
+// ─── Tags ──────────────────────────────────────────────
+/** The full tag vocabulary — the primitive a topic index needs. */
+export async function fetchTags(): Promise<Tag[]> {
+  return (await safeFetch<Tag[]>(`${API_URL}/tags`, { next: { revalidate: 300 } })) ?? [];
+}

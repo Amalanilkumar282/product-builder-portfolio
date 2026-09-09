@@ -14,40 +14,40 @@ export const metadata: Metadata = {
 const SUGGESTIONS = [
   { href: '/', label: 'Home' },
   { href: '/projects', label: 'Projects' },
+  { href: '/experience', label: 'The record' },
   { href: '/services', label: 'Services' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/about', label: 'About' },
+  { href: '/blog', label: 'Writing' },
   { href: '/contact', label: 'Contact' },
 ];
 
 export default function NotFound() {
   return (
-    <main className="min-h-screen flex items-center justify-center px-6 py-24">
-      <div className="max-w-xl w-full text-center">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent mb-4">
-          Error 404
-        </p>
+    <main id="main" className="shell flex min-h-svh items-center py-24">
+      <div className="rail-grid w-full">
+        <p className="meta uppercase tracking-[0.14em] text-copper">Error 404</p>
 
-        <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4 leading-tight">
-          This page doesn&apos;t exist
-        </h1>
+        <div className="min-w-0">
+          <h1 className="measure text-4xl text-ink md:text-5xl">This page doesn&apos;t exist</h1>
+          <p className="measure mt-4 text-ink-dim">
+            The link may be out of date, or the page may have moved. These are the main
+            sections of the site.
+          </p>
 
-        <p className="text-secondary text-base md:text-lg mb-10 leading-relaxed">
-          The link may be out of date, or the page may have been moved. Here are the
-          main sections of the site instead.
-        </p>
-
-        <nav aria-label="Site sections" className="flex flex-wrap justify-center gap-3">
-          {SUGGESTIONS.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="glass px-5 py-2.5 rounded-xl text-secondary font-semibold text-sm hover:border-accent hover:text-primary hover:-translate-y-0.5 transition-all"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+          <nav aria-label="Site sections" className="mt-8">
+            <ul className="divide-y divide-rule border-y border-rule">
+              {SUGGESTIONS.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="flex min-h-12 items-center text-sm text-ink-dim transition-colors hover:text-verdigris"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
       </div>
     </main>
   );

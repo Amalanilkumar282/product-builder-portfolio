@@ -1,80 +1,41 @@
-﻿import Image from 'next/image';
-import { Star, Quote } from 'lucide-react';
-import SectionHeader from '@/components/ui/SectionHeader';
-import GlassCard from '@/components/ui/GlassCard';
-import AnimatedSection from '@/components/ui/AnimatedSection';
-import SectionConnector from '@/components/ui/SectionConnector';
+import Image from 'next/image';
 import type { Testimonial } from '@/lib/types';
 
-interface TestimonialsSectionProps {
+export default function TestimonialsSection({
+  testimonials,
+}: {
   testimonials: Testimonial[];
-}
-
-export default function TestimonialsSection({ testimonials }: TestimonialsSectionProps) {
+}) {
   if (testimonials.length === 0) return null;
 
   return (
-    <section id="testimonials" className="max-w-7xl mx-auto px-6 py-24">
-      <SectionConnector />
+    <ul className="grid gap-px overflow-hidden rounded-lg border border-rule bg-rule sm:grid-cols-2 xl:grid-cols-3">
+      {testimonials.map((item) => (
+        <li key={item.id} className="flex flex-col bg-surface p-5">
+          <blockquote className="flex-1 text-sm text-ink-dim">
+            <p>{item.content}</p>
+          </blockquote>
 
-      <AnimatedSection>
-        <SectionHeader
-          label="Testimonials"
-          title="What Clients Say"
-          subtitle="Feedback from people I've had the pleasure of working with."
-          centered
-        />
-      </AnimatedSection>
-
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {testimonials.map((t, i) => (
-          <AnimatedSection key={t.id} delay={i * 0.1}>
-            <GlassCard className="h-full flex flex-col" tilt>
-              {/* Quote icon */}
-              <Quote size={28} className="text-accent opacity-40 mb-4 shrink-0" />
-
-              {/* Stars */}
-              <div className="flex gap-1 mb-4">
-                {Array.from({ length: 5 }).map((_, idx) => (
-                  <Star
-                    key={idx}
-                    size={14}
-                    className={idx < t.rating ? 'text-yellow-400 fill-yellow-400' : 'text-slate-700'}
-                  />
-                ))}
-              </div>
-
-              <p className="text-secondary text-sm leading-relaxed mb-6 flex-1">
-                &ldquo;{t.content}&rdquo;
-              </p>
-
-              {/* Author */}
-              <div className="flex items-center gap-3 pt-4 border-t border-default">
-                {t.avatarUrl ? (
-                  <Image
-                    src={t.avatarUrl}
-                    alt={t.name}
-                    width={40}
-                    height={40}
-                    className="rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="w-10 h-10 rounded-full gradient-bg flex items-center justify-center text-white text-sm font-bold shrink-0">
-                    {t.name.charAt(0)}
-                  </div>
-                )}
-                <div>
-                  <p className="text-sm font-semibold text-primary">{t.name}</p>
-                  <p className="text-xs text-muted">
-                    {t.role}, {t.company}
-                  </p>
-                </div>
-              </div>
-            </GlassCard>
-          </AnimatedSection>
-        ))}
-      </div>
-    </section>
+          <figcaption className="mt-4 flex items-center gap-3 border-t border-rule pt-3">
+            {item.avatarUrl && (
+              <Image
+                src={item.avatarUrl}
+                alt=""
+                width={32}
+                height={32}
+                className="size-8 shrink-0 rounded-full border border-rule object-cover"
+              />
+            )}
+            <span className="min-w-0">
+              <span className="block truncate text-sm text-ink">{item.name}</span>
+              <span className="meta block truncate">
+                {item.role}
+                {item.company ? `, ${item.company}` : ''}
+              </span>
+            </span>
+          </figcaption>
+        </li>
+      ))}
+    </ul>
   );
 }
-

@@ -1,7 +1,6 @@
 import { fetchBlogPosts, fetchProfile } from '@/lib/api';
 import { SITE_URL } from '@/lib/site';
 
-export const dynamic = 'force-dynamic';
 export const revalidate = 3600;
 
 function escapeXml(str: string) {
