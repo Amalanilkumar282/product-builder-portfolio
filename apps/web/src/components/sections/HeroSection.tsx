@@ -42,6 +42,17 @@ export default function HeroSection({ profile, experience }: HeroSectionProps) {
         {/* Metadata rail: the "now" panel. Uses Profile and Experience columns
             that the previous design never rendered at all. */}
         <div className="rise" style={{ '--delay': '0.05s' } as React.CSSProperties}>
+          {profile?.avatarUrl && (
+            <Image
+              src={profile.avatarUrl}
+              alt={`Portrait of ${name}`}
+              width={88}
+              height={88}
+              priority
+              sizes="88px"
+              className="mb-4 rounded-lg border border-rule object-cover"
+            />
+          )}
           <p className="meta uppercase tracking-[0.14em] text-verdigris">Now</p>
           <dl className="mt-2 space-y-2">
             {current && (
@@ -129,19 +140,6 @@ export default function HeroSection({ profile, experience }: HeroSectionProps) {
         </div>
       </div>
 
-      {profile?.avatarUrl && (
-        <div className="mt-12 border-t border-rule pt-6 lg:hidden">
-          <Image
-            src={profile.avatarUrl}
-            alt={`Portrait of ${name}`}
-            width={72}
-            height={72}
-            priority
-            sizes="72px"
-            className="rounded-full border border-rule object-cover"
-          />
-        </div>
-      )}
     </section>
   );
 }
